@@ -7,7 +7,7 @@ export default class Unit {
   @observable y = 0
   @observable id
   @observable name
-  
+
   constructor(name) {
     this.id = ID
     this.name = name
@@ -26,7 +26,7 @@ export default class Unit {
       this.render()
     })
   }
-  
+
   render() {
     const unitElement = document.querySelector("#unit-" + this.id)
     if (unitElement === undefined) {
@@ -35,19 +35,16 @@ export default class Unit {
     unitElement.style['margin-left'] = this.x + 'px'
     unitElement.style['margin-top'] = this.y + 'px'
   }
-  
+
   @action moveTo(newX, newY) {
     this.x = newX
     this.y = newY
   }
-  
+
   talk() {
     const message = "Hello!"
     console.log(message)
     return message
   }
-  
-  
-  
-  
+
 }
