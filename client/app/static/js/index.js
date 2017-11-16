@@ -61,8 +61,6 @@ var ID = 1;
 
 var Unit = (_class = function () {
   function Unit(name) {
-    var _this = this;
-
     _classCallCheck(this, Unit);
 
     _initDefineProp(this, "x", _descriptor, this);
@@ -77,17 +75,24 @@ var Unit = (_class = function () {
     this.name = name;
     ID += 1;
 
-    var element = document.createElement("div");
-    element.innerHTML = this.name;
-    element.id = "unit-" + this.id;
-    var body = document.querySelector("body");
-    body.append(element);
-    var disposer = (0, _mobx.autorun)(function () {
-      _this.render();
-    });
+    this.startRender();
   }
 
   _createClass(Unit, [{
+    key: "startRender",
+    value: function startRender() {
+      var _this = this;
+
+      var element = document.createElement("div");
+      element.innerHTML = this.name;
+      element.id = "unit-" + this.id;
+      var body = document.querySelector("body");
+      body.append(element);
+      var disposer = (0, _mobx.autorun)(function () {
+        _this.render();
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       var unitElement = document.querySelector("#unit-" + this.id);
@@ -129,19 +134,24 @@ var Unit = (_class = function () {
 }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "name", [_mobx.observable], {
   enumerable: true,
   initializer: null
-})), _class);
+}), _applyDecoratedDescriptor(_class.prototype, "moveTo", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "moveTo"), _class.prototype)), _class);
 exports.default = Unit;
 
 },{"mobx":3}],2:[function(require,module,exports){
-"use strict";
+'use strict';
 
-var _Unit = require("Unit");
+var _mobx = require('mobx');
+
+var _Unit = require('Unit');
 
 var _Unit2 = _interopRequireDefault(_Unit);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+(0, _mobx.useStrict)(true);
+
 var jasper = new _Unit2.default("Jasper");
+var daniel = new _Unit2.default("DMoney");
 jasper.talk();
 
 jasper.moveTo(20, 40);
@@ -156,12 +166,15 @@ window.setInterval(function () {
 
 var randomMoveButton = document.querySelector("button#random-move");
 randomMoveButton.addEventListener('click', function () {
-  var randomX = Math.floor(Math.random() * 500);
-  var randomY = Math.floor(Math.random() * 500);
-  jasper.moveTo(randomX, randomY);
+  jasper.moveTo(getRandomPosition(), getRandomPosition());
+  daniel.moveTo(getRandomPosition(), getRandomPosition());
 });
 
-},{"Unit":1}],3:[function(require,module,exports){
+function getRandomPosition() {
+  return Math.floor(Math.random() * 500);
+}
+
+},{"Unit":1,"mobx":3}],3:[function(require,module,exports){
 (function (global){
 /** MobX - (c) Michel Weststrate 2015, 2016 - MIT Licensed */
 'use strict';

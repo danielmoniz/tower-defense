@@ -1,6 +1,11 @@
+import { useStrict } from 'mobx'
+
 import Unit from 'Unit'
 
+useStrict(true)
+
 const jasper = new Unit("Jasper")
+const daniel = new Unit("DMoney")
 jasper.talk()
 
 jasper.moveTo(20, 40)
@@ -15,7 +20,10 @@ window.setInterval(() => {
 
 const randomMoveButton = document.querySelector("button#random-move")
 randomMoveButton.addEventListener('click', function() {
-  const randomX = Math.floor(Math.random() * 500)
-  const randomY = Math.floor(Math.random() * 500)
-  jasper.moveTo(randomX, randomY)
+  jasper.moveTo(getRandomPosition(), getRandomPosition())
+  daniel.moveTo(getRandomPosition(), getRandomPosition())
 })
+
+function getRandomPosition() {
+  return Math.floor(Math.random() * 500)
+}

@@ -13,6 +13,10 @@ export default class Unit {
     this.name = name
     ID += 1
     
+    this.startRender()
+  }
+
+  startRender() {
     const element = document.createElement("div")
     element.innerHTML = this.name
     element.id = "unit-" + this.id
@@ -32,7 +36,7 @@ export default class Unit {
     unitElement.style['margin-top'] = this.y + 'px'
   }
   
-  moveTo(newX, newY) {
+  @action moveTo(newX, newY) {
     this.x = newX
     this.y = newY
   }
