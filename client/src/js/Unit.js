@@ -7,12 +7,15 @@ export default class Unit {
   @observable y = 0
   @observable id
   @observable name
+  @observable speed = 1
 
   constructor(name) {
     this.id = ID
     this.name = name
     ID += 1
     
+    this.movementId = undefined
+
     this.startRender()
   }
 
@@ -20,6 +23,7 @@ export default class Unit {
     const element = document.createElement("div")
     element.innerHTML = this.name
     element.id = "unit-" + this.id
+    element.style.position = 'absolute'
     const body = document.querySelector("body")
     body.append(element)
     var disposer = autorun(() => {
@@ -32,13 +36,44 @@ export default class Unit {
     if (unitElement === undefined) {
       return
     }
-    unitElement.style['margin-left'] = this.x + 'px'
-    unitElement.style['margin-top'] = this.y + 'px'
+    unitElement.style['left'] = this.x + 'px'
+    unitElement.style['top'] = this.y + 'px'
   }
 
-  @action moveTo(newX, newY) {
+  @action jumpTo(newX, newY) {
     this.x = newX
     this.y = newY
+  }
+
+  @action moveTo(finalX, finalY) {
+    console.log(`${this.name}: ${finalX}, ${finalY}`);
+    if (this.movementId) {
+      clearInterval(this.movementId) // stop old movement
+    }
+    this.movementId = window.setInterval(() => {
+      const stopMoving = this.moveXAndY(finalX, finalY)
+      if (stopMoving) {
+        console.log("clearing interval:", this.movementId);
+        clearInterval(this.movementId)
+        this.movementId = undefined
+      }
+    }, 10)
+  }
+
+  @action moveXAndY(finalX, finalY) {
+    if (this.x === finalX && this.y === finalY) {
+      return true
+    }
+    if (this.x < finalX) {
+      this.x += this.speed
+    } else if (this.x > finalX) {
+      this.x -= this.speed
+    }
+    if (this.y < finalY) {
+      this.y += this.speed
+    } else if (this.y > finalY) {
+      this.y -= this.speed
+    }
   }
 
   talk() {

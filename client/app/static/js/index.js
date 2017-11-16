@@ -8,7 +8,7 @@ exports.default = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4;
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
 
 var _mobx = require("mobx");
 
@@ -71,9 +71,13 @@ var Unit = (_class = function () {
 
     _initDefineProp(this, "name", _descriptor4, this);
 
+    _initDefineProp(this, "speed", _descriptor5, this);
+
     this.id = ID;
     this.name = name;
     ID += 1;
+
+    this.movementId = undefined;
 
     this.startRender();
   }
@@ -86,6 +90,7 @@ var Unit = (_class = function () {
       var element = document.createElement("div");
       element.innerHTML = this.name;
       element.id = "unit-" + this.id;
+      element.style.position = 'absolute';
       var body = document.querySelector("body");
       body.append(element);
       var disposer = (0, _mobx.autorun)(function () {
@@ -99,14 +104,49 @@ var Unit = (_class = function () {
       if (unitElement === undefined) {
         return;
       }
-      unitElement.style['margin-left'] = this.x + 'px';
-      unitElement.style['margin-top'] = this.y + 'px';
+      unitElement.style['left'] = this.x + 'px';
+      unitElement.style['top'] = this.y + 'px';
+    }
+  }, {
+    key: "jumpTo",
+    value: function jumpTo(newX, newY) {
+      this.x = newX;
+      this.y = newY;
     }
   }, {
     key: "moveTo",
-    value: function moveTo(newX, newY) {
-      this.x = newX;
-      this.y = newY;
+    value: function moveTo(finalX, finalY) {
+      var _this2 = this;
+
+      console.log(this.name + ": " + finalX + ", " + finalY);
+      if (this.movementId) {
+        clearInterval(this.movementId); // stop old movement
+      }
+      this.movementId = window.setInterval(function () {
+        var stopMoving = _this2.moveXAndY(finalX, finalY);
+        if (stopMoving) {
+          console.log("clearing interval:", _this2.movementId);
+          clearInterval(_this2.movementId);
+          _this2.movementId = undefined;
+        }
+      }, 10);
+    }
+  }, {
+    key: "moveXAndY",
+    value: function moveXAndY(finalX, finalY) {
+      if (this.x === finalX && this.y === finalY) {
+        return true;
+      }
+      if (this.x < finalX) {
+        this.x += this.speed;
+      } else if (this.x > finalX) {
+        this.x -= this.speed;
+      }
+      if (this.y < finalY) {
+        this.y += this.speed;
+      } else if (this.y > finalY) {
+        this.y -= this.speed;
+      }
     }
   }, {
     key: "talk",
@@ -134,7 +174,12 @@ var Unit = (_class = function () {
 }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, "name", [_mobx.observable], {
   enumerable: true,
   initializer: null
-}), _applyDecoratedDescriptor(_class.prototype, "moveTo", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "moveTo"), _class.prototype)), _class);
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, "speed", [_mobx.observable], {
+  enumerable: true,
+  initializer: function initializer() {
+    return 1;
+  }
+}), _applyDecoratedDescriptor(_class.prototype, "jumpTo", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "jumpTo"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "moveTo", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "moveTo"), _class.prototype), _applyDecoratedDescriptor(_class.prototype, "moveXAndY", [_mobx.action], Object.getOwnPropertyDescriptor(_class.prototype, "moveXAndY"), _class.prototype)), _class);
 exports.default = Unit;
 
 },{"mobx":3}],2:[function(require,module,exports){
@@ -154,9 +199,8 @@ var jasper = new _Unit2.default("Jasper");
 var daniel = new _Unit2.default("DMoney");
 jasper.talk();
 
-jasper.moveTo(20, 40);
-jasper.moveTo(40, 80);
-jasper.moveTo(200, 350);
+jasper.moveTo(getRandomPosition(), getRandomPosition());
+daniel.moveTo(getRandomPosition(), getRandomPosition());
 
 // game loop
 

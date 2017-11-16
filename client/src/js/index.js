@@ -8,9 +8,8 @@ const jasper = new Unit("Jasper")
 const daniel = new Unit("DMoney")
 jasper.talk()
 
-jasper.moveTo(20, 40)
-jasper.moveTo(40, 80)
-jasper.moveTo(200, 350)
+jasper.moveTo(getRandomPosition(), getRandomPosition())
+daniel.moveTo(getRandomPosition(), getRandomPosition())
 
 // game loop
 
