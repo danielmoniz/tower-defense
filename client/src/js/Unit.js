@@ -19,19 +19,22 @@ export default class Unit {
     const body = document.querySelector("body")
     body.append(element)
     var disposer = autorun(() => {
-      const unitElement = document.querySelector("#unit-" + this.id)
-      if (unitElement === undefined) {
-        return
-      }
-      console.log(this.name);
-      unitElement.style['margin-left'] = this.x + 'px'
-      unitElement.style['margin-top'] = this.y + 'px'
+      this.render()
     })
+  }
+  
+  render() {
+    const unitElement = document.querySelector("#unit-" + this.id)
+    if (unitElement === undefined) {
+      return
+    }
+    unitElement.style['margin-left'] = this.x + 'px'
+    unitElement.style['margin-top'] = this.y + 'px'
   }
   
   moveTo(newX, newY) {
     this.x = newX
-    this.y = newX
+    this.y = newY
   }
   
   talk() {

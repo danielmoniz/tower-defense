@@ -83,21 +83,25 @@ var Unit = (_class = function () {
     var body = document.querySelector("body");
     body.append(element);
     var disposer = (0, _mobx.autorun)(function () {
-      var unitElement = document.querySelector("#unit-" + _this.id);
-      if (unitElement === undefined) {
-        return;
-      }
-      console.log(_this.name);
-      unitElement.style['margin-left'] = _this.x + 'px';
-      unitElement.style['margin-top'] = _this.y + 'px';
+      _this.render();
     });
   }
 
   _createClass(Unit, [{
+    key: "render",
+    value: function render() {
+      var unitElement = document.querySelector("#unit-" + this.id);
+      if (unitElement === undefined) {
+        return;
+      }
+      unitElement.style['margin-left'] = this.x + 'px';
+      unitElement.style['margin-top'] = this.y + 'px';
+    }
+  }, {
     key: "moveTo",
     value: function moveTo(newX, newY) {
       this.x = newX;
-      this.y = newX;
+      this.y = newY;
     }
   }, {
     key: "talk",
@@ -143,6 +147,19 @@ jasper.talk();
 jasper.moveTo(20, 40);
 jasper.moveTo(40, 80);
 jasper.moveTo(200, 350);
+
+// game loop
+
+window.setInterval(function () {
+  // do stuff?
+}, 500);
+
+var randomMoveButton = document.querySelector("button#random-move");
+randomMoveButton.addEventListener('click', function () {
+  var randomX = Math.floor(Math.random() * 500);
+  var randomY = Math.floor(Math.random() * 500);
+  jasper.moveTo(randomX, randomY);
+});
 
 },{"Unit":1}],3:[function(require,module,exports){
 (function (global){
