@@ -1,9 +1,4 @@
-import EXTERNAL from 'test'
 import Unit from 'Unit'
-
-const test = 5
-console.log(test);
-console.log(EXTERNAL);
 
 const jasper = new Unit("Jasper")
 jasper.talk()

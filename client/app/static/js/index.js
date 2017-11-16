@@ -128,22 +128,14 @@ var Unit = (_class = function () {
 })), _class);
 exports.default = Unit;
 
-},{"mobx":4}],2:[function(require,module,exports){
-'use strict';
+},{"mobx":3}],2:[function(require,module,exports){
+"use strict";
 
-var _test = require('test');
-
-var _test2 = _interopRequireDefault(_test);
-
-var _Unit = require('Unit');
+var _Unit = require("Unit");
 
 var _Unit2 = _interopRequireDefault(_Unit);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var test = 5;
-console.log(test);
-console.log(_test2.default);
 
 var jasper = new _Unit2.default("Jasper");
 jasper.talk();
@@ -152,18 +144,7 @@ jasper.moveTo(20, 40);
 jasper.moveTo(40, 80);
 jasper.moveTo(200, 350);
 
-},{"Unit":1,"test":3}],3:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var EXTERNAL = true;
-
-exports.default = EXTERNAL;
-
-},{}],4:[function(require,module,exports){
+},{"Unit":1}],3:[function(require,module,exports){
 (function (global){
 /** MobX - (c) Michel Weststrate 2015, 2016 - MIT Licensed */
 'use strict';
