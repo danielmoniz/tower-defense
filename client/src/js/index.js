@@ -4,8 +4,20 @@ import Unit from 'Unit'
 
 useStrict(true)
 
+const gameSize = 700 // size in pixels of game box (square)
+
 const jasper = new Unit("Jasper")
 const daniel = new Unit("DMoney")
+
+let enemiesInWave = 5
+const enemies = []
+const enemyDistance = Math.floor(gameSize / enemiesInWave)
+for (let i = 0; i < enemiesInWave; i++) {
+  let enemy = new Unit('Enemy ' + (i + 1))
+  enemy.jumpTo(gameSize, i * enemyDistance)
+  enemy.moveTo(0, i * enemyDistance)
+  enemies.push(enemy)
+}
 
 jasper.moveTo(getRandomPosition(), getRandomPosition())
 daniel.moveTo(getRandomPosition(), getRandomPosition())
@@ -36,5 +48,5 @@ restartMoveButton.addEventListener('click', function() {
 })
 
 function getRandomPosition() {
-  return Math.floor(Math.random() * 800)
+  return Math.floor(Math.random() * gameSize)
 }
