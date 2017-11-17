@@ -6,7 +6,6 @@ useStrict(true)
 
 const jasper = new Unit("Jasper")
 const daniel = new Unit("DMoney")
-jasper.talk()
 
 jasper.moveTo(getRandomPosition(), getRandomPosition())
 daniel.moveTo(getRandomPosition(), getRandomPosition())
@@ -23,6 +22,19 @@ randomMoveButton.addEventListener('click', function() {
   daniel.moveTo(getRandomPosition(), getRandomPosition())
 })
 
+
+const pauseMoveButton = document.querySelector("button#pause")
+pauseMoveButton.addEventListener('click', function() {
+  jasper.pauseMovement()
+  daniel.pauseMovement()
+})
+
+const restartMoveButton = document.querySelector("button#restart")
+restartMoveButton.addEventListener('click', function() {
+  jasper.restartMovement()
+  daniel.restartMovement()
+})
+
 function getRandomPosition() {
-  return Math.floor(Math.random() * 500)
+  return Math.floor(Math.random() * 800)
 }

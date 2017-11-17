@@ -45,19 +45,29 @@ export default class Unit {
     this.y = newY
   }
 
+  @action pauseMovement() {
+    clearInterval(this.movementId)
+    delete this.movementId
+  }
+
+  @action restartMovement() {
+    this.movementId = window.setInterval(this.movement, 10)
+  }
+
   @action moveTo(finalX, finalY) {
     console.log(`${this.name}: ${finalX}, ${finalY}`);
     if (this.movementId) {
       clearInterval(this.movementId) // stop old movement
     }
-    this.movementId = window.setInterval(() => {
+    this.movement = () => {
       const stopMoving = this.moveXAndY(finalX, finalY)
       if (stopMoving) {
         console.log("clearing interval:", this.movementId);
         clearInterval(this.movementId)
-        this.movementId = undefined
+        delete this.movementId
       }
-    }, 10)
+    }
+    this.movementId = window.setInterval(this.movement, 10)
   }
 
   @action moveXAndY(finalX, finalY) {
@@ -74,12 +84,6 @@ export default class Unit {
     } else if (this.y > finalY) {
       this.y -= this.speed
     }
-  }
-
-  talk() {
-    const message = "Hello!"
-    console.log(message)
-    return message
   }
 
 }
