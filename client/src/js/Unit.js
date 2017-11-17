@@ -53,7 +53,7 @@ export default class Unit {
     delete this.movementId
   }
 
-  @action restartMovement() {
+  @action startMovement() {
     this.movementId = window.setInterval(this.movement, UNIT_REFRESH_RATE)
   }
 
@@ -70,7 +70,7 @@ export default class Unit {
         delete this.movementId
       }
     }
-    this.movementId = window.setInterval(this.movement, UNIT_REFRESH_RATE)
+    this.startMovement()
   }
 
   @action moveXAndY(finalX, finalY) {

@@ -31,8 +31,8 @@ pauseMoveButton.addEventListener('click', function() {
 
 const restartMoveButton = document.querySelector("button#restart")
 restartMoveButton.addEventListener('click', function() {
-  jasper.restartMovement()
-  daniel.restartMovement()
+  jasper.startMovement()
+  daniel.startMovement()
 })
 
 function getRandomPosition() {
