@@ -1,5 +1,8 @@
 import { observable, computed, action, autorun } from 'mobx'
 
+import { UNIT_REFRESH_RATE } from 'appConstants'
+
+
 let ID = 1
 
 export default class Unit {
@@ -51,7 +54,7 @@ export default class Unit {
   }
 
   @action restartMovement() {
-    this.movementId = window.setInterval(this.movement, 10)
+    this.movementId = window.setInterval(this.movement, UNIT_REFRESH_RATE)
   }
 
   @action moveTo(finalX, finalY) {
@@ -67,7 +70,7 @@ export default class Unit {
         delete this.movementId
       }
     }
-    this.movementId = window.setInterval(this.movement, 10)
+    this.movementId = window.setInterval(this.movement, UNIT_REFRESH_RATE)
   }
 
   @action moveXAndY(finalX, finalY) {
