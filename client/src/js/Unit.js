@@ -49,7 +49,7 @@ export default class Unit {
   }
 
   @action pauseMovement() {
-    clearInterval(this.movementId)
+    window.clearInterval(this.movementId)
     delete this.movementId
   }
 
@@ -60,13 +60,14 @@ export default class Unit {
   @action moveTo(finalX, finalY) {
     console.log(`${this.name}: ${finalX}, ${finalY}`);
     if (this.movementId) {
-      clearInterval(this.movementId) // stop old movement
+      window.clearInterval(this.movementId) // stop old movement
     }
     this.movement = () => {
+      console.log('running movement');
       const stopMoving = this.moveXAndY(finalX, finalY)
       if (stopMoving) {
         console.log("clearing interval:", this.movementId);
-        clearInterval(this.movementId)
+        window.clearInterval(this.movementId)
         delete this.movementId
       }
     }
