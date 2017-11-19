@@ -1,12 +1,11 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
-import { UNIT_REFRESH_RATE, GRID_SIZE } from 'appConstants'
+import { UNIT_REFRESH_RATE } from 'appConstants'
 import addRenderTools from 'RenderedUnit'
 
 // this should come from an environment variable so the server can run code without rendering
 const RENDER_UNITS = true
-
 
 let ID = 1
 
@@ -27,9 +26,9 @@ class Unit {
     this.movementId = undefined
 
     // set defaults
-    this.size = GRID_SIZE * 2 // @FIXME This should be set in each unit's class
-    this.width = this.size // Should be using these instead of this.size!
-    this.height = this.size // Should be using these instead of this.size!
+    this.size = undefined // ideally using width and height (might not be square!)
+    this.width = undefined // need to override in child class
+    this.height = undefined // need to override in child class
     this.name = 'Tank'
 
 
