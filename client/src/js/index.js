@@ -3,6 +3,7 @@ import { useStrict } from 'mobx'
 import Unit from 'Unit'
 import Cannon from 'Cannon'
 import Tank from 'Tank'
+import { GRID_SIZE } from 'appConstants'
 
 useStrict(true)
 
@@ -60,14 +61,16 @@ placeTowerButton.addEventListener('click', function() {
 
 const tower = Unit.create(Cannon, {
   temporary: true,
+  display: false,
 })
 const bound = gameBox.getBoundingClientRect()
 gameBox.addEventListener('mousemove', function(event) {
   if (placingTower) {
-    // @TODO only render tower in grid positions
-    const actualX = event.pageX - tower.width / 2.0 - bound.left
-    const actualY = event.pageY - tower.height / 2.0 - bound.top
-    tower.jumpTo(actualX, actualY)
+    const actualX = event.pageX - tower.width / 2.0 - bound.left + (GRID_SIZE / 2)
+    const actualY = event.pageY - tower.height / 2.0 - bound.top + (GRID_SIZE / 2)
+    const gridX = Math.floor(actualX / GRID_SIZE) * GRID_SIZE
+    const gridY = Math.floor(actualY / GRID_SIZE) * GRID_SIZE
+    tower.jumpTo(gridX, gridY)
   }
 })
 
@@ -76,7 +79,9 @@ gameBox.addEventListener('mouseleave', function(event) {
 })
 
 gameBox.addEventListener('mouseenter', function(event) {
-  tower.show()
+  if (placingTower) {
+    tower.show()
+  }
 })
 
 function getRandomPosition() {
