@@ -39,10 +39,18 @@ const pauseMoveButton = document.querySelector("button#pause")
 pauseMoveButton.addEventListener('click', function() {
   jasper.pauseMovement()
   daniel.pauseMovement()
+  enemies.forEach((enemy) => enemy.pauseMovement())
 })
 
 const restartMoveButton = document.querySelector("button#restart")
 restartMoveButton.addEventListener('click', function() {
+  jasper.startMovement()
+  daniel.startMovement()
+  enemies.forEach((enemy) => enemy.startMovement())
+})
+
+const placeTowerButton = document.querySelector("button#place-tower")
+placeTowerButton.addEventListener('click', function() {
   jasper.startMovement()
   daniel.startMovement()
 })

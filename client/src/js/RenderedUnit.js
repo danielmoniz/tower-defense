@@ -12,8 +12,8 @@ export default function addRenderTools(unit) {
     element.innerHTML = unit.name
     element.id = "unit-" + unit.id
     element.style.position = 'absolute'
-    const body = document.querySelector("body")
-    body.append(element)
+    const gameBox = document.querySelector("#display-box")
+    gameBox.append(element)
     var disposer = autorun(() => {
       unit.render()
     })
