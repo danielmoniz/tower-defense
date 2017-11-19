@@ -8,10 +8,13 @@ import { autorun } from 'mobx'
 
 export default function addRenderTools(unit) {
   unit.startRender = function() {
-    const element = document.createElement("div")
-    element.innerHTML = unit.name
+    const element = document.createElement("img")
+    // element.innerHTML = unit.name
     element.id = "unit-" + unit.id
     element.style.position = 'absolute'
+    element.src = "../static/assets/tank_side.png"
+    element.style.width = this.size + 'px'
+    element.style.height = this.size + 'px'
     const gameBox = document.querySelector("#display-box")
     gameBox.append(element)
     var disposer = autorun(() => {

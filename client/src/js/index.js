@@ -51,8 +51,7 @@ restartMoveButton.addEventListener('click', function() {
 
 const placeTowerButton = document.querySelector("button#place-tower")
 placeTowerButton.addEventListener('click', function() {
-  jasper.startMovement()
-  daniel.startMovement()
+  // make unplaced tower that follows cursor
 })
 
 function getRandomPosition() {

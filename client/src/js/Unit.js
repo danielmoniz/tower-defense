@@ -1,7 +1,7 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
-import { UNIT_REFRESH_RATE } from 'appConstants'
+import { UNIT_REFRESH_RATE, GRID_SIZE } from 'appConstants'
 import addRenderTools from 'RenderedUnit'
 
 // this should come from an environment variable so the server can run code without rendering
@@ -18,12 +18,12 @@ export default class Unit {
   @observable speed = 1
 
   constructor(name) {
-
-
     this.id = ID
     this.name = name
     ID += 1
     
+    this.size = GRID_SIZE * 2 // @FIXME This should be set in each unit's class
+
     this.movementId = undefined
 
     if (RENDER_UNITS) {
