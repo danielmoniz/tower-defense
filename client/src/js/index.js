@@ -1,6 +1,8 @@
 import { useStrict } from 'mobx'
 
 import Unit from 'Unit'
+import Cannon from 'Cannon'
+import Tank from 'Tank'
 
 useStrict(true)
 
@@ -9,18 +11,21 @@ const gameBox = document.querySelector("#display-box")
 gameBox.style.width = gameSize + 'px'
 gameBox.style.height = gameSize + 'px'
 
-const allies = [new Unit("Jasper"), new Unit("DMoney")]
+let placingTower = false
+const allies = [new Tank(), new Tank()]
 // const allies = []
 
 let enemiesInWave = 5
 const enemies = []
 const enemyDistance = Math.floor(gameSize / enemiesInWave)
 for (let i = 0; i < enemiesInWave; i++) {
-  let enemy = new Unit('Enemy ' + (i + 1))
+  let enemy = new Tank()
   enemy.jumpTo(gameSize, i * enemyDistance)
   enemy.moveTo(0, i * enemyDistance)
   enemies.push(enemy)
 }
+
+allies.concat(enemies).forEach((unit) => unit.startRender())
 
 allies.forEach((ally) => ally.moveTo(getRandomPosition(), getRandomPosition()))
 
@@ -50,20 +55,18 @@ restartMoveButton.addEventListener('click', function() {
 const placeTowerButton = document.querySelector("button#place-tower")
 placeTowerButton.addEventListener('click', function() {
   // make unplaced tower that follows cursor
+  placingTower = true
 })
 
-const tower = new Unit('tower', {
+const tower = Unit.create(Cannon, {
   temporary: true,
 })
 const bound = gameBox.getBoundingClientRect()
-let placingTower = true
 gameBox.addEventListener('mousemove', function(event) {
   if (placingTower) {
     // @TODO only render tower in grid positions
-    console.log(event);
     const actualX = event.pageX - tower.width / 2.0 - bound.left
     const actualY = event.pageY - tower.height / 2.0 - bound.top
-    // @FIXME ^^^ Not sure why I need to subtract bound.top if I'm getting the page y-value
     tower.jumpTo(actualX, actualY)
   }
 })

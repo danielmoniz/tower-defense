@@ -12,12 +12,14 @@ export default function addRenderTools(unit) {
     // element.innerHTML = unit.name
     element.id = "unit-" + unit.id
     element.style.position = 'absolute'
-    element.src = "../static/assets/tank_side.png"
+    element.src = `../static/assets/${unit.name.toLowerCase()}.png`
     element.style.width = this.size + 'px'
     element.style.height = this.size + 'px'
+
     if (unit.temporary) {
       element.classList.add('disabled')
     }
+
     const gameBox = document.querySelector("#display-box")
     gameBox.append(element)
     var disposer = autorun(() => {

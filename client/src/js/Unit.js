@@ -10,7 +10,7 @@ const RENDER_UNITS = true
 
 let ID = 1
 
-export default class Unit {
+class Unit {
   // defaults (observables)
   @observable x = 0
   @observable y = 0
@@ -20,36 +20,31 @@ export default class Unit {
   @observable display = true
   @observable temporary = false
 
-  constructor(name, options) {
+  constructor(options) {
     options = options || {}
     this.id = ID
     ID += 1
-    this.name = name
     this.movementId = undefined
 
     // set defaults
     this.size = GRID_SIZE * 2 // @FIXME This should be set in each unit's class
     this.width = this.size // Should be using these instead of this.size!
     this.height = this.size // Should be using these instead of this.size!
+    this.name = 'Tank'
+
 
     // override defaults
     for (let key in options) {
       if (options.hasOwnProperty(key)) {
-        console.log(key);
         this[key] = options[key]
       }
     }
 
-    if (RENDER_UNITS) {
-      addRenderTools(this) // adds the render methods to this class
-      this.startRender()
-    }
+    addRenderTools(this) // adds the render methods to this class
   }
 
   @action hide() {
     this.display = false
-    console.log(this.display);
-    console.log(this.display ? 'initial' : 'none');
   }
 
   @action show() {
@@ -105,3 +100,11 @@ export default class Unit {
   }
 
 }
+
+Unit.create = function(UnitClass, options) {
+  const unit = new UnitClass(options)
+  unit.startRender()
+  return unit
+}
+
+export default Unit
