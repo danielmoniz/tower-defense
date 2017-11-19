@@ -15,7 +15,7 @@ export default class Unit {
   @observable y = 0
   @observable id
   @observable name
-  @observable speed = 1
+  @observable speed = 100 // pixels per second
 
   constructor(name) {
     this.id = ID
@@ -64,16 +64,20 @@ export default class Unit {
     if (this.x === finalX && this.y === finalY) {
       return true
     }
-    if (this.x < finalX) {
-      this.x += this.speed
-    } else if (this.x > finalX) {
-      this.x -= this.speed
-    }
-    if (this.y < finalY) {
-      this.y += this.speed
-    } else if (this.y > finalY) {
-      this.y -= this.speed
-    }
+
+    const actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE)
+    // use polar coordinates to generate X and Y given target destination
+    const deltaX = finalX - this.x
+    const deltaY = finalY - this.y
+    let distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+    distance = Math.min(actualSpeed, distance)
+    const angle = Math.atan2(deltaY, deltaX)
+
+    const xMovement = distance * Math.cos(angle)
+    const yMovement = distance * Math.sin(angle)
+
+    this.x += xMovement
+    this.y += yMovement
   }
 
 }

@@ -6,8 +6,7 @@ useStrict(true)
 
 const gameSize = 700 // size in pixels of game box (square)
 
-const jasper = new Unit("Jasper")
-const daniel = new Unit("DMoney")
+const allies = [new Unit("Jasper"), new Unit("DMoney")]
 
 let enemiesInWave = 5
 const enemies = []
@@ -19,33 +18,28 @@ for (let i = 0; i < enemiesInWave; i++) {
   enemies.push(enemy)
 }
 
-jasper.moveTo(getRandomPosition(), getRandomPosition())
-daniel.moveTo(getRandomPosition(), getRandomPosition())
+allies.forEach((ally) => ally.moveTo(getRandomPosition(), getRandomPosition()))
 
 // game loop
-
 window.setInterval(() => {
-  // do stuff?
+  // handle spawning waves, etc.
 }, 500)
 
 const randomMoveButton = document.querySelector("button#random-move")
 randomMoveButton.addEventListener('click', function() {
-  jasper.moveTo(getRandomPosition(), getRandomPosition())
-  daniel.moveTo(getRandomPosition(), getRandomPosition())
+  allies.forEach((ally) => ally.moveTo(getRandomPosition(), getRandomPosition()))
 })
 
 
 const pauseMoveButton = document.querySelector("button#pause")
 pauseMoveButton.addEventListener('click', function() {
-  jasper.pauseMovement()
-  daniel.pauseMovement()
+  allies.forEach((ally) => ally.pauseMovement())
   enemies.forEach((enemy) => enemy.pauseMovement())
 })
 
 const restartMoveButton = document.querySelector("button#restart")
 restartMoveButton.addEventListener('click', function() {
-  jasper.startMovement()
-  daniel.startMovement()
+  allies.forEach((ally) => ally.startMovement())
   enemies.forEach((enemy) => enemy.startMovement())
 })
 
