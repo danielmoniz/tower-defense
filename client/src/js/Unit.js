@@ -57,34 +57,61 @@ class Unit {
     this.disabled = false
   }
 
+  /*
+   * Jumps/teleports a unit to the given position.
+   */
   @action jumpTo(newX, newY) {
     this.x = newX
     this.y = newY
   }
 
+  /*
+   * Pauses movement for the unit. Can be resumed.
+   */
   @action pauseMovement() {
     clearInterval(this.movementId)
     delete this.movementId
   }
 
-  @action startMovement() {
-    this.movementId = setInterval(this.movement, UNIT_REFRESH_RATE)
+  /*
+   * Clears the movement for the unit. Cannot be resumed (needs new move target).
+   */
+  @action clearMovement() {
+    this.pauseMovement()
+    delete this.movement
   }
 
-  @action moveTo(finalX, finalY) {
+  /*
+   * Kicks off movement for the unit. If already moving, clears the previous movement.
+   */
+  @action startMovement() {
     if (this.movementId) {
       clearInterval(this.movementId) // stop old movement
     }
+    this.movementId = setInterval(this.movement, UNIT_REFRESH_RATE)
+  }
+
+  /*
+   * This method should set a new move target for the unit.
+   * It should NOT actually trigger the unit to move if stopped.
+   * If the unit is already moving, it ensures they continue in the new direction.
+   */
+  @action setMoveTarget(finalX, finalY) {
     this.movement = () => {
       const stopMoving = this.moveXAndY(finalX, finalY)
       if (stopMoving) {
-        clearInterval(this.movementId)
-        delete this.movementId
+        this.pauseMovement()
       }
     }
-    this.startMovement()
+    if (this.movementId) { // if already moving, continue in a new direction
+      this.startMovement()
+    }
   }
 
+  /*
+   * Moves the unit by one 'turn' or tick. They should move up to their speed (or less
+   * if they are close to their objective).
+   */
   @action moveXAndY(finalX, finalY) {
     if (this.x === finalX && this.y === finalY) {
       return true
@@ -107,6 +134,10 @@ class Unit {
 
 }
 
+/*
+ * Creates a new unit of the given class provided (eg. Cannon, Tank, etc.).
+ * Also triggers their initial rendering loop.
+ */
 Unit.create = function(UnitClass, options) {
   const unit = new UnitClass(options)
   unit.startRender()
