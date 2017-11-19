@@ -67,8 +67,12 @@ gameBox.addEventListener('mousemove', function(event) {
   if (placingTower) {
     const actualX = event.pageX - placingTower.width / 2.0 - bound.left + (GRID_SIZE / 2)
     const actualY = event.pageY - placingTower.height / 2.0 - bound.top + (GRID_SIZE / 2)
-    const gridX = Math.floor(actualX / GRID_SIZE) * GRID_SIZE
-    const gridY = Math.floor(actualY / GRID_SIZE) * GRID_SIZE
+    let gridX = Math.floor(actualX / GRID_SIZE) * GRID_SIZE
+    let gridY = Math.floor(actualY / GRID_SIZE) * GRID_SIZE
+    gridX = Math.max(gridX, 0)
+    gridY = Math.max(gridY, 0)
+    gridX = Math.min(gridX, gameSize - placingTower.width)
+    gridY = Math.min(gridY, gameSize - placingTower.height)
     placingTower.jumpTo(gridX, gridY)
   }
 })
