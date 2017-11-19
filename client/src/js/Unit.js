@@ -1,6 +1,11 @@
+
 import { observable, computed, action, autorun } from 'mobx'
 
 import { UNIT_REFRESH_RATE } from 'appConstants'
+import addRenderTools from 'RenderedUnit'
+
+// this should come from an environment variable so the server can run code without rendering
+const RENDER_UNITS = true
 
 
 let ID = 1
@@ -13,34 +18,18 @@ export default class Unit {
   @observable speed = 1
 
   constructor(name) {
+
+
     this.id = ID
     this.name = name
     ID += 1
     
     this.movementId = undefined
 
-    this.startRender()
-  }
-
-  startRender() {
-    const element = document.createElement("div")
-    element.innerHTML = this.name
-    element.id = "unit-" + this.id
-    element.style.position = 'absolute'
-    const body = document.querySelector("body")
-    body.append(element)
-    var disposer = autorun(() => {
-      this.render()
-    })
-  }
-
-  render() {
-    const unitElement = document.querySelector("#unit-" + this.id)
-    if (unitElement === undefined) {
-      return
+    if (RENDER_UNITS) {
+      addRenderTools(this) // adds the render methods to this class
+      this.startRender()
     }
-    unitElement.style['left'] = this.x + 'px'
-    unitElement.style['top'] = this.y + 'px'
   }
 
   @action jumpTo(newX, newY) {
@@ -58,15 +47,12 @@ export default class Unit {
   }
 
   @action moveTo(finalX, finalY) {
-    console.log(`${this.name}: ${finalX}, ${finalY}`);
     if (this.movementId) {
       window.clearInterval(this.movementId) // stop old movement
     }
     this.movement = () => {
-      console.log('running movement');
       const stopMoving = this.moveXAndY(finalX, finalY)
       if (stopMoving) {
-        console.log("clearing interval:", this.movementId);
         window.clearInterval(this.movementId)
         delete this.movementId
       }
