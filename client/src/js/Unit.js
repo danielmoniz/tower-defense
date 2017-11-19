@@ -63,22 +63,22 @@ class Unit {
   }
 
   @action pauseMovement() {
-    window.clearInterval(this.movementId)
+    clearInterval(this.movementId)
     delete this.movementId
   }
 
   @action startMovement() {
-    this.movementId = window.setInterval(this.movement, UNIT_REFRESH_RATE)
+    this.movementId = setInterval(this.movement, UNIT_REFRESH_RATE)
   }
 
   @action moveTo(finalX, finalY) {
     if (this.movementId) {
-      window.clearInterval(this.movementId) // stop old movement
+      clearInterval(this.movementId) // stop old movement
     }
     this.movement = () => {
       const stopMoving = this.moveXAndY(finalX, finalY)
       if (stopMoving) {
-        window.clearInterval(this.movementId)
+        clearInterval(this.movementId)
         delete this.movementId
       }
     }
