@@ -2,7 +2,7 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import { UNIT_REFRESH_RATE } from 'appConstants'
-import addRenderTools from 'RenderedUnit'
+import addRenderTools from 'UnitRenderer'
 
 // this should come from an environment variable so the server can run code without rendering
 const RENDER_UNITS = true
