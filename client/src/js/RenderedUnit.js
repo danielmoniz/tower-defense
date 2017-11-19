@@ -12,8 +12,8 @@ export default function addRenderTools(unit) {
     element.id = "unit-" + unit.id
     element.style.position = 'absolute'
     element.src = `../static/assets/${unit.name.toLowerCase()}.png`
-    element.style.width = this.size + 'px'
-    element.style.height = this.size + 'px'
+    element.style.width = this.width + 'px'
+    element.style.height = this.height + 'px'
     element.classList.add('unit')
 
     const gameBox = document.querySelector("#display-box")

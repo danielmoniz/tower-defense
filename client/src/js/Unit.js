@@ -26,10 +26,9 @@ class Unit {
     this.movementId = undefined
 
     // set defaults
-    this.size = undefined // ideally using width and height (might not be square!)
-    this.width = undefined // need to override in child class
-    this.height = undefined // need to override in child class
-    this.name = 'Tank'
+    this.width = undefined // must override
+    this.height = undefined // must override
+    this.name = undefined // must override
 
 
     // override defaults
