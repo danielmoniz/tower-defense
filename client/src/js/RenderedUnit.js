@@ -14,6 +14,7 @@ export default function addRenderTools(unit) {
     element.src = `../static/assets/${unit.name.toLowerCase()}.png`
     element.style.width = this.size + 'px'
     element.style.height = this.size + 'px'
+    element.classList.add('unit')
 
     const gameBox = document.querySelector("#display-box")
     gameBox.append(element)
