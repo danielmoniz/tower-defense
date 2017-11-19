@@ -56,31 +56,39 @@ restartMoveButton.addEventListener('click', function() {
 const placeTowerButton = document.querySelector("button#place-tower")
 placeTowerButton.addEventListener('click', function() {
   // make unplaced tower that follows cursor
-  placingTower = true
+  placingTower = Unit.create(Cannon, {
+    disabled: true,
+    display: false,
+  })
 })
 
-const tower = Unit.create(Cannon, {
-  temporary: true,
-  display: false,
-})
 const bound = gameBox.getBoundingClientRect()
 gameBox.addEventListener('mousemove', function(event) {
   if (placingTower) {
-    const actualX = event.pageX - tower.width / 2.0 - bound.left + (GRID_SIZE / 2)
-    const actualY = event.pageY - tower.height / 2.0 - bound.top + (GRID_SIZE / 2)
+    const actualX = event.pageX - placingTower.width / 2.0 - bound.left + (GRID_SIZE / 2)
+    const actualY = event.pageY - placingTower.height / 2.0 - bound.top + (GRID_SIZE / 2)
     const gridX = Math.floor(actualX / GRID_SIZE) * GRID_SIZE
     const gridY = Math.floor(actualY / GRID_SIZE) * GRID_SIZE
-    tower.jumpTo(gridX, gridY)
+    placingTower.jumpTo(gridX, gridY)
   }
 })
 
 gameBox.addEventListener('mouseleave', function(event) {
-  tower.hide()
+  if (placingTower) {
+    placingTower.hide()
+  }
 })
 
 gameBox.addEventListener('mouseenter', function(event) {
   if (placingTower) {
-    tower.show()
+    placingTower.show()
+  }
+})
+
+gameBox.addEventListener('click', function(event) {
+  if (placingTower) {
+    placingTower.enable()
+    placingTower = false
   }
 })
 

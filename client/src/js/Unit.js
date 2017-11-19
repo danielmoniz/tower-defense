@@ -18,7 +18,7 @@ class Unit {
   @observable name
   @observable speed = 100 // pixels per second
   @observable display = true
-  @observable temporary = false
+  @observable disabled = false
 
   constructor(options) {
     options = options || {}
@@ -49,6 +49,14 @@ class Unit {
 
   @action show() {
     this.display = true
+  }
+
+  @action disable() {
+    this.disabled = true
+  }
+
+  @action enable() {
+    this.disabled = false
   }
 
   @action jumpTo(newX, newY) {
