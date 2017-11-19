@@ -11,25 +11,49 @@ const RENDER_UNITS = true
 let ID = 1
 
 export default class Unit {
+  // defaults (observables)
   @observable x = 0
   @observable y = 0
   @observable id
   @observable name
   @observable speed = 100 // pixels per second
+  @observable display = true
+  @observable temporary = false
 
-  constructor(name) {
+  constructor(name, options) {
+    options = options || {}
     this.id = ID
-    this.name = name
     ID += 1
-    
-    this.size = GRID_SIZE * 2 // @FIXME This should be set in each unit's class
-
+    this.name = name
     this.movementId = undefined
+
+    // set defaults
+    this.size = GRID_SIZE * 2 // @FIXME This should be set in each unit's class
+    this.width = this.size // Should be using these instead of this.size!
+    this.height = this.size // Should be using these instead of this.size!
+
+    // override defaults
+    for (let key in options) {
+      if (options.hasOwnProperty(key)) {
+        console.log(key);
+        this[key] = options[key]
+      }
+    }
 
     if (RENDER_UNITS) {
       addRenderTools(this) // adds the render methods to this class
       this.startRender()
     }
+  }
+
+  @action hide() {
+    this.display = false
+    console.log(this.display);
+    console.log(this.display ? 'initial' : 'none');
+  }
+
+  @action show() {
+    this.display = true
   }
 
   @action jumpTo(newX, newY) {

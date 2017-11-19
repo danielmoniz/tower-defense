@@ -5,8 +5,12 @@ import Unit from 'Unit'
 useStrict(true)
 
 const gameSize = 700 // size in pixels of game box (square)
+const gameBox = document.querySelector("#display-box")
+gameBox.style.width = gameSize + 'px'
+gameBox.style.height = gameSize + 'px'
 
 const allies = [new Unit("Jasper"), new Unit("DMoney")]
+// const allies = []
 
 let enemiesInWave = 5
 const enemies = []
@@ -46,6 +50,30 @@ restartMoveButton.addEventListener('click', function() {
 const placeTowerButton = document.querySelector("button#place-tower")
 placeTowerButton.addEventListener('click', function() {
   // make unplaced tower that follows cursor
+})
+
+const tower = new Unit('tower', {
+  temporary: true,
+})
+const bound = gameBox.getBoundingClientRect()
+let placingTower = true
+gameBox.addEventListener('mousemove', function(event) {
+  if (placingTower) {
+    // @TODO only render tower in grid positions
+    console.log(event);
+    const actualX = event.pageX - tower.width / 2.0 - bound.left
+    const actualY = event.pageY - tower.height / 2.0 - bound.top
+    // @FIXME ^^^ Not sure why I need to subtract bound.top if I'm getting the page y-value
+    tower.jumpTo(actualX, actualY)
+  }
+})
+
+gameBox.addEventListener('mouseleave', function(event) {
+  tower.hide()
+})
+
+gameBox.addEventListener('mouseenter', function(event) {
+  tower.show()
 })
 
 function getRandomPosition() {

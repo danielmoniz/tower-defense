@@ -15,6 +15,9 @@ export default function addRenderTools(unit) {
     element.src = "../static/assets/tank_side.png"
     element.style.width = this.size + 'px'
     element.style.height = this.size + 'px'
+    if (unit.temporary) {
+      element.classList.add('disabled')
+    }
     const gameBox = document.querySelector("#display-box")
     gameBox.append(element)
     var disposer = autorun(() => {
@@ -29,5 +32,6 @@ export default function addRenderTools(unit) {
     }
     unitElement.style['left'] = unit.x + 'px'
     unitElement.style['top'] = unit.y + 'px'
+    unitElement.style.display = unit.display ? 'initial' : 'none'
   }
 }
