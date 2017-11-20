@@ -148,7 +148,9 @@ class Unit {
   @action kill() {
     // TERMINATE
     // set alive to false?
+    // @TODO remove from enemies array
     this.clearMovement() // @TODO should explode
+    this.hide()
   }
 
   isAlive() {

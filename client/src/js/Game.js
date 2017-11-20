@@ -14,6 +14,8 @@ export default class Game {
   @observable enemiesInWave = 5 // @TODO This will likely become an array of wave sizes
   @observable gameBox = undefined
   @observable gameBoxBound = undefined
+  @observable gameCanvas = undefined
+  @observable gameCanvasContext = undefined
 
   height = 700
   width = 700
@@ -46,7 +48,7 @@ export default class Game {
     this.enemies.forEach((unit) => unit.pauseMovement())
     this.towers.forEach((tower) => tower.deactivate())
   }
-  
+
   moveUnits(units) {
     units.forEach((unit) => unit.startMovement())
   }
@@ -56,6 +58,17 @@ export default class Game {
     this.gameBox.style.width = this.width + 'px'
     this.gameBox.style.height = this.height + 'px'
     this.gameBoxBound = this.gameBox.getBoundingClientRect()
+    this.gameCanvas = this.setupGameCanvas(this.gameBox, 'gameCanvas')
+    this.gameCanvasContext = this.gameCanvas.getContext('2d')
+  }
+
+  setupGameCanvas(frame, id, width = this.width, height = this.height) {
+    let canvas = document.createElement('canvas');
+    canvas.id = id
+    canvas.width = width
+    canvas.height = height
+    frame.append(canvas)
+    return canvas
   }
 
   initializeLoop() {
