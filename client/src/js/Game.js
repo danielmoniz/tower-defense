@@ -9,6 +9,7 @@ import GameRenderer from 'GameRenderer'
 export default class Game {
   @observable placingTower = false
   @observable enemies = []
+  @observable towers = []
   @observable wave = 1
   @observable enemiesInWave = 5 // @TODO This will likely become an array of wave sizes
   @observable gameBox = undefined
@@ -36,7 +37,14 @@ export default class Game {
   play() {
     this.gameLoopId = this.initializeLoop()
     this.moveUnits(this.enemies)
-    // this.enemies.forEach((enemy) => enemy.startMovement())
+    this.towers.forEach((tower) => tower.activate())
+  }
+
+  pause() {
+    clearInterval(this.gameLoopId)
+    delete this.gameLoopId
+    this.enemies.forEach((unit) => unit.pauseMovement())
+    this.towers.forEach((tower) => tower.deactivate())
   }
   
   moveUnits(units) {
@@ -101,14 +109,9 @@ export default class Game {
   placeTower() {
     if (this.placingTower) {
       this.placingTower.enable()
+      this.towers.push(this.placingTower)
       this.deselectPlacingTower()
     }
-  }
-
-  pause() {
-    clearInterval(this.gameLoopId)
-    delete this.gameLoopId
-    this.enemies.forEach((unit) => unit.pauseMovement())
   }
 
   tearDown() {

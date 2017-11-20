@@ -21,18 +21,26 @@ export default class Cannon extends Unit {
 
   @action enable() {
     super.enable()
+    this.activate()
+  }
+
+  @action disable() {
+    super.disable()
+    this.deactivate()
+  }
+
+  deactivate() {
+    clearInterval(this.updateLoopId)
+    delete this.updateLoopId
+  }
+
+  activate() {
     this.updateLoopId = setInterval(() => {
       this.updateCooldown()
       if (this.canAttack()) {
         this.attack()
       }
     }, UNIT_REFRESH_RATE)
-  }
-
-  @action disable() {
-    super.disable()
-    clearInterval(this.updateLoopId)
-    delete this.updateLoopId
   }
 
   canAttack() {
