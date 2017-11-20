@@ -18,6 +18,8 @@ class Unit {
   @observable speed = 100 // pixels per second
   @observable display = true
   @observable disabled = false
+  @observable maxHitPoints = 50
+  @observable currentHitPoints
 
   constructor(options) {
     options = options || {}
@@ -29,6 +31,7 @@ class Unit {
     this.width = undefined // must override
     this.height = undefined // must override
     this.name = undefined // must override
+    this.currentHitPoints = this.maxHitPoints
 
 
     // override defaults
@@ -130,6 +133,26 @@ class Unit {
 
     this.x += xMovement
     this.y += yMovement
+  }
+
+  @action takeDamage(amount) {
+    if (this.currentHitPoints <= 0) {
+      return
+    }
+    this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
+    if (this.currentHitPoints <= 0) {
+      this.kill()
+    }
+  }
+
+  @action kill() {
+    // TERMINATE
+    // set alive to false?
+    this.clearMovement() // @TODO should explode
+  }
+
+  isAlive() {
+    return this.currentHitPoints > 0
   }
 
 }

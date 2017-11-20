@@ -8,7 +8,6 @@ import GameRenderer from 'GameRenderer'
 
 export default class Game {
   @observable placingTower = false
-  @observable allies = []
   @observable enemies = []
   @observable wave = 1
   @observable enemiesInWave = 5 // @TODO This will likely become an array of wave sizes
@@ -25,19 +24,23 @@ export default class Game {
     this.renderer = new GameRenderer(this)
   }
 
-  start() {
-    this.play()
-  }
-
   setup() {
     this.setupGameBox()
-    this.generateAllies()
+  }
+
+  start() {
+    this.play()
     this.spawnWave()
-    this.renderAll()
-    // @TEST/example - remove later!
-    this.allies.forEach((ally) => {
-      ally.setMoveTarget(this.getRandomPosition(), this.getRandomPosition())
-    })
+  }
+
+  play() {
+    this.gameLoopId = this.initializeLoop()
+    this.moveUnits(this.enemies)
+    // this.enemies.forEach((enemy) => enemy.startMovement())
+  }
+  
+  moveUnits(units) {
+    units.forEach((unit) => unit.startMovement())
   }
 
   setupGameBox() {
@@ -51,17 +54,12 @@ export default class Game {
     return setInterval(this.gameLogic.bind(this), this.tickLength)
   }
 
-  renderAll() {
-    const allEntities = this.allies.concat(this.enemies)
-    allEntities.forEach((entity) => entity.startRender())
+  render(entities) {
+    entities.forEach((entity) => entity.startRender())
   }
 
   gameLogic() {
     // handle spawning waves, etc.
-  }
-
-  generateAllies() {
-    this.allies = this.allies.concat([new Tank(), new Tank()])
   }
 
   spawnWave() {
@@ -71,8 +69,12 @@ export default class Game {
       this.placeEnemy(enemy, i)
       enemy.setMoveTarget(0, this.height / 2)
       newEnemies.push(enemy)
+      this.enemies.push(enemy)
     }
-    this.enemies = this.enemies.concat(newEnemies)
+
+    this.render(newEnemies)
+    this.moveUnits(newEnemies)
+    // newEnemies.forEach((enemy) => enemy.startMovement())
   }
 
   placeEnemy(enemy, numEnemy) {
@@ -87,6 +89,7 @@ export default class Game {
     this.placingTower = Unit.create(Cannon, {
       disabled: true,
       display: false,
+      enemies: this.enemies,
     })
     return this.placingTower
   }
@@ -95,24 +98,17 @@ export default class Game {
     this.placingTower = false
   }
 
-  addRandomAllyMoves() {
-    this.allies.forEach((ally) => {
-      ally.setMoveTarget(this.getRandomPosition(), this.getRandomPosition())
-      ally.startMovement()
-    })
+  placeTower() {
+    if (this.placingTower) {
+      this.placingTower.enable()
+      this.deselectPlacingTower()
+    }
   }
 
   pause() {
     clearInterval(this.gameLoopId)
     delete this.gameLoopId
-    const allEntities = this.allies.concat(this.enemies)
-    allEntities.forEach((entity) => entity.pauseMovement())
-  }
-
-  play() {
-    this.gameLoopId = this.initializeLoop()
-    const allEntities = this.allies.concat(this.enemies)
-    allEntities.forEach((entity) => entity.startMovement())
+    this.enemies.forEach((unit) => unit.pauseMovement())
   }
 
   tearDown() {
@@ -122,6 +118,11 @@ export default class Game {
 
   getRandomPosition() {
     return Math.floor(Math.random() * this.height)
+  }
+
+  // DEPRECATED ----------------
+  renderAll() {
+    this.enemies.forEach((entity) => entity.startRender())
   }
 
 }

@@ -8,7 +8,6 @@ export default class GameRenderer {
   }
 
   addEventHandlers() {
-    this.addRandomMove()
     this.addPause()
     this.addResume()
     this.addPlaceTower()
@@ -16,13 +15,7 @@ export default class GameRenderer {
     this.addPlacingTowerHide()
     this.addPlacingTowerShow()
     this.addPlaceTowerOnMap()
-  }
-
-  addRandomMove() {
-    const randomMoveButton = document.querySelector("button#random-move")
-    randomMoveButton.addEventListener('click', () => {
-      this.game.addRandomAllyMoves()
-    })
+    this.addSpawnWave()
   }
 
   addPause() {
@@ -88,10 +81,14 @@ export default class GameRenderer {
 
   addPlaceTowerOnMap() {
     this.game.gameBox.addEventListener('click', (event) => {
-      if (this.game.placingTower) {
-        this.game.placingTower.enable()
-        this.game.deselectPlacingTower()
-      }
+      this.game.placeTower()
+    })
+  }
+
+  addSpawnWave() {
+    const button = document.querySelector("button#spawn-wave")
+    button.addEventListener('click', (event) => {
+      this.game.spawnWave()
     })
   }
 
