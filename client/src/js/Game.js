@@ -16,6 +16,7 @@ export default class Game {
   @observable gameBoxBound = undefined
   @observable gameCanvas = undefined
   @observable gameCanvasContext = undefined
+  @observable credits = 55
 
   height = 700
   width = 700
@@ -115,12 +116,20 @@ export default class Game {
     return this.placingTower
   }
 
+  buyTower(tower) {
+    if (this.credits < tower.purchaseCost) {
+      return false
+    }
+    this.credits -= tower.purchaseCost
+    return true
+  }
+
   deselectPlacingTower() {
     this.placingTower = false
   }
 
   placeTower() {
-    if (this.placingTower) {
+    if (this.placingTower && this.buyTower(this.placingTower)) {
       this.placingTower.enable()
       this.towers.push(this.placingTower)
       this.deselectPlacingTower()

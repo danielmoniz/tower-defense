@@ -10,6 +10,7 @@ export default class Cannon extends Unit {
   @observable cooldownStatus = 1000
   @observable range = 200 // pixels
   @observable target = undefined
+  @observable purchaseCost = 25
 
   constructor(options) {
     super(options)
