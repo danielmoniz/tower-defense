@@ -87,7 +87,7 @@ export default class Game {
   spawnWave() {
     const newEnemies = []
     for (let i = 0; i < this.enemiesInWave; i++) {
-      let enemy = new Tank()
+      let enemy = new Tank(this)
       this.placeEnemy(enemy, i)
       enemy.setMoveTarget(0, this.height / 2)
       newEnemies.push(enemy)
@@ -108,16 +108,16 @@ export default class Game {
    * Selects a new (disabled/inactive) cannon to be placed on the map.
    */
   selectNewCannon() {
-    this.placingTower = Unit.create(Cannon, {
-      disabled: true,
-      display: false,
-      enemies: this.enemies,
-    })
+    this.placingTower = Unit.create(Cannon, this)
     return this.placingTower
   }
 
-  buyTower(tower) {
-    if (this.credits < tower.purchaseCost) {
+  canAfford(unit) {
+    return this.credits >= unit.purchaseCost
+  }
+
+  @action buyTower(tower) {
+    if (!this.canAfford(tower)) {
       return false
     }
     this.credits -= tower.purchaseCost
@@ -130,7 +130,7 @@ export default class Game {
 
   placeTower() {
     if (this.placingTower && this.buyTower(this.placingTower)) {
-      this.placingTower.enable()
+      this.placingTower.place()
       this.towers.push(this.placingTower)
       this.deselectPlacingTower()
     }

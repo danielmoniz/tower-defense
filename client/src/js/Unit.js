@@ -21,10 +21,11 @@ class Unit {
   @observable maxHitPoints = 50
   @observable currentHitPoints
 
-  constructor(options) {
+  constructor(game, options) {
     options = options || {}
     this.id = ID
     ID += 1
+    this.game = game
     this.movementId = undefined
 
     // set defaults
@@ -163,8 +164,8 @@ class Unit {
  * Creates a new unit of the given class provided (eg. Cannon, Tank, etc.).
  * Also triggers their initial rendering loop.
  */
-Unit.create = function(UnitClass, options) {
-  const unit = new UnitClass(options)
+Unit.create = function(UnitClass, game, options) {
+  const unit = new UnitClass(game, options)
   unit.startRender()
   return unit
 }

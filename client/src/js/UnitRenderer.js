@@ -46,6 +46,18 @@ export default function addRenderTools(unit) {
       unitElement.classList.remove('disabled')
     }
 
+    // tower-specific styles can go here (for now)
+    // @TODO This belongs in a class/method specific to rendering towers
+    if (unit.purchaseCost !== undefined) { // ie. is purchasable, so must be a tower
+      if (!unit.placed && !unit.game.canAfford(unit)) {
+        unitElement.style['background-color'] = 'red'
+      } else if (!unit.placed && unit.game.canAfford(unit)) {
+        unitElement.style['background-color'] = 'rgba(0, 0, 0, 0.5)'
+      } else {
+        unitElement.style['background-color'] = 'rgba(0, 0, 0, 0.15)'
+      }
+    }
+
     hitPointsBar.innerHTML = unit.currentHitPoints
 
     unitElement.style['left'] = unit.x + 'px'

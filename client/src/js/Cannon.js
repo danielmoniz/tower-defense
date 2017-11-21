@@ -11,13 +11,21 @@ export default class Cannon extends Unit {
   @observable range = 200 // pixels
   @observable target = undefined
   @observable purchaseCost = 25
+  @observable placed = false // towers generally start unplaced and become placed
 
-  constructor(options) {
-    super(options)
+  constructor(game, options) {
+    super(game, options)
     this.name = 'Cannon'
     this.width = GRID_SIZE * 3
     this.height = this.width
     this.updateLoopId = undefined
+    this.disabled = true // towers start unplaced and disabled
+    this.display = false // towers start invisible due to being unplaced
+  }
+
+  @action place() {
+    this.enable()
+    this.placed = true
   }
 
   @action enable() {
@@ -81,7 +89,7 @@ export default class Cannon extends Unit {
   findNearestEnemyInRange() {
     let nearest, minDistance
 
-    this.enemies.forEach((enemy) => {
+    this.game.enemies.forEach((enemy) => {
       if (enemy.isAlive() && this.unitInRange(enemy) && (nearest === undefined || this.distanceToTarget(enemy) < minDistance)) {
         nearest = enemy
         minDistance = this.distanceToTarget(enemy)
