@@ -64,10 +64,6 @@ export default class Cannon extends Unit {
     this.cooldownStatus = 0
   }
 
-  validateTarget() {
-    if (this.target) {}
-  }
-
   attack() {
     if (!this.target || !this.targetIsValid()) {
       this.target = this.findNearestEnemyInRange()
