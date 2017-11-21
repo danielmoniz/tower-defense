@@ -128,7 +128,7 @@ class Unit {
     const deltaY = finalY - this.y
     let distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
     distance = Math.min(actualSpeed, distance)
-    const angle = Math.atan2(deltaY, deltaX)
+    const angle = this.getAngleToPoint(finalX, finalY)
 
     const xMovement = distance * Math.cos(angle)
     const yMovement = distance * Math.sin(angle)
@@ -162,6 +162,14 @@ class Unit {
 
   isAlive() {
     return this.currentHitPoints > 0
+  }
+
+  getAngleToPoint(x, y) {
+    return Math.atan2(y - this.y, x - this.x)
+  }
+
+  getDistanceToPoint(x, y) {
+    return Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2))
   }
 
 }

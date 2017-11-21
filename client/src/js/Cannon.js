@@ -64,7 +64,7 @@ export default class Cannon extends Unit {
     this.cooldownStatus = 0
   }
 
-  attack() {
+  @action attack() {
     if (!this.target || !this.targetIsValid()) {
       this.target = this.findNearestEnemyInRange()
       if (!this.target) { return }
@@ -100,6 +100,6 @@ export default class Cannon extends Unit {
   }
 
   distanceToTarget(target) {
-    return Math.sqrt(Math.pow(this.x - target.x, 2) + Math.pow(this.y - target.y, 2))
+    return this.getDistanceToPoint(target.x, target.y)
   }
 }

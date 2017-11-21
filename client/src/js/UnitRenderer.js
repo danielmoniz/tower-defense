@@ -26,7 +26,7 @@ export default function addRenderTools(unit) {
     const gameBox = document.querySelector("#display-box")
     gameBox.append(element)
     var disposer = autorun(() => {
-      unit.render(element, hitPointsBar)
+      unit.render(element, hitPointsBar, image)
     })
 
     unit.startRender = () => console.log("can't call me again")
@@ -34,7 +34,7 @@ export default function addRenderTools(unit) {
 
   // @TODO For efficiency, this function can be broken down into
   // smaller pieces, each used as an autorun callback.
-  unit.render = function(unitElement, hitPointsBar) {
+  unit.render = function(unitElement, hitPointsBar, image) {
     // const unitElement = document.querySelector("#unit-" + unit.id)
     if (unitElement === undefined) {
       return
@@ -48,13 +48,21 @@ export default function addRenderTools(unit) {
 
     // tower-specific styles can go here (for now)
     // @TODO This belongs in a class/method specific to rendering towers
-    if (unit.purchaseCost !== undefined) { // ie. is purchasable, so must be a tower
+    if (unit.purchaseCost !== undefined) { // ie. is purchasable, so must be a tower. @FIXME hacky!
+
+      // background highlight (affordability)
       if (!unit.placed && !unit.game.canAfford(unit)) {
         unitElement.style['background-color'] = 'red'
       } else if (!unit.placed && unit.game.canAfford(unit)) {
         unitElement.style['background-color'] = 'rgba(0, 0, 0, 0.5)'
       } else {
         unitElement.style['background-color'] = 'rgba(0, 0, 0, 0.15)'
+      }
+
+      // tower rotation toward target (ideally only gun rotation)
+      if (unit.target) {
+        const angle = unit.getAngleToPoint(unit.target.x, unit.target.y)
+        image.style.transform = `rotate(${angle}rad)`
       }
     }
 
