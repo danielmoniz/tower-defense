@@ -1,10 +1,17 @@
 
+import { autorun } from 'mobx'
+
 import { GRID_SIZE } from 'appConstants'
 
 export default class GameRenderer {
   constructor(game) {
     this.game = game
     this.addEventHandlers()
+    this.creditsDisplay = document.querySelector(".remainingCredits")
+
+    autorun(() => {
+      this.creditsDisplay.innerHTML = game.credits
+    })
   }
 
   addEventHandlers() {
