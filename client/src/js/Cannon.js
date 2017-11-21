@@ -12,6 +12,7 @@ export default class Cannon extends Unit {
   @observable target = undefined
   @observable purchaseCost = 25
   @observable placed = false // towers generally start unplaced and become placed
+  @observable killProfitMultiplier = 1 // certain towers can gain extra credits when killing units
 
   constructor(game, options) {
     super(game, options)
@@ -74,7 +75,7 @@ export default class Cannon extends Unit {
     const killedUnit = this.target.takeDamage(this.attackPower)
     if (killedUnit) {
       // do cool stuff! Add experience? Make money? Mow the lawn?
-      this.game.profit(targetValue)
+      this.game.profit(targetValue * this.killProfitMultiplier)
     }
     this.resetCooldown()
   }
