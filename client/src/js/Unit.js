@@ -20,6 +20,7 @@ class Unit {
   @observable disabled = false
   @observable maxHitPoints = 50
   @observable currentHitPoints
+  @observable killValue // should be overridden
 
   constructor(game, options) {
     options = options || {}
@@ -136,6 +137,10 @@ class Unit {
     this.y += yMovement
   }
 
+  /*
+   * Makes the unit take damage.
+   * Returns true if the unit is killed.
+   */
   @action takeDamage(amount) {
     if (this.currentHitPoints <= 0) {
       return
@@ -143,6 +148,7 @@ class Unit {
     this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
     if (this.currentHitPoints <= 0) {
       this.kill()
+      return true
     }
   }
 

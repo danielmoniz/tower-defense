@@ -74,7 +74,12 @@ export default class Cannon extends Unit {
       if (!this.target) { return }
     }
 
-    this.target.takeDamage(this.attackPower)
+    var targetValue = this.target.killValue
+    const killedUnit = this.target.takeDamage(this.attackPower)
+    if (killedUnit) {
+      // do cool stuff! Add experience? Make money? Mow the lawn?
+      this.game.profit(targetValue)
+    }
     this.resetCooldown()
   }
 

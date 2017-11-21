@@ -11,5 +11,6 @@ export default class Tank extends Unit {
     this.speed = 20
     this.maxHitPoints = 50
     this.currentHitPoints = this.maxHitPoints
+    this.killValue = 5
   }
 }

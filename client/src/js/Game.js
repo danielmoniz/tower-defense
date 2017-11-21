@@ -124,6 +124,10 @@ export default class Game {
     return true
   }
 
+  @action profit(amount) {
+    this.credits += amount
+  }
+
   deselectPlacingTower() {
     this.placingTower = false
   }
