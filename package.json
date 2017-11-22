@@ -57,6 +57,7 @@
     "fs": "0.0.1-security",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
+    "gulp-exit": "0.0.2",
     "gulp-less": "^3.3.0",
     "gulp-path": "^3.0.3",
     "gulp-rename": "^1.2.2",

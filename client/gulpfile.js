@@ -10,6 +10,7 @@ var sourcemaps = require('gulp-sourcemaps');
 var assign = require('lodash.assign');
 var babelify = require('babelify');
 var fs = require('fs');
+var exit = require('gulp-exit')
 
 var packageJSON = JSON.parse(fs.readFileSync('../package.json'));
 
@@ -23,9 +24,15 @@ var opts = assign({}, watchify.args, customOpts);
 var b = watchify(browserify(opts));
 b.transform(babelify); // configuration from .babelrc
 
-gulp.task('js', bundle); // so you can run `gulp js` to build the file
 b.on('update', bundle); // on any dep update, runs the bundler
 b.on('log', gutil.log); // output build logs to terminal
+
+gulp.task('watch', bundle); // so you can run `gulp js` to build the file
+
+gulp.task('build', () => {
+  var bundledCode = bundle();
+  bundledCode.pipe(exit())
+})
 
 function bundle() {
   return b.bundle()
