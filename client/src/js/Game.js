@@ -10,8 +10,8 @@ export default class Game {
   @observable placingTower = false
   @observable enemies = []
   @observable towers = []
-  @observable wave = 1
-  @observable enemiesInWave = 5 // @TODO This will likely become an array of wave sizes
+  @observable waveNumber = 0
+  @observable enemiesInWave = 0 // @TODO This will likely become an array of wave sizes
   @observable gameBox = undefined
   @observable gameBoxBound = undefined
   @observable gameCanvas = undefined
@@ -22,6 +22,19 @@ export default class Game {
   width = 700
   tickLength = 500
   gameLoopId = undefined
+  waveList = { // should be handled in another class
+    1: {
+      normal: 5,
+    },
+    2: {
+      normal: 5,
+      fast: 1,
+    },
+    3: {
+      normal: 5,
+      fast: 2,
+    },
+  }
 
   constructor(ignore_ui) {
     this.ignore_ui = ignore_ui
@@ -88,6 +101,18 @@ export default class Game {
   }
 
   spawnWave() {
+    this.waveNumber++
+    this.enemiesInWave = 0
+    let currentWave
+    if (this.waveList.hasOwnProperty(this.waveNumber)) { // @TODO fetching wave list should be handled by another method
+      currentWave = this.waveList[this.waveNumber]
+    } else {
+      currentWave = { normal: 10, }
+    }
+    for (let numberOfEnemies of Object.values(currentWave)) {
+      this.enemiesInWave += numberOfEnemies
+    }
+
     const newEnemies = []
     for (let i = 0; i < this.enemiesInWave; i++) {
       let enemy = new Tank(this)
