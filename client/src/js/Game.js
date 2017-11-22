@@ -23,9 +23,12 @@ export default class Game {
   tickLength = 500
   gameLoopId = undefined
 
-  constructor() {
+  constructor(ignore_ui) {
+    this.ignore_ui = ignore_ui
     this.setup()
-    this.renderer = new GameRenderer(this)
+    if (this.ignore_ui) {
+      this.renderer = new GameRenderer(this)
+    }
   }
 
   setup() {

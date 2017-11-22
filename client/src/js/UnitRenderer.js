@@ -6,8 +6,8 @@
 
 import { autorun } from 'mobx'
 
-export default function addRenderTools(unit) {
-  unit.startRender = function() {
+export default function getUnitRenderer(unit) {
+  return function() {
     const element = document.createElement("div")
     element.id = "unit-" + unit.id
     element.style.position = 'absolute'
@@ -26,7 +26,7 @@ export default function addRenderTools(unit) {
     const gameBox = document.querySelector("#display-box")
     gameBox.append(element)
     var disposer = autorun(() => {
-      unit.render(element, hitPointsBar, image)
+      render(element, hitPointsBar, image)
     })
 
     unit.startRender = () => console.log("can't call me again")
@@ -34,7 +34,7 @@ export default function addRenderTools(unit) {
 
   // @TODO For efficiency, this function can be broken down into
   // smaller pieces, each used as an autorun callback.
-  unit.render = function(unitElement, hitPointsBar, image) {
+  function render(unitElement, hitPointsBar, image) {
     // const unitElement = document.querySelector("#unit-" + unit.id)
     if (unitElement === undefined) {
       return

@@ -2,7 +2,7 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import { UNIT_REFRESH_RATE } from 'appConstants'
-import addRenderTools from 'UnitRenderer'
+import getUnitRenderer from 'UnitRenderer'
 
 // this should come from an environment variable so the server can run code without rendering
 const RENDER_UNITS = true
@@ -43,7 +43,11 @@ class Unit {
       }
     }
 
-    addRenderTools(this) // adds the render methods to this class
+    if (game.ignore_ui) {
+      this.startRender = () => {} // do nothing
+    } else {
+      this.startRender = getUnitRenderer(this) // adds the render methods to this class
+    }
   }
 
   @action hide() {
