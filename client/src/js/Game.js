@@ -26,7 +26,7 @@ export default class Game {
   constructor(ignore_ui) {
     this.ignore_ui = ignore_ui
     this.setup()
-    if (this.ignore_ui) {
+    if (!this.ignore_ui) {
       this.renderer = new GameRenderer(this)
     }
   }
