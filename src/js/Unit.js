@@ -17,7 +17,8 @@ class Unit {
   @observable name
   @observable speed = 100 // pixels per second
   @observable display = true
-  @observable disabled = false
+  @observable disabled = false // setting to true disables and greys the unit
+  @observable removed = false // setting to true allows for units to be removed from the game
   @observable maxHitPoints = 50
   @observable currentHitPoints
   @observable killValue // should be overridden
@@ -66,6 +67,10 @@ class Unit {
     this.disabled = false
   }
 
+  @action remove() {
+    this.removed = true
+  }
+
   /*
    * Jumps/teleports a unit to the given position.
    */
@@ -75,29 +80,10 @@ class Unit {
   }
 
   /*
-   * Pauses movement for the unit. Can be resumed.
-   */
-  @action pauseMovement() {
-    clearInterval(this.movementId)
-    delete this.movementId
-  }
-
-  /*
-   * Clears the movement for the unit. Cannot be resumed (needs new move target).
+   * Clears the movement for the unit. Needs a new target before moving again.
    */
   @action clearMovement() {
-    this.pauseMovement()
-    delete this.movement
-  }
-
-  /*
-   * Kicks off movement for the unit. If already moving, clears the previous movement.
-   */
-  @action startMovement() {
-    if (this.movementId) {
-      clearInterval(this.movementId) // stop old movement
-    }
-    this.movementId = setInterval(this.movement, UNIT_REFRESH_RATE)
+    delete this.act
   }
 
   /*
@@ -106,10 +92,10 @@ class Unit {
    * If the unit is already moving, it ensures they continue in the new direction.
    */
   @action setMoveTarget(finalX, finalY) {
-    this.movement = () => {
-      const stopMoving = this.moveXAndY(finalX, finalY)
-      if (stopMoving) {
-        this.pauseMovement()
+    this.act = () => {
+      const reachedGoal = this.moveXAndY(finalX, finalY)
+      if (reachedGoal) {
+        this.complete() // assumes enemies only get one goal
       }
     }
     if (this.movementId) { // if already moving, continue in a new direction
@@ -159,9 +145,15 @@ class Unit {
   @action kill() {
     // TERMINATE
     // set alive to false?
-    // @TODO remove from enemies array
-    this.clearMovement() // @TODO should explode
+    // @TODO should explode
+    this.remove()
     this.hide()
+  }
+
+  @action complete() {
+    this.remove()
+    this.hide()
+    // @TODO Subtract from lives (and whatever else)
   }
 
   isAlive() {

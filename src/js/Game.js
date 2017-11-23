@@ -5,6 +5,7 @@ import Unit from 'Unit'
 import Cannon from 'Cannon'
 import Tank from 'Tank'
 import GameRenderer from 'GameRenderer'
+import { UNIT_REFRESH_RATE } from 'appConstants'
 
 export default class Game {
   @observable placingTower = false
@@ -55,19 +56,13 @@ export default class Game {
 
   play() {
     this.gameLoopId = this.initializeLoop()
-    this.moveUnits(this.enemies)
-    this.towers.forEach((tower) => tower.activate())
+    // @TODO Also run loop for towers
   }
 
   pause() {
     clearInterval(this.gameLoopId)
     delete this.gameLoopId
-    this.enemies.forEach((unit) => unit.pauseMovement())
-    this.towers.forEach((tower) => tower.deactivate())
-  }
-
-  moveUnits(units) {
-    units.forEach((unit) => unit.startMovement())
+    // @TODO Also pause towers
   }
 
   setupGameBox() {
@@ -89,15 +84,28 @@ export default class Game {
   }
 
   initializeLoop() {
-    return setInterval(this.gameLogic.bind(this), this.tickLength)
+    // handle moving units, tower scanning, spawning waves, etc.
+    return setInterval(() => {
+      this.commandUnits(this.enemies)
+      this.commandUnits(this.towers)
+    }, UNIT_REFRESH_RATE)
   }
 
   render(entities) {
     entities.forEach((entity) => entity.startRender())
   }
 
-  gameLogic() {
-    // handle spawning waves, etc.
+  commandUnits(units) {
+    for (let i = units.length - 1; i >= 0; i--) {
+      let unit = units[i]
+      if (unit.removed) {
+        units.splice(i, 1)
+        continue
+      }
+      if (!unit.disabled && unit.act) {
+        unit.act()
+      }
+    }
   }
 
   spawnWave() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?
@@ -121,15 +129,17 @@ export default class Game {
       for (let i = 0; i < currentWave[enemyType]; i++) {
         let enemy = new Tank(this, enemyType)
         this.placeEnemy(enemy, i)
-        enemy.setMoveTarget(0, this.height / 2)
+        enemy.setMoveTarget(-enemy.width, this.height / 2)
         newEnemies.push(enemy)
         this.enemies.push(enemy)
       }
     }
 
     this.render(newEnemies)
-    this.moveUnits(newEnemies)
-    // newEnemies.forEach((enemy) => enemy.startMovement())
+
+    // for fun! To see how many enemies there are.
+    // Note that enemies are not yet removed from the array upon death.
+    console.log(this.enemies.length);
   }
 
   placeEnemy(enemy, numEnemy) {

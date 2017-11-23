@@ -29,28 +29,11 @@ export default class Cannon extends Unit {
     this.placed = true
   }
 
-  @action enable() {
-    super.enable()
-    this.activate()
-  }
-
-  @action disable() {
-    super.disable()
-    this.deactivate()
-  }
-
-  deactivate() {
-    clearInterval(this.updateLoopId)
-    delete this.updateLoopId
-  }
-
-  activate() {
-    this.updateLoopId = setInterval(() => {
-      this.updateCooldown()
-      if (this.canAttack()) {
-        this.attack()
-      }
-    }, UNIT_REFRESH_RATE)
+  act() {
+    this.updateCooldown()
+    if (this.canAttack()) {
+      this.attack()
+    }
   }
 
   canAttack() {
@@ -89,6 +72,7 @@ export default class Cannon extends Unit {
   }
 
   findNearestEnemyInRange() {
+    // @TODO Target down enemies with less health?
     let nearest, minDistance
 
     this.game.enemies.forEach((enemy) => {
