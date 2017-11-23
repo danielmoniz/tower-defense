@@ -25,26 +25,52 @@ export default function getUnitRenderer(unit) {
 
     const gameBox = document.querySelector("#display-box")
     gameBox.append(element)
-    var disposer = autorun(() => {
-      render(element, hitPointsBar, image)
+
+    autorun(() => {
+      renderPosition(element)
+    })
+
+    autorun(() => {
+      renderDisplay(element)
+    })
+
+    autorun(() => {
+      renderDisable(element)
+    })
+
+    autorun(() => {
+      renderHitPointsBar(element, hitPointsBar)
+    })
+
+    autorun(() => {
+      renderTower(element, image)
     })
 
     unit.startRender = () => console.log("can't call me again")
   }
 
-  // @TODO For efficiency, this function can be broken down into
-  // smaller pieces, each used as an autorun callback.
-  function render(unitElement, hitPointsBar, image) {
-    // const unitElement = document.querySelector("#unit-" + unit.id)
-    if (unitElement === undefined) {
-      return
-    }
+  function renderPosition(unitElement) {
+    unitElement.style['left'] = unit.x + 'px'
+    unitElement.style['top'] = unit.y + 'px'
+  }
 
+  function renderDisplay(unitElement) {
+    unitElement.style.display = unit.display ? 'initial' : 'none'
+  }
+
+  function renderDisable(unitElement) {
     if (unit.disabled) {
       unitElement.classList.add('disabled')
     } else {
       unitElement.classList.remove('disabled')
     }
+  }
+
+  function renderHitPointsBar(unitElement, hitPointsBar) {
+    hitPointsBar.innerHTML = unit.currentHitPoints
+  }
+
+  function renderTower(unitElement, image) {
 
     // tower-specific styles can go here (for now)
     // @TODO This belongs in a class/method specific to rendering towers
@@ -66,10 +92,6 @@ export default function getUnitRenderer(unit) {
       }
     }
 
-    hitPointsBar.innerHTML = unit.currentHitPoints
-
-    unitElement.style['left'] = unit.x + 'px'
-    unitElement.style['top'] = unit.y + 'px'
-    unitElement.style.display = unit.display ? 'initial' : 'none'
   }
+
 }
