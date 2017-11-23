@@ -16,7 +16,7 @@ export default function getUnitRenderer(unit) {
     element.classList.add('unit')
 
     const image = document.createElement("img")
-    image.src = `../static/assets/${unit.name.toLowerCase()}.png`
+    image.src = `../images/${unit.name.toLowerCase()}.png`
     element.append(image)
 
     const hitPointsBar = document.createElement("div")

@@ -12,7 +12,7 @@ var babelify = require('babelify');
 var fs = require('fs');
 var exit = require('gulp-exit')
 
-var packageJSON = JSON.parse(fs.readFileSync('../package.json'));
+var packageJSON = JSON.parse(fs.readFileSync('./package.json'));
 
 // add custom browserify options here
 var customOpts = {
@@ -32,7 +32,9 @@ gulp.task('watch', bundle); // so you can run `gulp js` to build the file
 gulp.task('build', () => {
   var bundledCode = bundle();
   bundledCode.pipe(exit())
-})
+});
+
+gulp.task('default', ['build']);
 
 function bundle() {
   return b.bundle()
@@ -45,5 +47,5 @@ function bundle() {
     .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
        // Add transformation tasks to the pipeline here.
     .pipe(sourcemaps.write('./')) // writes .map file
-    .pipe(gulp.dest('./app/static/js'));
+    .pipe(gulp.dest('./public/javascripts'));
 }

@@ -1,12 +1,14 @@
 {
-  "name": "glorious_tower_defense",
+  "name": "tower-defense-web",
   "version": "0.1.0",
-  "description": "A tower defense game.",
-  "main": "index.js",
+  "description": "A tower defense game built with MobX.",
+  "main": "app.js",
   "directories": {
     "test": "tests"
   },
   "scripts": {
+    "postinstall": "gulp default",
+    "start": "node ./bin/www",
     "test": "jest",
     "test:watch": "npm test -- --watch"
   },
@@ -23,52 +25,53 @@
   "keywords": [
     "game",
     "tower-defense",
-    "td"
+    "td",
+    "mobx"
   ],
-  "author": "Daniel Moniz",
+  "author": "Daniel Moniz & Jasper Huang",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/danielmoniz/tower-defense/issues"
   },
   "homepage": "https://github.com/danielmoniz/tower-defense#readme",
   "dependencies": {
-    "isomorphic-fetch": "^2.2.1",
-    "jquery": "^3.1.1",
-    "mobx": "^3.3.0",
-    "requirejs": "^2.1.22",
-    "requirejs-text": "^2.0.15"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.24.0",
+    "babel-cli": "^6.26.0",
     "babel-jest": "^21.2.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-plugin-transform-react-jsx": "^6.23.0",
-    "babel-preset-env": "^1.2.2",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
-    "babelify": "^7.3.0",
-    "browserify": "^14.4.0",
-    "del": "^2.2.2",
-    "enzyme": "^3.1.0",
-    "enzyme-adapter-react-15": "^1.0.2",
-    "fs": "0.0.1-security",
+    "babelify": "^8.0.0",
+    "browserify": "^14.5.0",
+    "body-parser": "~1.18.2",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "ejs": "~2.5.7",
+    "express": "~4.15.5",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
+    "gulp-babel": "^7.0.0",
     "gulp-exit": "0.0.2",
-    "gulp-less": "^3.3.0",
-    "gulp-path": "^3.0.3",
+    "gulp-less": "^3.3.2",
+    "gulp-path": "^4.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.6.1",
     "gulp-util": "^3.0.8",
     "gulp-watch": "^4.3.11",
-    "jest": "^21.2.1",
-    "less": "^2.7.2",
     "lodash.assign": "^4.2.0",
+    "mobx": "^3.3.1",
+    "morgan": "~1.9.0",
+    "requirejs": "^2.3.5",
+    "requirejs-text": "^2.0.15",
+    "serve-favicon": "~2.4.5",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0"
+  },
+  "devDependencies": {
+    "del": "^3.0.0",
+    "fs": "0.0.1-security",
+    "jest": "^21.2.1",
+    "less": "^2.7.3"
   }
 }
