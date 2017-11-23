@@ -100,26 +100,31 @@ export default class Game {
     // handle spawning waves, etc.
   }
 
-  spawnWave() {
+  spawnWave() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?
     this.waveNumber++
     this.enemiesInWave = 0
     let currentWave
     if (this.waveList.hasOwnProperty(this.waveNumber)) { // @TODO fetching wave list should be handled by another method
       currentWave = this.waveList[this.waveNumber]
     } else {
-      currentWave = { normal: 10, }
+      currentWave = {
+        normal: this.waveNumber,
+        fast: this.waveNumber,
+      }
     }
     for (let numberOfEnemies of Object.values(currentWave)) {
       this.enemiesInWave += numberOfEnemies
     }
 
     const newEnemies = []
-    for (let i = 0; i < this.enemiesInWave; i++) {
-      let enemy = new Tank(this)
-      this.placeEnemy(enemy, i)
-      enemy.setMoveTarget(0, this.height / 2)
-      newEnemies.push(enemy)
-      this.enemies.push(enemy)
+    for (let enemyType of Object.keys(currentWave)) {
+      for (let i = 0; i < currentWave[enemyType]; i++) {
+        let enemy = new Tank(this, enemyType)
+        this.placeEnemy(enemy, i)
+        enemy.setMoveTarget(0, this.height / 2)
+        newEnemies.push(enemy)
+        this.enemies.push(enemy)
+      }
     }
 
     this.render(newEnemies)
