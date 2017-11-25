@@ -9,6 +9,8 @@
   "scripts": {
     "postinstall": "gulp default",
     "start": "node ./bin/www",
+    "start-watch": "DEBUG=tower-defense-web:* supervisor ./bin/www",
+    "stop": "pkill -9 SIGINT tower-defense-web",
     "test": "jest",
     "test:watch": "npm test -- --watch"
   },
@@ -43,8 +45,8 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-stage-2": "^6.24.1",
     "babelify": "^8.0.0",
-    "browserify": "^14.5.0",
     "body-parser": "~1.18.2",
+    "browserify": "^14.5.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "ejs": "~2.5.7",
@@ -64,6 +66,7 @@
     "requirejs": "^2.3.5",
     "requirejs-text": "^2.0.15",
     "serve-favicon": "~2.4.5",
+    "socket.io": "^2.0.4",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0"
@@ -72,6 +75,7 @@
     "del": "^3.0.0",
     "fs": "0.0.1-security",
     "jest": "^21.2.1",
-    "less": "^2.7.3"
+    "less": "^2.7.3",
+    "supervisor": "^0.12.0"
   }
 }

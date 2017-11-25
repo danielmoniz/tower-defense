@@ -6,4 +6,9 @@ router.get('/', function(req, res, next) {
   res.render('gamePage', { title: 'Tower Defense' });
 });
 
+router.get('/:any', function(req, res, next) {
+  res.render('gamePage', { title: 'Tower Defense' });
+});
+
+
 module.exports = router;
