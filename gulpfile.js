@@ -13,30 +13,43 @@ var fs = require('fs');
 var exit = require('gulp-exit')
 
 var packageJSON = JSON.parse(fs.readFileSync('./package.json'));
-
-// add custom browserify options here
-var customOpts = {
+var clientOpts = {
   entries: ['./src/js/index.js'],
   debug: true,
   paths: packageJSON.jest.moduleDirectories,
-};
-var opts = assign({}, watchify.args, customOpts);
-var b = watchify(browserify(opts));
-b.transform(babelify); // configuration from .babelrc
+}
+var serverOpts = {
+  entries: ['./bin/www'],
+  debug: true,
+  paths: packageJSON.jest.moduleDirectories,
+}
 
-b.on('update', bundle); // on any dep update, runs the bundler
-b.on('log', gutil.log); // output build logs to terminal
+function getB(customOpts) {
+  // add custom browserify options here
+  var opts = assign({}, watchify.args, customOpts);
+  var b = watchify(browserify(opts));
+  b.transform(babelify); // configuration from .babelrc
 
-gulp.task('watch', bundle); // so you can run `gulp js` to build the file
+  b.on('update', bundle); // on any dep update, runs the bundler
+  b.on('log', gutil.log); // output build logs to terminal
+
+  return b
+}
+
+gulp.task('watch', () => {
+  var b = getB(clientOpts)
+  bundle(b)
+});
 
 gulp.task('build', () => {
-  var bundledCode = bundle();
+  var b = getB(clientOpts)
+  var bundledCode = bundle(b);
   bundledCode.pipe(exit())
 });
 
 gulp.task('default', ['build']);
 
-function bundle() {
+function bundle(b) {
   return b.bundle()
     // log errors if they happen
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
