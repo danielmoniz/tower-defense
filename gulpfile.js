@@ -11,7 +11,8 @@ var sourcemaps = require('gulp-sourcemaps');
 var assign = require('lodash.assign');
 var babelify = require('babelify');
 var fs = require('fs');
-var exit = require('gulp-exit')
+var exit = require('gulp-exit');
+var watch = require('gulp-watch');
 
 var packageJSON = JSON.parse(fs.readFileSync('./package.json'));
 var clientOpts = {
@@ -20,13 +21,6 @@ var clientOpts = {
   paths: packageJSON.jest.moduleDirectories,
 }
 var clientDest = './public/javascripts';
-
-var serverOpts = {
-  entries: ['./bin/www'],
-  debug: true,
-  paths: packageJSON.jest.moduleDirectories,
-}
-var serverDest = './'
 
 function getB(customOpts) {
   // add custom browserify options here
@@ -52,17 +46,20 @@ gulp.task('watch:client', () => {
 });
 
 gulp.task('build:server', () => {
-  return gulp.src("src/js/*")
+  return gulp.src("src/js/**/*.js")
     .pipe(sourcemaps.init())
     .pipe(babel())
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('build'))
 });
 
-// gulp.task('watch:server', () => {
-//   var b = getB(serverOpts)
-//   bundle(b, serverDest)
-// });
+gulp.task('watch:server', () => {
+  return watch("./blah/js/**/*.js")
+    // .pipe(sourcemaps.init())
+    .pipe(babel())
+    // .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('build'))
+});
 
 gulp.task('build', ['build:client', 'build:server']);
 gulp.task('watch', ['watch:client']); // , 'watch:server'
