@@ -19,12 +19,10 @@ class GameListener {
 
     })
 
-    socket.on('latency', (beforeTime, thereTime) => {
+    socket.on('latency', (thereTime) => {
       var nowTime = Date.now()
-      var twoWayLatency = nowTime - beforeTime
       var oneWayLatency = nowTime - thereTime
       console.log('Latency (one-way):', oneWayLatency, 'ms');
-      console.log('Latency (two-way):', twoWayLatency, 'ms');
     })
 
     socket.on('join game', (gameNumber) => {

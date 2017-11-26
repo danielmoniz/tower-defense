@@ -35,9 +35,8 @@ export default class GameRenderer {
     })
 
     // @FIXME Put these somewhere reasonable!
-    socket.on('start game', (time) => {
-      console.log('start test');
-      socket.emit('latency', time, Date.now())
+    socket.on('start game', () => {
+      // kick off the game for the current user
     })
 
     socket.on('user joins room', () => {
