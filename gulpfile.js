@@ -54,15 +54,15 @@ gulp.task('build:server', () => {
 });
 
 gulp.task('watch:server', () => {
-  return watch("./blah/js/**/*.js")
-    // .pipe(sourcemaps.init())
+  return watch("./src/js/**/*.js", { ignoreInitial: false })
+    .pipe(sourcemaps.init())
     .pipe(babel())
-    // .pipe(sourcemaps.write('.'))
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('build'))
 });
 
 gulp.task('build', ['build:client', 'build:server']);
-gulp.task('watch', ['watch:client']); // , 'watch:server'
+gulp.task('watch', ['watch:client', 'watch:server']);
 
 gulp.task('default', ['build']);
 
