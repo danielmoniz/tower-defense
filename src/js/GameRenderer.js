@@ -23,6 +23,21 @@ export default class GameRenderer {
     this.addPlacingTowerShow()
     this.addPlaceTowerOnMap()
     this.addSpawnWave()
+    this.addNewGame()
+  }
+
+  addNewGame() {
+    const newGameButton = document.querySelector("button#new-game")
+    newGameButton.addEventListener('click', () => {
+      socket.emit('new game')
+      socket.emit('connection', 'test')
+      console.log('emitting new game signal');
+    })
+
+    socket.on('start game', (time) => {
+      console.log('start test');
+      socket.emit('latency', time, Date.now())
+    })
   }
 
   addPause() {
