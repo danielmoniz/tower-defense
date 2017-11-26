@@ -3,6 +3,7 @@
 var watchify = require('watchify');
 var browserify = require('browserify');
 var gulp = require('gulp');
+var babel = require('gulp-babel');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var gutil = require('gulp-util');
@@ -18,11 +19,14 @@ var clientOpts = {
   debug: true,
   paths: packageJSON.jest.moduleDirectories,
 }
+var clientDest = './public/javascripts';
+
 var serverOpts = {
   entries: ['./bin/www'],
   debug: true,
   paths: packageJSON.jest.moduleDirectories,
 }
+var serverDest = './'
 
 function getB(customOpts) {
   // add custom browserify options here
@@ -36,20 +40,36 @@ function getB(customOpts) {
   return b
 }
 
-gulp.task('watch', () => {
+gulp.task('build:client', () => {
   var b = getB(clientOpts)
-  bundle(b)
-});
-
-gulp.task('build', () => {
-  var b = getB(clientOpts)
-  var bundledCode = bundle(b);
+  var bundledCode = bundle(b, clientDest);
   bundledCode.pipe(exit())
 });
 
+gulp.task('watch:client', () => {
+  var b = getB(clientOpts)
+  bundle(b, clientDest)
+});
+
+gulp.task('build:server', () => {
+  return gulp.src("src/js/*")
+    .pipe(sourcemaps.init())
+    .pipe(babel())
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('build'))
+});
+
+// gulp.task('watch:server', () => {
+//   var b = getB(serverOpts)
+//   bundle(b, serverDest)
+// });
+
+gulp.task('build', ['build:client', 'build:server']);
+gulp.task('watch', ['watch:client']); // , 'watch:server'
+
 gulp.task('default', ['build']);
 
-function bundle(b) {
+function bundle(b, dest) {
   return b.bundle()
     // log errors if they happen
     .on('error', gutil.log.bind(gutil, 'Browserify Error'))
@@ -60,5 +80,5 @@ function bundle(b) {
     .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
        // Add transformation tasks to the pipeline here.
     .pipe(sourcemaps.write('./')) // writes .map file
-    .pipe(gulp.dest('./public/javascripts'));
+    .pipe(gulp.dest(dest));
 }
