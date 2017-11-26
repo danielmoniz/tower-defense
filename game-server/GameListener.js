@@ -5,25 +5,37 @@ class GameListener {
 
     this.io = io
     this.games = {}
-    this.setUpListeners()
-  }
-
-  setUpListeners() {
-    console.log('adding new game listener');
+    this.users = {}
     this.io.on('connection', (socket) => {
       console.log('a user connected');
-      socket.on('new game', (socket) => {
-        console.log('new game test');
-        this.io.emit('start game', Date.now())
-      })
+      this.setUpListeners(socket)
+    })
+  }
 
-      socket.on('latency', (beforeTime, thereTime) => {
-        var nowTime = Date.now()
-        var twoWayLatency = nowTime - beforeTime
-        var oneWayLatency = nowTime - thereTime
-        console.log(oneWayLatency);
-        console.log(twoWayLatency);
-      })
+  setUpListeners(socket) {
+    socket.on('new game', (socket) => {
+      console.log('new game test');
+      this.io.emit('start game', Date.now())
+
+    })
+
+    socket.on('latency', (beforeTime, thereTime) => {
+      var nowTime = Date.now()
+      var twoWayLatency = nowTime - beforeTime
+      var oneWayLatency = nowTime - thereTime
+      console.log('Latency (one-way):', oneWayLatency, 'ms');
+      console.log('Latency (two-way):', twoWayLatency, 'ms');
+    })
+
+    socket.on('join game', (gameNumber) => {
+      socket.join(gameNumber) // join room
+      socket.broadcast.to(gameNumber).emit('user joins room')
+
+      var game = this.games[gameNumber];
+      if (game === undefined) {
+        game = {} // @FIXME Make new game object (and start it?)
+        this.games[gameNumber] = game
+      }
     })
   }
 }

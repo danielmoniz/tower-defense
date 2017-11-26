@@ -43,6 +43,13 @@ export default class Game {
     if (!this.ignore_ui) {
       this.renderer = new GameRenderer(this)
     }
+
+    // @TODO Move this somewhere reasonable!
+    const gameNumber = document.querySelector('input[name=gameNumber]').value
+    console.log(gameNumber);
+    if (gameNumber) {
+      socket.emit('join game', gameNumber)
+    }
   }
 
   setup() {

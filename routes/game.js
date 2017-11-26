@@ -6,8 +6,9 @@ router.get('/', function(req, res, next) {
   res.render('gamePage', { title: 'Tower Defense' });
 });
 
-router.get('/:any', function(req, res, next) {
-  res.render('gamePage', { title: 'Tower Defense' });
+router.get('/:gameNumber', function(req, res, next) {
+  var gameNumber = req.params.gameNumber;
+  res.render('gamePage', { title: 'Tower Defense', gameNumber: gameNumber });
 });
 
 

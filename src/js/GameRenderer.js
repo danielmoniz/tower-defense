@@ -34,9 +34,14 @@ export default class GameRenderer {
       console.log('emitting new game signal');
     })
 
+    // @FIXME Put these somewhere reasonable!
     socket.on('start game', (time) => {
       console.log('start test');
       socket.emit('latency', time, Date.now())
+    })
+
+    socket.on('user joins room', () => {
+      console.log('A new user has joined the game!');
     })
   }
 
