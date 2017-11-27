@@ -7,4 +7,4 @@ useStrict(true)
 socket.emit('latency', Date.now())
 
 let game = new Game()
-game.start()
+// game.start()

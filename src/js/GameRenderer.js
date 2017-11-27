@@ -48,25 +48,16 @@ export default class GameRenderer {
   addNewGame() {
     const newGameButton = document.querySelector("button#new-game")
     newGameButton.addEventListener('click', () => {
-      socket.emit('new game')
-      socket.emit('connection', 'test')
-      console.log('emitting new game signal');
+      this.game.gameListener.addNewGame()
     })
 
-    // @FIXME Put these somewhere reasonable!
-    socket.on('start game', () => {
-      // kick off the game for the current user
-    })
 
-    socket.on('user joins room', () => {
-      console.log('A new user has joined the game!');
-    })
   }
 
   addPause() {
     const pauseMoveButton = document.querySelector("button#pause")
     pauseMoveButton.addEventListener('click', () => {
-      this.game.pause()
+      this.game.sendPause()
     })
   }
 

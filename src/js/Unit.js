@@ -44,7 +44,7 @@ class Unit {
       }
     }
 
-    if (game.ignore_ui) {
+    if (game.runningOnServer) {
       this.startRender = () => {} // do nothing
     } else {
       this.startRender = getUnitRenderer(this) // adds the render methods to this class

@@ -2,11 +2,11 @@
 import Game from '../Game'
 
 class GameListener {
-  constructor(io) {
 
+  constructor(io) {
     this.io = io
-    this.games = {}
-    this.users = {}
+    // this.games = {}
+    // this.users = {}
     this.io.on('connection', (socket) => {
       console.log('a user connected');
       this.setUpListeners(socket)
@@ -14,11 +14,22 @@ class GameListener {
   }
 
   setUpListeners(socket) {
-    socket.on('new game', (socket) => {
-      console.log('new game test');
-      const game = new Game('ignore ui')
-      game.start()
-      console.log(game);
+    socket.on('new game', (gameNumber) => {
+      // const game = this.games[gameNumber]
+      // if (!game) {
+      //   console.log('Game not found!');
+      //   // @TODO Create new one?
+      //   return
+      // }
+
+      // if (socket.game) {
+      //   socket.game.pause()
+      //   delete socket.game
+      // }
+      if (!socket.game) {
+
+      }
+      socket.game.start()
       this.io.emit('start game', Date.now())
     })
 
@@ -29,14 +40,23 @@ class GameListener {
     })
 
     socket.on('join game', (gameNumber) => {
+      socket.roomId = gameNumber
       socket.join(gameNumber) // join room
       socket.broadcast.to(gameNumber).emit('user joins room')
 
-      var game = this.games[gameNumber];
-      if (game === undefined) {
-        game = {} // @FIXME Make new game object (and start it?)
-        this.games[gameNumber] = game
-      }
+      // let game = this.games[gameNumber];
+      // if (game === undefined) {
+        // game = {} // @FIXME Make new game object
+        if (!socket.game) {
+          socket.game = new Game('server')
+        }
+        // this.games[gameNumber] = game
+      // }
+    })
+
+    socket.on('pause', () => {
+      console.log('pausing');
+      socket.broadcast.to(socket.roomId).emit('pause')
     })
   }
 }

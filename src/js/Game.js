@@ -5,6 +5,7 @@ import Unit from './Unit'
 import Cannon from './Cannon'
 import Tank from './Tank'
 import GameRenderer from './GameRenderer'
+import GameListener from './GameListener'
 import { UNIT_REFRESH_RATE } from './appConstants'
 
 export default class Game {
@@ -35,18 +36,13 @@ export default class Game {
     },
   }
 
-  constructor(ignore_ui) {
-    this.ignore_ui = ignore_ui
-    if (!this.ignore_ui) {
+  constructor(runningOnServer) {
+    this.runningOnServer = runningOnServer
+    // this.gameListener = {}
+    this.gameListener = new GameListener(this, runningOnServer)
+    if (!this.runningOnServer) {
       this.setupUI()
-      // @TODO Move this somewhere reasonable!
-      const gameNumber = document.querySelector('input[name=gameNumber]').value
-      console.log(gameNumber);
-      if (gameNumber) {
-        socket.emit('join game', gameNumber)
-      }
     }
-
   }
 
   setupUI() {
@@ -63,10 +59,14 @@ export default class Game {
     // @TODO Also run loop for towers
   }
 
+  sendPause() {
+    this.pause()
+    this.gameListener.pause()
+  }
+
   pause() {
     clearInterval(this.gameLoopId)
     delete this.gameLoopId
-    // @TODO Also pause towers
   }
 
   initializeLoop() {
