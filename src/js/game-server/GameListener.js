@@ -16,7 +16,6 @@ class GameListener {
     socket.on('new game', (socket) => {
       console.log('new game test');
       this.io.emit('start game', Date.now())
-
     })
 
     socket.on('latency', (thereTime) => {
