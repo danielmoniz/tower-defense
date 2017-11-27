@@ -1,4 +1,5 @@
 
+import Game from '../Game'
 
 class GameListener {
   constructor(io) {
@@ -15,6 +16,9 @@ class GameListener {
   setUpListeners(socket) {
     socket.on('new game', (socket) => {
       console.log('new game test');
+      const game = new Game('ignore ui')
+      game.start()
+      console.log(game);
       this.io.emit('start game', Date.now())
     })
 

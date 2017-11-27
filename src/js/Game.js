@@ -39,20 +39,20 @@ export default class Game {
 
   constructor(ignore_ui) {
     this.ignore_ui = ignore_ui
-    this.setup()
     if (!this.ignore_ui) {
+      this.setupUI()
       this.renderer = new GameRenderer(this)
+      // @TODO Move this somewhere reasonable!
+      const gameNumber = document.querySelector('input[name=gameNumber]').value
+      console.log(gameNumber);
+      if (gameNumber) {
+        socket.emit('join game', gameNumber)
+      }
     }
 
-    // @TODO Move this somewhere reasonable!
-    const gameNumber = document.querySelector('input[name=gameNumber]').value
-    console.log(gameNumber);
-    if (gameNumber) {
-      socket.emit('join game', gameNumber)
-    }
   }
 
-  setup() {
+  setupUI() {
     this.setupGameBox()
   }
 
