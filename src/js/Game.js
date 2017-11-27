@@ -264,6 +264,7 @@ export default class Game {
     this.clearTowers()
     this.addTowers(data.towers)
     this.credits = data.credits
+    this.waveNumber = data.waveNumber
   }
 
   getEnemyGoal(enemy) {
