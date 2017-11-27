@@ -65,6 +65,13 @@ class GameListener {
       socket.game.play()
       socket.broadcast.to(socket.roomId).emit('play')
     })
+
+    socket.on('place tower', (tower) => {
+      console.log('placing tower at:', tower.x, tower.y);
+      socket.game.placeTower(tower)
+      // socket.game.play()
+      // socket.broadcast.to(socket.roomId).emit('play')
+    })
   }
 }
 

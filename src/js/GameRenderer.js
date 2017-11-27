@@ -115,7 +115,7 @@ export default class GameRenderer {
 
   addPlaceTowerOnMap() {
     this.gameBox.addEventListener('click', (event) => {
-      this.game.placeTower()
+      this.game.sendPlaceTower()
     })
   }
 

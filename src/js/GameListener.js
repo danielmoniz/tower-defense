@@ -41,6 +41,10 @@ class GameListener {
     this.emit('play')
   }
 
+  placeTower(tower) {
+    this.emit('place tower', tower)
+  }
+
   /*
    * Emit to the server, but only if this is a client.
    * Otherwise, do nothing (or log for testing).

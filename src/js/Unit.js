@@ -27,7 +27,10 @@ class Unit {
     options = options || {}
     this.id = ID
     ID += 1
-    this.game = game
+
+    // add a reference to game which avoids circular referencing
+    Object.defineProperty(this, 'game', { value: game, writable: true})
+
     this.movementId = undefined
 
     // set defaults
@@ -176,6 +179,7 @@ class Unit {
  * Also triggers their initial rendering loop.
  */
 Unit.create = function(UnitClass, game, options) {
+  // const unit = observable(new UnitClass(game, options))
   const unit = new UnitClass(game, options)
   unit.startRender()
   return unit

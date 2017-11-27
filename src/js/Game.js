@@ -167,11 +167,25 @@ export default class Game {
     this.placingTower = false
   }
 
-  placeTower() {
-    if (this.placingTower && this.buyTower(this.placingTower)) {
-      this.placingTower.place()
-      this.towers.push(this.placingTower)
+  sendPlaceTower() {
+    const placedTower = this.placeTower()
+    this.gameListener.placeTower(placedTower)
+  }
+
+  placeTower(tower) {
+    const placingTower = tower || this.placingTower
+    placingTower.hide && placingTower.hide()
+    // @TODO Handle placing other tower types
+    const finalTower = Unit.create(Cannon, this)
+    finalTower.jumpTo(placingTower.x, placingTower.y)
+
+    if (finalTower && this.buyTower(finalTower)) {
+      finalTower.place()
+      this.towers.push(finalTower)
       this.deselectPlacingTower()
+      finalTower.enable()
+      finalTower.show()
+      return finalTower
     }
   }
 
