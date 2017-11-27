@@ -54,6 +54,11 @@ export default class Game {
     this.spawnWave()
   }
 
+  sendPlay() {
+    this.play()
+    this.gameListener.play()
+  }
+
   play() {
     this.gameLoopId = this.initializeLoop()
     // @TODO Also run loop for towers

@@ -18,6 +18,11 @@ function setUpListeners(game, gameListener) {
     console.log('Received pausing signal');
     game.pause()
   })
+
+  socket.on('play', () => {
+    console.log('Received play signal');
+    game.play()
+  })
 }
 
 export default setUpListeners

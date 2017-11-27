@@ -50,8 +50,6 @@ export default class GameRenderer {
     newGameButton.addEventListener('click', () => {
       this.game.gameListener.addNewGame()
     })
-
-
   }
 
   addPause() {
@@ -64,7 +62,7 @@ export default class GameRenderer {
   addResume() {
     const resumeMoveButton = document.querySelector("button#resume")
     resumeMoveButton.addEventListener('click', () => {
-      this.game.play()
+      this.game.sendPlay()
     })
   }
 

@@ -37,6 +37,10 @@ class GameListener {
     this.emit('pause')
   }
 
+  play() {
+    this.emit('play')
+  }
+
   /*
    * Emit to the server, but only if this is a client.
    * Otherwise, do nothing (or log for testing).
