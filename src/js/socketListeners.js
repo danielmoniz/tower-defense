@@ -28,6 +28,13 @@ function setUpListeners(game, gameListener) {
     console.log('placing tower at:', tower.x, tower.y);
     game.placeTower(tower)
   })
+
+  socket.on('update all', (data) => {
+    // @TODO data should include all info about towers and enemies, money, etc.
+    console.log('Updating all');
+    game.clearEnemies()
+    game.addEnemies(data.enemies)
+  })
 }
 
 export default setUpListeners

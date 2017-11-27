@@ -1,5 +1,6 @@
 
 import Game from '../Game'
+import Cooldown from '../Cooldown'
 
 class GameListener {
 
@@ -10,6 +11,31 @@ class GameListener {
     this.io.on('connection', (socket) => {
       console.log('a user connected');
       this.setUpListeners(socket)
+    })
+    this.setUpSyncer()
+  }
+
+  setUpSyncer() {
+    const interval = 4000
+    console.log('Setting up syncer');
+    this.updateCooldown = new Cooldown(interval, {
+      callback: this.updateGames.bind(this),
+      autoActivate: true,
+    })
+    setInterval(() => {
+      this.updateCooldown.tick()
+    }, 1000)
+
+  }
+
+  updateGames() {
+    console.log('Updating all games');
+    Object.keys(this.games).forEach((gameId) => {
+      const game = this.games[gameId]
+      this.io.to(gameId).emit('update all', {
+        enemies: game.enemies,
+      })
+      // this.games[gameId]
     })
   }
 

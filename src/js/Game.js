@@ -46,7 +46,7 @@ export default class Game {
     }
     this.performance = new Cooldown(1000, {
       callRate: UNIT_REFRESH_RATE,
-      log: true,
+      // log: true,
       autoActivate: true,
       delayActivation: true,
       softReset: true,
@@ -133,9 +133,11 @@ export default class Game {
     const newEnemies = []
     for (let enemyType of Object.keys(currentWave)) {
       for (let i = 0; i < currentWave[enemyType]; i++) {
+        // @TODO Allow for other unit types
         let enemy = new Tank(this, enemyType)
         this.placeEnemy(enemy, i)
-        enemy.setMoveTarget(-enemy.width, this.height / 2)
+        const enemyTarget = this.getEnemyGoal(enemy)
+        enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
         newEnemies.push(enemy)
         this.enemies.push(enemy)
       }
@@ -206,6 +208,36 @@ export default class Game {
       finalTower.enable()
       finalTower.show()
       return finalTower
+    }
+  }
+
+  clearEnemies() {
+    this.enemies.forEach((enemy) => {
+      enemy.destroy()
+    })
+    this.enemies = []
+  }
+
+  addEnemies(enemies) {
+    enemies.forEach((enemyData) => {
+      // @TODO Allow for other unit types
+      let enemy = new Tank(this, enemyData.name)
+      Object.keys(enemyData).forEach((datum) => {
+        enemy.setAttr(datum, enemyData[datum])
+      })
+
+      // @TODO? if enemy has no health, maybe have to kill enemy
+      enemy.startRender()
+      this.enemies.push(enemy)
+      const enemyTarget = this.getEnemyGoal(enemy)
+      enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+    })
+  }
+
+  getEnemyGoal(enemy) {
+    return {
+      x: -enemy.width,
+      y: this.height / 2,
     }
   }
 

@@ -6,47 +6,55 @@
 
 import { autorun } from 'mobx'
 
-export default function getUnitRenderer(unit) {
-  return function() {
-    const element = document.createElement("div")
-    element.id = "unit-" + unit.id
-    element.style.position = 'absolute'
-    element.style.width = this.width + 'px'
-    element.style.height = this.height + 'px'
-    element.classList.add('unit')
+export default function getUnitRenderTools(unit) {
+  let element
+  return {
+    startRender: function() {
+      element = document.createElement("div")
+      element.id = "unit-" + unit.id
+      element.style.position = 'absolute'
+      element.style.width = unit.width + 'px'
+      element.style.height = unit.height + 'px'
+      element.classList.add('unit')
 
-    const image = document.createElement("img")
-    image.src = `../images/${unit.name.toLowerCase()}.png`
-    element.append(image)
+      const image = document.createElement("img")
+      image.src = `../images/${unit.name.toLowerCase()}.png`
+      element.append(image)
+      image.style
 
-    const hitPointsBar = document.createElement("div")
-    hitPointsBar.classList.add('hitPointsBar')
-    element.append(hitPointsBar)
+      const hitPointsBar = document.createElement("div")
+      hitPointsBar.classList.add('hitPointsBar')
+      element.append(hitPointsBar)
 
-    const gameBox = document.querySelector("#display-box")
-    gameBox.append(element)
+      const gameBox = document.querySelector("#display-box")
+      gameBox.append(element)
 
-    autorun(() => {
-      renderPosition(element)
-    })
+      autorun(() => {
+        renderPosition(element)
+      })
 
-    autorun(() => {
-      renderDisplay(element)
-    })
+      autorun(() => {
+        renderDisplay(element)
+      })
 
-    autorun(() => {
-      renderDisable(element)
-    })
+      autorun(() => {
+        renderDisable(element)
+      })
 
-    autorun(() => {
-      renderHitPointsBar(element, hitPointsBar)
-    })
+      autorun(() => {
+        renderHitPointsBar(element, hitPointsBar)
+      })
 
-    autorun(() => {
-      renderTower(element, image)
-    })
+      autorun(() => {
+        renderTower(element, image)
+      })
 
-    unit.startRender = () => console.log("can't call me again")
+      unit.startRender = () => console.log("can't call me again")
+    },
+
+    destroy: function() {
+      element.remove()
+    },
   }
 
   function renderPosition(unitElement) {

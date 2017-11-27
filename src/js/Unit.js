@@ -2,7 +2,7 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import { UNIT_REFRESH_RATE } from './appConstants'
-import getUnitRenderer from './UnitRenderer'
+import getUnitRenderTools from './UnitRenderer'
 
 // this should come from an environment variable so the server can run code without rendering
 const RENDER_UNITS = true
@@ -47,11 +47,38 @@ class Unit {
       }
     }
 
+    // ensure unit.render() is not treated as data
+    const renderTools = getUnitRenderTools(this)
+    Object.defineProperty(this, 'render', { value: renderTools, writable: true })
+    // this.render = getUnitRenderTools(this)
     if (game.runningOnServer) {
-      this.startRender = () => {} // do nothing
+      // this.startRender = () => {} // do nothing
     } else {
-      this.startRender = getUnitRenderer(this) // adds the render methods to this class
+      // this.render = getUnitRenderTools(this)
+      // this.startRender = getUnitRenderTools(this) // adds the render methods to this class
     }
+  }
+
+  /*
+   * Used for setting any key/value pair on the object.
+   * Good for building a mid-game active unit from scratch.
+   */
+  @action setAttr(key, value) {
+    this[key] = value
+  }
+
+  @action destroy() {
+    if (this.game.runningOnServer) {
+      return
+    }
+    this.render.destroy()
+  }
+
+  startRender() {
+    if (this.game.runningOnServer) {
+      return
+    }
+    this.render.startRender()
   }
 
   @action hide() {
