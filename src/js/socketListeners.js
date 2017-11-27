@@ -30,10 +30,7 @@ function setUpListeners(game, gameListener) {
   })
 
   socket.on('update all', (data) => {
-    // @TODO data should include all info about towers and enemies, money, etc.
-    console.log('Updating all');
-    game.clearEnemies()
-    game.addEnemies(data.enemies)
+    game.updateAll(data)
   })
 }
 

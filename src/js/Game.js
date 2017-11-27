@@ -234,6 +234,38 @@ export default class Game {
     })
   }
 
+  clearTowers() {
+    this.towers.forEach((tower) => {
+      tower.destroy()
+    })
+    this.towers = []
+  }
+
+  addTowers(towers) {
+    towers.forEach((towerData) => {
+      // @TODO Allow for other tower types
+      let tower = new Cannon(this, towerData.name)
+      Object.keys(towerData).forEach((datum) => {
+        if (datum in ['target']) { return }
+        tower.setAttr(datum, towerData[datum])
+      })
+
+      // @TODO? if tower has no health, maybe have to kill tower
+      tower.startRender()
+      tower.selectTarget() // unnecessary, but can be smoother
+      this.towers.push(tower)
+    })
+  }
+
+  updateAll(data) {
+    // @TODO data should include all info about towers and enemies, money, etc.
+    console.log('Updating all');
+    this.clearEnemies()
+    this.addEnemies(data.enemies)
+    this.clearTowers()
+    this.addTowers(data.towers)
+  }
+
   getEnemyGoal(enemy) {
     return {
       x: -enemy.width,

@@ -34,6 +34,9 @@ class GameListener {
       const game = this.games[gameId]
       this.io.to(gameId).emit('update all', {
         enemies: game.enemies,
+        towers: game.towers,
+        credits: game.credits,
+        waveNumber: game.waveNumber,
       })
       // this.games[gameId]
     })

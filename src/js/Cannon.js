@@ -25,7 +25,9 @@ export default class Cannon extends Unit {
     this.display = false // towers start invisible due to being unplaced
 
     // note that a change of cooldownLength will not affect the cooldown automatically! (@TODO fix this)
-    this.cooldown = new Cooldown(this.cooldownLength)
+    // ensure cooldown is not enumerable
+    const cooldown = new Cooldown(this.cooldownLength)
+    Object.defineProperty(this, 'cooldown', { value: cooldown, writable: true })
   }
 
   @action place() {
@@ -45,11 +47,15 @@ export default class Cannon extends Unit {
     return this.cooldown.ready()
   }
 
-  @action attack() {
+  @action selectTarget() {
     if (!this.target || !this.targetIsValid()) {
       this.target = this.findNearestEnemyInRange()
-      if (!this.target) { return }
     }
+  }
+
+  @action attack() {
+    this.selectTarget()
+    if (!this.target) { return }
 
     var targetValue = this.target.killValue
     const killedUnit = this.target.takeDamage(this.attackPower)
@@ -61,7 +67,9 @@ export default class Cannon extends Unit {
   }
 
   targetIsValid() {
-    return this.unitInRange(this.target) && this.target.isAlive()
+    // test that the target even has an isAlive function
+    // -> must be a server-updated target that no longer exists
+    return this.target.isAlive && this.unitInRange(this.target) && this.target.isAlive()
   }
 
   unitInRange(unit) {
