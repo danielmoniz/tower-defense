@@ -174,6 +174,7 @@ export default class Game {
 
   placeTower(tower) {
     const placingTower = tower || this.placingTower
+    if (!placingTower) { return }
     placingTower.hide && placingTower.hide()
     // @TODO Handle placing other tower types
     const finalTower = Unit.create(Cannon, this)
