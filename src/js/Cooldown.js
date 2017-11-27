@@ -8,13 +8,15 @@ class Cooldown {
   performance = 1 // speed performance (1 is perfect)
   numActivations = 0
 
-  constructor(tickLength, callback, options) {
+  constructor(tickLength, options={}) {
     this.tickLength = tickLength
-    this.callback = callback || (() => {
-      console.log('No activation callback supplied')
-    })
+    this.callback = options.callback || (() => {})
     this.intendedCallRate = options.callRate
     this.logOutput = options.log
+    this.autoActivate = options.autoActivate
+    if (!options.delayActivation) {
+      this.timePassed = tickLength
+    }
   }
 
   tick() {
@@ -27,7 +29,7 @@ class Cooldown {
     this.timePassed += (now - this.latestTime)
     this.latestTime = now
     this.calculateMetrics()
-    if (this.timePassed > this.tickLength) {
+    if (this.autoActivate && this.ready()) {
       this.activate(now)
     }
     this.ticks++
@@ -39,6 +41,7 @@ class Cooldown {
   }
 
   activate(now) {
+    now = now || Date.now()
     this.callback()
     this.coolDown(now)
     this.numActivations += 1
@@ -46,7 +49,16 @@ class Cooldown {
   }
 
   coolDown(now) {
-    this.timePassed -= this.tickLength
+    now = now || Date.now()
+    if (this.autoActivate) { // allows for more accurate activations
+      this.timePassed -= this.tickLength
+    } else {
+      this.timePassed = 0
+    }
+  }
+
+  ready() {
+    return this.timePassed > this.tickLength
   }
 
   calculateMetrics() {

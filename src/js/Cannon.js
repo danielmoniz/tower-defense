@@ -3,11 +3,11 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import { GRID_SIZE, UNIT_REFRESH_RATE } from './appConstants'
 import Unit from './Unit'
+import Cooldown from './Cooldown'
 
 export default class Cannon extends Unit {
   @observable attackPower = 11
   @observable cooldownLength = 1000
-  @observable cooldownStatus = 1000
   @observable range = 200 // pixels
   @observable target = undefined
   @observable purchaseCost = 25
@@ -23,6 +23,9 @@ export default class Cannon extends Unit {
     this.updateLoopId = undefined
     this.disabled = true // towers start unplaced and disabled
     this.display = false // towers start invisible due to being unplaced
+
+    // note that a change of cooldownLength will not affect the cooldown automatically! (@TODO fix this)
+    this.cooldown = new Cooldown(this.cooldownLength)
   }
 
   @action place() {
@@ -31,22 +34,15 @@ export default class Cannon extends Unit {
   }
 
   act() {
-    this.updateCooldown()
+    this.cooldown.tick()
     if (this.canAttack()) {
       this.attack()
+      this.cooldown.activate()
     }
   }
 
   canAttack() {
-    return this.cooldownStatus === this.cooldownLength
-  }
-
-  updateCooldown() {
-    this.cooldownStatus = Math.min(this.cooldownStatus + UNIT_REFRESH_RATE, this.cooldownLength)
-  }
-
-  resetCooldown() {
-    this.cooldownStatus = 0
+    return this.cooldown.ready()
   }
 
   @action attack() {
@@ -62,7 +58,6 @@ export default class Cannon extends Unit {
       // do cool stuff! Add experience? Make money? Mow the lawn?
       this.game.profit(targetValue * this.killProfitMultiplier)
     }
-    this.resetCooldown()
   }
 
   targetIsValid() {

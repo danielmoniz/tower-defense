@@ -44,9 +44,11 @@ export default class Game {
     if (!this.runningOnServer) {
       this.setupUI()
     }
-    this.performance = new Cooldown(1000, () => {}, {
+    this.performance = new Cooldown(1000, {
       callRate: UNIT_REFRESH_RATE,
-      log: true,
+      // log: true,
+      autoActivate: true,
+      delayActivation: true,
     })
   }
 
