@@ -26,7 +26,7 @@ var server = http.createServer(app);
  */
 var io = require('socket.io')(server);
 
-var GameListener = require('../src/js/game-server/GameListener')
+var GameListener = require('../build/game-server/GameListener')
 const gameListener = new GameListener(io)
 
 /**
