@@ -56,11 +56,13 @@ class GameListener {
 
     socket.on('pause', () => {
       console.log('pausing');
+      socket.game.pause()
       socket.broadcast.to(socket.roomId).emit('pause')
     })
 
     socket.on('play', () => {
       console.log('playing');
+      socket.game.play()
       socket.broadcast.to(socket.roomId).emit('play')
     })
   }

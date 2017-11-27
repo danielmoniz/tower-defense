@@ -153,6 +153,7 @@ class Unit {
   @action complete() {
     this.remove()
     this.hide()
+    console.log('Unit reached goal!');
     // @TODO Subtract from lives (and whatever else)
   }
 
