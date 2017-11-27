@@ -23,6 +23,11 @@ function setUpListeners(game, gameListener) {
     console.log('Received play signal');
     game.play()
   })
+
+  socket.on('place tower', (tower) => {
+    console.log('placing tower at:', tower.x, tower.y);
+    game.placeTower(tower)
+  })
 }
 
 export default setUpListeners
