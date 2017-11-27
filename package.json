@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "postinstall": "gulp default",
+    "postinstall": "gulp build:client; gulp build:server",
     "start": "node ./bin/www",
     "start-watch": "DEBUG=tower-defense-web:* supervisor ./bin/www",
     "stop": "pkill -9 SIGINT tower-defense-web",
