@@ -46,9 +46,10 @@ export default class Game {
     }
     this.performance = new Cooldown(1000, {
       callRate: UNIT_REFRESH_RATE,
-      // log: true,
+      log: true,
       autoActivate: true,
       delayActivation: true,
+      softReset: true,
     })
   }
 
