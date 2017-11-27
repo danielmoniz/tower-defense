@@ -1,6 +1,7 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
+import Cooldown from './Cooldown'
 import Unit from './Unit'
 import Cannon from './Cannon'
 import Tank from './Tank'
@@ -36,16 +37,6 @@ export default class Game {
     },
   }
 
-  performance = {
-    timePassed: 0,
-    tickLength: 100,
-    updateServerLength: 3000,
-    ticks: 0,
-    originalTime: undefined,
-    latestTime: undefined,
-    average: undefined,
-  }
-
   constructor(runningOnServer) {
     this.runningOnServer = runningOnServer
     // this.gameListener = {}
@@ -53,6 +44,10 @@ export default class Game {
     if (!this.runningOnServer) {
       this.setupUI()
     }
+    this.performance = new Cooldown(1000, () => {}, {
+      callRate: UNIT_REFRESH_RATE,
+      log: true,
+    })
   }
 
   setupUI() {
@@ -95,25 +90,7 @@ export default class Game {
 
   // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
   checkPerformance() {
-    // @TODO Reset original time every X seconds for an updated result
-    const perf = this.performance
-    perf.timePassed += UNIT_REFRESH_RATE
-    if (perf.timePassed > perf.tickLength) {
-      perf.timePassed -= perf.tickLength
-      let now = Date.now()
-
-      if (perf.originalTime === undefined) {
-        perf.originalTime = now
-        perf.latestTime = now
-      } else {
-        perf.latestTime = now
-        perf.average = (perf.latestTime - perf.originalTime) / perf.ticks
-      }
-      perf.ticks += 1
-      // if (perf.average) {
-      //   console.log('Average interval:', perf.average);
-      // }
-    }
+    this.performance.tick()
   }
 
   render(entities) {
