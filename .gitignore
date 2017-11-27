@@ -29,8 +29,7 @@ node_modules
 # Debug log from npm
 npm-debug.log
 public/javascripts/index.js*
-build/
-index.js*
+build/*
 
 # Mac nonsense
 .DS_Store
