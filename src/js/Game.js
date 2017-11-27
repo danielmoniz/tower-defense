@@ -177,7 +177,12 @@ export default class Game {
   }
 
   deselectPlacingTower() {
+    this.placingTower.hide()
     this.placingTower = false
+  }
+
+  deselectAll() {
+    this.deselectPlacingTower()
   }
 
   sendPlaceTower() {
@@ -189,7 +194,7 @@ export default class Game {
   placeTower(tower) {
     const placingTower = tower || this.placingTower
     if (!placingTower) { return }
-    placingTower.hide && placingTower.hide()
+
     // @TODO Handle placing other tower types
     const finalTower = Unit.create(Cannon, this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
@@ -197,7 +202,6 @@ export default class Game {
     if (finalTower && this.buyTower(finalTower)) {
       finalTower.place()
       this.towers.push(finalTower)
-      this.deselectPlacingTower()
       finalTower.enable()
       finalTower.show()
       return finalTower

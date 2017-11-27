@@ -34,6 +34,7 @@ export default class GameRenderer {
   }
 
   addEventHandlers() {
+    this.addEscape()
     this.addPause()
     this.addResume()
     this.addPlaceTower()
@@ -123,6 +124,14 @@ export default class GameRenderer {
     const button = document.querySelector("button#spawn-wave")
     button.addEventListener('click', (event) => {
       this.game.spawnWave()
+    })
+  }
+
+  addEscape() {
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        this.game.deselectAll()
+      }
     })
   }
 
