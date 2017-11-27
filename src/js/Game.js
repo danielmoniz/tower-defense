@@ -13,8 +13,6 @@ export default class Game {
   @observable towers = []
   @observable waveNumber = 0
   @observable enemiesInWave = 0 // @TODO This will likely become an array of wave sizes
-  @observable gameBox = undefined
-  @observable gameBoxBound = undefined
   @observable gameCanvas = undefined
   @observable gameCanvasContext = undefined
   @observable credits = 55
@@ -41,7 +39,6 @@ export default class Game {
     this.ignore_ui = ignore_ui
     if (!this.ignore_ui) {
       this.setupUI()
-      this.renderer = new GameRenderer(this)
       // @TODO Move this somewhere reasonable!
       const gameNumber = document.querySelector('input[name=gameNumber]').value
       console.log(gameNumber);
@@ -53,7 +50,7 @@ export default class Game {
   }
 
   setupUI() {
-    this.setupGameBox()
+    this.renderer = new GameRenderer(this)
   }
 
   start() {
@@ -70,24 +67,6 @@ export default class Game {
     clearInterval(this.gameLoopId)
     delete this.gameLoopId
     // @TODO Also pause towers
-  }
-
-  setupGameBox() {
-    this.gameBox = document.querySelector("#display-box")
-    this.gameBox.style.width = this.width + 'px'
-    this.gameBox.style.height = this.height + 'px'
-    this.gameBoxBound = this.gameBox.getBoundingClientRect()
-    this.gameCanvas = this.setupGameCanvas(this.gameBox, 'gameCanvas')
-    this.gameCanvasContext = this.gameCanvas.getContext('2d')
-  }
-
-  setupGameCanvas(frame, id, width = this.width, height = this.height) {
-    let canvas = document.createElement('canvas');
-    canvas.id = id
-    canvas.width = width
-    canvas.height = height
-    frame.append(canvas)
-    return canvas
   }
 
   initializeLoop() {

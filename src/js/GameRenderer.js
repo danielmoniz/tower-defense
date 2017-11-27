@@ -6,12 +6,31 @@ import { GRID_SIZE } from './appConstants'
 export default class GameRenderer {
   constructor(game) {
     this.game = game
+    this.setupGameBox()
     this.addEventHandlers()
     this.creditsDisplay = document.querySelector(".remainingCredits")
 
     autorun(() => {
       this.creditsDisplay.innerHTML = game.credits
     })
+  }
+
+  setupGameBox() {
+    this.gameBox = document.querySelector("#display-box")
+    this.gameBox.style.width = this.game.width + 'px'
+    this.gameBox.style.height = this.game.height + 'px'
+    this.gameBoxBound = this.gameBox.getBoundingClientRect()
+    this.gameCanvas = this.setupGameCanvas(this.gameBox, 'gameCanvas')
+    this.gameCanvasContext = this.gameCanvas.getContext('2d')
+  }
+
+  setupGameCanvas(frame, id, width = this.game.width, height = this.game.height) {
+    let canvas = document.createElement('canvas');
+    canvas.id = id
+    canvas.width = width
+    canvas.height = height
+    frame.append(canvas)
+    return canvas
   }
 
   addEventHandlers() {
@@ -66,9 +85,9 @@ export default class GameRenderer {
   }
 
   addPlaceTowerFollow() {
-    this.game.gameBox.addEventListener('mousemove', (event) => {
+    this.gameBox.addEventListener('mousemove', (event) => {
       if (this.game.placingTower) {
-        const bound = this.game.gameBoxBound
+        const bound = this.gameBoxBound
         const placingTower = this.game.placingTower
 
         const actualX = event.pageX - placingTower.width / 2.0 - bound.left + (GRID_SIZE / 2)
@@ -90,7 +109,7 @@ export default class GameRenderer {
   }
 
   addPlacingTowerHide() {
-    this.game.gameBox.addEventListener('mouseleave', (event) => {
+    this.gameBox.addEventListener('mouseleave', (event) => {
       if (this.game.placingTower) {
         this.game.placingTower.hide()
       }
@@ -98,7 +117,7 @@ export default class GameRenderer {
   }
 
   addPlacingTowerShow() {
-    this.game.gameBox.addEventListener('mouseenter', (event) => {
+    this.gameBox.addEventListener('mouseenter', (event) => {
       if (this.game.placingTower) {
         this.game.placingTower.show()
       }
@@ -106,7 +125,7 @@ export default class GameRenderer {
   }
 
   addPlaceTowerOnMap() {
-    this.game.gameBox.addEventListener('click', (event) => {
+    this.gameBox.addEventListener('click', (event) => {
       this.game.placeTower()
     })
   }
