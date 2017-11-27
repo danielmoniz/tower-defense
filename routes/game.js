@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.render('gamePage', { title: 'Tower Defense' });
+  res.render('gamePage', { title: 'Tower Defense', gameNumber: 1 });
 });
 
 router.get('/:gameNumber', function(req, res, next) {
