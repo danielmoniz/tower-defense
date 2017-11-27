@@ -1,6 +1,6 @@
 import { useStrict } from 'mobx'
 
-import Game from 'Game'
+import Game from './Game'
 
 useStrict(true)
 

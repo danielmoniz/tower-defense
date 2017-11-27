@@ -1,8 +1,8 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
-import { GRID_SIZE, UNIT_REFRESH_RATE } from 'appConstants'
-import Unit from 'Unit'
+import { GRID_SIZE, UNIT_REFRESH_RATE } from './appConstants'
+import Unit from './Unit'
 
 export default class Cannon extends Unit {
   @observable attackPower = 11

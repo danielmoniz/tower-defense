@@ -1,11 +1,11 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
-import Unit from 'Unit'
-import Cannon from 'Cannon'
-import Tank from 'Tank'
-import GameRenderer from 'GameRenderer'
-import { UNIT_REFRESH_RATE } from 'appConstants'
+import Unit from './Unit'
+import Cannon from './Cannon'
+import Tank from './Tank'
+import GameRenderer from './GameRenderer'
+import { UNIT_REFRESH_RATE } from './appConstants'
 
 export default class Game {
   @observable placingTower = false
