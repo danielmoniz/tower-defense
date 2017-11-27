@@ -18,8 +18,8 @@ export default class Game {
   @observable gameCanvasContext = undefined
   @observable credits = 55
 
-  height = 700
-  width = 700
+  height = 400
+  width = 400
   tickLength = 500
   gameLoopId = undefined
   waveList = { // should be handled in another class
@@ -34,6 +34,16 @@ export default class Game {
       normal: 5,
       fast: 2,
     },
+  }
+
+  performance = {
+    timePassed: 0,
+    tickLength: 100,
+    updateServerLength: 3000,
+    ticks: 0,
+    originalTime: undefined,
+    latestTime: undefined,
+    average: undefined,
   }
 
   constructor(runningOnServer) {
@@ -77,9 +87,33 @@ export default class Game {
   initializeLoop() {
     // handle moving units, tower scanning, spawning waves, etc.
     return setInterval(() => {
+      this.checkPerformance()
       this.commandUnits(this.enemies)
       this.commandUnits(this.towers)
     }, UNIT_REFRESH_RATE)
+  }
+
+  // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
+  checkPerformance() {
+    // @TODO Reset original time every X seconds for an updated result
+    const perf = this.performance
+    perf.timePassed += UNIT_REFRESH_RATE
+    if (perf.timePassed > perf.tickLength) {
+      perf.timePassed -= perf.tickLength
+      let now = Date.now()
+
+      if (perf.originalTime === undefined) {
+        perf.originalTime = now
+        perf.latestTime = now
+      } else {
+        perf.latestTime = now
+        perf.average = (perf.latestTime - perf.originalTime) / perf.ticks
+      }
+      perf.ticks += 1
+      // if (perf.average) {
+      //   console.log('Average interval:', perf.average);
+      // }
+    }
   }
 
   render(entities) {
