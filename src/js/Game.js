@@ -19,8 +19,8 @@ export default class Game {
   @observable gameCanvasContext = undefined
   @observable credits = 55
 
-  height = 400
-  width = 400
+  height = 700
+  width = 700
   tickLength = 500
   gameLoopId = undefined
   waveList = { // should be handled in another class
