@@ -169,6 +169,7 @@ export default class Game {
 
   sendPlaceTower() {
     const placedTower = this.placeTower()
+    if (!placedTower) { return }
     this.gameListener.placeTower(placedTower)
   }
 

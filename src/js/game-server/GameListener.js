@@ -5,7 +5,7 @@ class GameListener {
 
   constructor(io) {
     this.io = io
-    // this.games = {}
+    this.games = {}
     // this.users = {}
     this.io.on('connection', (socket) => {
       console.log('a user connected');
@@ -44,14 +44,15 @@ class GameListener {
       socket.join(gameNumber) // join room
       socket.broadcast.to(gameNumber).emit('user joins room')
 
-      // let game = this.games[gameNumber];
-      // if (game === undefined) {
-        // game = {} // @FIXME Make new game object
-        if (!socket.game) {
-          socket.game = new Game('server')
-        }
-        // this.games[gameNumber] = game
-      // }
+      let game = this.games[gameNumber];
+      console.log('Games:', Object.keys(this.games));
+      if (game === undefined) {
+        game = new Game('server')
+      } else {
+        console.log("Game already exists!");
+      }
+      socket.game = game
+      this.games[gameNumber] = game
     })
 
     socket.on('pause', () => {
