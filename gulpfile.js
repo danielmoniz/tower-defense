@@ -28,7 +28,7 @@ function getB(customOpts) {
   var b = watchify(browserify(opts));
   b.transform(babelify); // configuration from .babelrc
 
-  b.on('update', bundle); // on any dep update, runs the bundler
+  b.on('update', bundle.bind(null, b, clientDest)); // on any dep update, runs the bundler
   b.on('log', gutil.log); // output build logs to terminal
 
   return b
@@ -60,6 +60,7 @@ gulp.task('watch:server', () => {
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('build'))
 });
+
 
 gulp.task('build', ['build:client', 'build:server']);
 gulp.task('watch', ['watch:client', 'watch:server']);
