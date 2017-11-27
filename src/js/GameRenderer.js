@@ -80,8 +80,8 @@ export default class GameRenderer {
         const bound = this.gameBoxBound
         const placingTower = this.game.placingTower
 
-        const actualX = event.pageX - placingTower.width / 2.0 - bound.left + (GRID_SIZE / 2)
-        const actualY = event.pageY - placingTower.height / 2.0 - bound.top + (GRID_SIZE / 2)
+        const actualX = event.offsetX - placingTower.width / 2.0 + (GRID_SIZE / 2)
+        const actualY = event.offsetY - placingTower.height / 2.0 + (GRID_SIZE / 2)
         let gridX = Math.floor(actualX / GRID_SIZE) * GRID_SIZE
         let gridY = Math.floor(actualY / GRID_SIZE) * GRID_SIZE
 
