@@ -68,6 +68,7 @@ class Unit {
   }
 
   @action destroy() {
+    this.remove()
     if (this.game.runningOnServer) {
       return
     }
@@ -173,16 +174,12 @@ class Unit {
   }
 
   @action kill() {
-    // TERMINATE
-    // set alive to false?
     // @TODO should explode
-    this.remove()
-    this.hide()
+    this.destroy()
   }
 
   @action complete() {
-    this.remove()
-    this.hide()
+    this.destroy()
     console.log('Unit reached goal!');
     // @TODO Subtract from lives (and whatever else)
   }

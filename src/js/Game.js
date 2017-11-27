@@ -250,20 +250,20 @@ export default class Game {
         tower.setAttr(datum, towerData[datum])
       })
 
-      // @TODO? if tower has no health, maybe have to kill tower
       tower.startRender()
       tower.selectTarget() // unnecessary, but can be smoother
       this.towers.push(tower)
     })
   }
 
-  updateAll(data) {
+  @action updateAll(data) {
     // @TODO data should include all info about towers and enemies, money, etc.
     console.log('Updating all');
     this.clearEnemies()
     this.addEnemies(data.enemies)
     this.clearTowers()
     this.addTowers(data.towers)
+    this.credits = data.credits
   }
 
   getEnemyGoal(enemy) {

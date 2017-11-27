@@ -29,7 +29,7 @@ class GameListener {
   }
 
   updateGames() {
-    console.log('Updating all games');
+    // console.log('Updating all games');
     Object.keys(this.games).forEach((gameId) => {
       const game = this.games[gameId]
       this.io.to(gameId).emit('update all', {
@@ -38,7 +38,6 @@ class GameListener {
         credits: game.credits,
         waveNumber: game.waveNumber,
       })
-      // this.games[gameId]
     })
   }
 
