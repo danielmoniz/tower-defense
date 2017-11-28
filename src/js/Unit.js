@@ -149,7 +149,7 @@ class Unit {
     let actualSpeed
     if (this.lastMoveTime) {
       const difference = now - this.lastMoveTime
-      console.log(difference);
+      // console.log(difference);
       const ratio = (now - this.lastMoveTime) / UNIT_REFRESH_RATE
       actualSpeed = this.speed * difference / 1000
       // actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE) * ratio

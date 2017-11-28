@@ -19,7 +19,7 @@ class GameListener {
     const syncInterval = 4000, tickInterval = 1000
     console.log('Setting up syncer');
     this.updateCooldown = new Cooldown(syncInterval, {
-      callback: this.updateGames.bind(this),
+      callback: this.syncGames.bind(this),
       autoActivate: true,
       log: true,
       callRate: tickInterval,
@@ -30,19 +30,30 @@ class GameListener {
 
   }
 
-  updateGames() {
+  syncGames() {
     // console.log('Updating all games');
     const performance = this.updateCooldown.performance
     Object.keys(this.games).forEach((gameId) => {
       const game = this.games[gameId]
-      this.io.to(gameId).emit('update all', {
-        enemies: game.enemies,
-        towers: game.towers,
-        credits: game.credits,
-        waveNumber: game.waveNumber,
-        gameSpeedMultiplier: performance,
-      })
+      this.io.to(gameId).emit('update all', this.getGameData(game))
     })
+  }
+
+  /*
+   * Update a the game for a single player (usually a newly entered player).
+   */
+  syncPlayer(socket) {
+    socket.emit('update all', this.getGameData(socket.game))
+  }
+
+  getGameData(game, performance=1) {
+    return {
+      enemies: game.enemies,
+      towers: game.towers,
+      credits: game.credits,
+      waveNumber: game.waveNumber,
+      gameSpeedMultiplier: performance,
+    }
   }
 
   setUpListeners(socket) {
@@ -85,6 +96,7 @@ class GameListener {
       }
       socket.game = game
       this.games[gameNumber] = game
+      this.syncPlayer(socket)
     })
 
     socket.on('pause', () => {
