@@ -16,20 +16,23 @@ class GameListener {
   }
 
   setUpSyncer() {
-    const interval = 4000
+    const syncInterval = 4000, tickInterval = 1000
     console.log('Setting up syncer');
-    this.updateCooldown = new Cooldown(interval, {
+    this.updateCooldown = new Cooldown(syncInterval, {
       callback: this.updateGames.bind(this),
       autoActivate: true,
+      log: true,
+      callRate: tickInterval,
     })
     setInterval(() => {
       this.updateCooldown.tick()
-    }, 1000)
+    }, tickInterval)
 
   }
 
   updateGames() {
     // console.log('Updating all games');
+    const performance = this.updateCooldown.performance
     Object.keys(this.games).forEach((gameId) => {
       const game = this.games[gameId]
       this.io.to(gameId).emit('update all', {
@@ -37,6 +40,7 @@ class GameListener {
         towers: game.towers,
         credits: game.credits,
         waveNumber: game.waveNumber,
+        gameSpeedMultiplier: performance,
       })
     })
   }

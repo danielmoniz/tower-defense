@@ -27,6 +27,7 @@ class Unit {
     options = options || {}
     this.id = ID
     ID += 1
+    this.lastMoveTime = undefined
 
     // add a reference to game which avoids circular referencing
     Object.defineProperty(this, 'game', { value: game, writable: true})
@@ -143,7 +144,25 @@ class Unit {
       return true
     }
 
-    const actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE)
+    // @FIXME This probably breaks pausing!
+    const now = Date.now()
+    let actualSpeed
+    if (this.lastMoveTime) {
+      const difference = now - this.lastMoveTime
+      console.log(difference);
+      const ratio = (now - this.lastMoveTime) / UNIT_REFRESH_RATE
+      actualSpeed = this.speed * difference / 1000
+      // actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE) * ratio
+      // actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE)
+    } else {
+      actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE)
+    }
+    // console.log(actualSpeed);
+    this.lastMoveTime = now
+    // @TODO Make the unit move based on the time passed since the previous tick
+    // (ie. it moves farther if the ticks are further apart)
+    // this should prevent units from moving at wildly different speeds
+    // const actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE)
     // use polar coordinates to generate X and Y given target destination
     const deltaX = finalX - this.x
     const deltaY = finalY - this.y
