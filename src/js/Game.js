@@ -68,6 +68,7 @@ export default class Game {
   }
 
   play() {
+    clearInterval(this.gameLoopId)
     this.gameLoopId = this.initializeLoop()
     // @TODO Also run loop for towers
   }
