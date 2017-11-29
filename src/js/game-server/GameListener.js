@@ -50,7 +50,7 @@ class GameListener {
     return {
       enemies: game.enemies,
       towers: game.towers,
-      credits: game.credits,
+      credits: game.credits.current,
       waveNumber: game.waveNumber,
       gameSpeedMultiplier: performance,
     }

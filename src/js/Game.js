@@ -18,11 +18,14 @@ export default class Game {
   @observable enemiesInWave = 0 // @TODO This will likely become an array of wave sizes
   @observable gameCanvas = undefined
   @observable gameCanvasContext = undefined
-  @observable credits = 55
+  @observable credits = {
+    start: 55,
+    current: 55,
+  }
 
   @observable control = {
     run: false,
-    speedMultiplier: 1,
+    // speedMultiplier: 1,
   }
 
   height = 700
@@ -153,7 +156,8 @@ export default class Game {
 
     // for fun! To see how many enemies there are.
     // Note that enemies are not yet removed from the array upon death.
-    console.log(this.enemies.length);
+    console.log("Wave size:", newEnemies.length);
+    console.log("Total enemies:", this.enemies.length);
   }
 
   placeEnemy(enemy, numEnemy) {
@@ -170,19 +174,19 @@ export default class Game {
   }
 
   canAfford(unit) {
-    return this.credits >= unit.purchaseCost
+    return this.credits.current >= unit.purchaseCost
   }
 
   @action buyTower(tower) {
     if (!this.canAfford(tower)) {
       return false
     }
-    this.credits -= tower.purchaseCost
+    this.credits.current -= tower.purchaseCost
     return true
   }
 
   @action profit(amount) {
-    this.credits += amount
+    this.credits.current += amount
   }
 
   deselectPlacingTower() {
@@ -263,13 +267,12 @@ export default class Game {
   }
 
   @action updateAll(data) {
-    // @TODO data should include all info about towers and enemies, money, etc.
     console.log('Updating all');
     this.clearEnemies()
     this.addEnemies(data.enemies)
     this.clearTowers()
     this.addTowers(data.towers)
-    this.credits = data.credits
+    this.credits.current = data.credits
     this.waveNumber = data.waveNumber
   }
 
@@ -280,18 +283,8 @@ export default class Game {
     }
   }
 
-  tearDown() {
-    // @TODO Should de-render the game and tear down any intervals.
-    // Might be handy to keep the game object around for score keeping purposes.
-  }
-
   getRandomPosition() {
     return Math.floor(Math.random() * this.height)
-  }
-
-  // DEPRECATED ----------------
-  renderAll() {
-    this.enemies.forEach((entity) => entity.startRender())
   }
 
 }

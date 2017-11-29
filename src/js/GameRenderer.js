@@ -11,7 +11,7 @@ export default class GameRenderer {
     this.creditsDisplay = document.querySelector(".remainingCredits")
 
     autorun(() => {
-      this.creditsDisplay.innerHTML = game.credits
+      this.creditsDisplay.innerHTML = game.credits.current
     })
   }
 
