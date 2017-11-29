@@ -32,6 +32,10 @@ function setUpListeners(game, gameListener) {
   socket.on('update all', (data) => {
     game.updateAll(data)
   })
+
+  socket.on('spawn wave', () => {
+    game.spawnWave()
+  })
 }
 
 export default setUpListeners

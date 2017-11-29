@@ -123,14 +123,18 @@ export default class GameRenderer {
   addSpawnWave() {
     const button = document.querySelector("button#spawn-wave")
     button.addEventListener('click', (event) => {
-      this.game.spawnWave()
+      this.game.sendSpawnWave()
     })
   }
 
   addEscape() {
     document.addEventListener('keydown', (event) => {
+      console.log(event.key);
       if (event.key === 'Escape') {
         this.game.deselectAll()
+      } else if (event.key === ' ') {
+        event.preventDefault()
+        this.game.sendSpawnWave()
       }
     })
   }

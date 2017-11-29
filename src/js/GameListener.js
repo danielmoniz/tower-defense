@@ -39,6 +39,10 @@ class GameListener {
     this.emit('play')
   }
 
+  spawnWave() {
+    this.emit('spawn wave')
+  }
+
   placeTower(tower) {
     this.emit('place tower', tower)
   }

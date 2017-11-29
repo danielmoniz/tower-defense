@@ -109,6 +109,12 @@ class GameListener {
       socket.broadcast.to(socket.roomId).emit('play')
     })
 
+    socket.on('spawn wave', () => {
+      console.log('spawning next wave');
+      socket.game.spawnWave()
+      this.io.to(socket.roomId).emit('spawn wave')
+    })
+
     socket.on('place tower', (tower) => {
       console.log('placing tower at:', tower.x, tower.y);
       socket.game.placeTower(tower)

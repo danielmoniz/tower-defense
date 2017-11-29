@@ -122,6 +122,10 @@ export default class Game {
     }
   }
 
+  sendSpawnWave() {
+    this.gameListener.spawnWave()
+  }
+
   spawnWave() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?
     console.log(`Spawning wave ${this.waveNumber}!`);
     this.waveNumber++
