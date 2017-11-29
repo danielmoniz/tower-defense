@@ -9,6 +9,7 @@
   "scripts": {
     "postinstall": "gulp build:client; gulp build:server",
     "start": "node ./bin/www",
+    "start-debug": "DEBUG=tower-defense-web:* node ./bin/www",
     "start-watch": "DEBUG=tower-defense-web:* supervisor ./bin/www",
     "stop": "pkill -9 SIGINT tower-defense-web",
     "test": "jest",
