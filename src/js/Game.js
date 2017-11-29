@@ -8,6 +8,7 @@ import Tank from './Tank'
 import GameRenderer from './GameRenderer'
 import GameListener from './GameListener'
 import { UNIT_REFRESH_RATE } from './appConstants'
+import { setCorrectingInterval } from './utility/time'
 
 export default class Game {
   @observable placingTower = false
@@ -19,10 +20,14 @@ export default class Game {
   @observable gameCanvasContext = undefined
   @observable credits = 55
 
+  @observable control = {
+    run: false,
+    speedMultiplier: 1,
+  }
+
   height = 700
   width = 700
   tickLength = 500
-  gameLoopId = undefined
   waveList = { // should be handled in another class
     1: {
       normal: 5,
@@ -39,7 +44,6 @@ export default class Game {
 
   constructor(runningOnServer) {
     this.runningOnServer = runningOnServer
-    // this.gameListener = {}
     this.gameListener = new GameListener(this, runningOnServer)
     if (!this.runningOnServer) {
       this.setupUI()
@@ -68,9 +72,9 @@ export default class Game {
   }
 
   play() {
-    clearInterval(this.gameLoopId)
-    this.gameLoopId = this.initializeLoop()
-    // @TODO Also run loop for towers
+    if (!this.control.run) {
+      this.initializeLoop()
+    }
   }
 
   sendPause() {
@@ -78,18 +82,19 @@ export default class Game {
     this.gameListener.pause()
   }
 
-  pause() {
-    clearInterval(this.gameLoopId)
-    delete this.gameLoopId
+  @action pause() {
+    this.control.run = false
   }
 
   initializeLoop() {
     // handle moving units, tower scanning, spawning waves, etc.
-    return setInterval(() => {
+    this.control.run = true
+    return setCorrectingInterval(() => {
+      // console.log('---');
       this.checkPerformance()
       this.commandUnits(this.enemies)
       this.commandUnits(this.towers)
-    }, UNIT_REFRESH_RATE)
+    }, UNIT_REFRESH_RATE, this.control)
   }
 
   // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced

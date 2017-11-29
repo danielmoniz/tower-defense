@@ -29,8 +29,6 @@ class GameListener {
 
   addNewGame() {
     socket.emit('new game', this.gameNumber)
-    socket.emit('connection', 'test')
-    console.log('emitting new game signal');
   }
 
   pause() {

@@ -69,11 +69,9 @@ class GameListener {
       //   socket.game.pause()
       //   delete socket.game
       // }
-      if (!socket.game) {
-
-      }
       socket.game.start()
-      this.io.emit('start game', Date.now())
+      // @TODO should only go to this game/room specifically
+      this.io.to(gameNumber).emit('start game', Date.now())
     })
 
     socket.on('latency', (thereTime) => {
