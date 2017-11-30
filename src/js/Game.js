@@ -68,6 +68,9 @@ export default class Game {
   start() {
     this.play()
     this.spawnWave()
+    if (!this.waveTimer) {
+      this.initializeWaveTimer()
+    }
   }
 
   sendPlay() {
@@ -76,9 +79,6 @@ export default class Game {
   }
 
   play() {
-    if (!this.waveTimer) {
-      this.initializeWaveTimer()
-    }
     if (!this.control.run) {
       this.initializeLoop()
     }
@@ -137,7 +137,11 @@ export default class Game {
     }
     this.waveTimer.tick()
     if (this.waveTimer.ready()) {
-      this.sendSpawnWave()
+      if (this.runningOnServer) {
+        this.spawnWave()
+      } else {
+        this.sendSpawnWave()
+      }
       this.waveTimer.activate()
     }
   }
