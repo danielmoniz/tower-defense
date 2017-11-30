@@ -15,6 +15,7 @@ export default class Game {
   @observable enemies = []
   @observable towers = []
   @observable waveNumber = 0
+  @observable timeBetweenWaves = 15000
   @observable enemiesInWave = 0 // @TODO This will likely become an array of wave sizes
   @observable gameCanvas = undefined
   @observable gameCanvasContext = undefined
@@ -75,6 +76,9 @@ export default class Game {
   }
 
   play() {
+    if (!this.waveTimer) {
+      this.initializeWaveTimer()
+    }
     if (!this.control.run) {
       this.initializeLoop()
     }
@@ -95,6 +99,7 @@ export default class Game {
     return setCorrectingInterval(() => {
       // console.log('---');
       this.checkPerformance()
+      this.updateWaveTimer()
       this.commandUnits(this.enemies)
       this.commandUnits(this.towers)
     }, UNIT_REFRESH_RATE, this.control)
@@ -122,13 +127,28 @@ export default class Game {
     }
   }
 
+  initializeWaveTimer() {
+    this.waveTimer = new Cooldown(this.timeBetweenWaves, { delayActivation: true, })
+  }
+
+  updateWaveTimer() {
+    if (!this.waveTimer) {
+      return
+    }
+    this.waveTimer.tick()
+    if (this.waveTimer.ready()) {
+      this.sendSpawnWave()
+      this.waveTimer.activate()
+    }
+  }
+
   sendSpawnWave() {
     this.gameListener.spawnWave()
   }
 
   spawnWave() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?
-    console.log(`Spawning wave ${this.waveNumber}!`);
     this.waveNumber++
+    console.log(`Spawning wave ${this.waveNumber}!`);
     this.enemiesInWave = 0
     let currentWave
     if (this.waveList.hasOwnProperty(this.waveNumber)) { // @TODO fetching wave list should be handled by another method
