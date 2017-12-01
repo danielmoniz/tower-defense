@@ -23,6 +23,7 @@ export default class Game {
     start: 55,
     current: 55,
   }
+  @observable lives = 20
 
   @observable control = {
     run: false,
@@ -67,6 +68,11 @@ export default class Game {
 
   start() {
     this.play()
+    // reset to new game values
+    this.waveNumber = 0
+    this.lives = 20
+    this.credits.current = 55
+    //
     if (!this.waveTimer) {
       this.initializeWaveTimer()
     }
@@ -320,6 +326,13 @@ export default class Game {
     this.addTowers(data.towers)
     this.credits.current = data.credits
     this.waveNumber = data.waveNumber
+  }
+
+  endGame() {
+    this.pause()
+    this.clearTowers()
+    this.clearEnemies()
+    this.waveTimer = null
   }
 
   getEnemyGoal(enemy) {
