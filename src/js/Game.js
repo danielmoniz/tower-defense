@@ -146,6 +146,26 @@ export default class Game {
   }
 
   spawnWave() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?
+    function randomizeSpawnArray(arrayLength) {
+      // returns array of length arrayLength, with integers from 0 to arrayLength - 1 in random order
+      // individual unit spawns simply .pop from array
+      let spawnArray = []
+      let randomArray = []
+      for (let i = 0; i < arrayLength; i++) {
+        randomArray.push(i)
+      }
+      while (randomArray.length > 0) {
+        if (randomArray.length == 1) {
+          spawnArray.push(randomArray.pop())
+        } else {
+          let randomIndex = Math.floor(Math.random() * randomArray.length)
+          spawnArray.push(randomArray.splice(randomIndex, 1)[0])
+        }
+      }
+
+      return spawnArray
+    }
+
     this.waveTimer.activate()
     this.waveNumber++
     console.log(`Spawning wave ${this.waveNumber}!`);
@@ -164,11 +184,13 @@ export default class Game {
     }
 
     const newEnemies = []
+    let enemySpawnArray = randomizeSpawnArray(this.enemiesInWave)
+
     for (let enemyType of Object.keys(currentWave)) {
       for (let i = 0; i < currentWave[enemyType]; i++) {
         // @TODO Allow for other unit types
         let enemy = new Tank(this, enemyType)
-        this.placeEnemy(enemy, i)
+        this.placeEnemy(enemy, enemySpawnArray.pop())
         const enemyTarget = this.getEnemyGoal(enemy)
         enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
         newEnemies.push(enemy)
