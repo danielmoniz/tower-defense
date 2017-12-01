@@ -137,17 +137,13 @@ export default class Game {
     }
     this.waveTimer.tick()
     if (this.waveTimer.ready()) {
-      if (this.runningOnServer) {
-        this.spawnWave()
-      } else {
-        this.sendSpawnWave()
-      }
+      this.spawnWave()
       this.waveTimer.activate()
     }
   }
 
-  sendSpawnWave() {
-    this.gameListener.spawnWave()
+  spawnWaveEarly() {
+    this.gameListener.spawnWaveEarly()
   }
 
   spawnWave() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?

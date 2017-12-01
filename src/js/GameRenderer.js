@@ -123,7 +123,7 @@ export default class GameRenderer {
   addSpawnWave() {
     const button = document.querySelector("button#spawn-wave")
     button.addEventListener('click', (event) => {
-      this.game.sendSpawnWave()
+      this.game.spawnWaveEarly()
     })
   }
 
