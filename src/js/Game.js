@@ -67,10 +67,10 @@ export default class Game {
 
   start() {
     this.play()
-    this.spawnWave()
     if (!this.waveTimer) {
       this.initializeWaveTimer()
     }
+    // this.spawnWave()
   }
 
   sendPlay() {
@@ -128,7 +128,7 @@ export default class Game {
   }
 
   initializeWaveTimer() {
-    this.waveTimer = new Cooldown(this.timeBetweenWaves, { delayActivation: true, })
+    this.waveTimer = new Cooldown(this.timeBetweenWaves, { delayActivation: false, })
   }
 
   updateWaveTimer() {
@@ -138,7 +138,6 @@ export default class Game {
     this.waveTimer.tick()
     if (this.waveTimer.ready()) {
       this.spawnWave()
-      this.waveTimer.activate()
     }
   }
 
@@ -147,6 +146,7 @@ export default class Game {
   }
 
   spawnWave() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?
+    this.waveTimer.activate()
     this.waveNumber++
     console.log(`Spawning wave ${this.waveNumber}!`);
     this.enemiesInWave = 0
