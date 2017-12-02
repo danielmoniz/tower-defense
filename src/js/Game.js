@@ -98,7 +98,14 @@ export default class Game {
       this.wave.updateWaveTimer()
       this.commandUnits(this.enemies)
       this.commandUnits(this.towers)
+      if (this.lives <= 0) {
+        this.endGame()
+      }
     }, UNIT_REFRESH_RATE, this.control)
+  }
+
+  loseLife() {
+    return --this.lives
   }
 
   // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced

@@ -127,9 +127,6 @@ class Unit {
       const reachedGoal = this.moveXAndY(finalX, finalY)
       if (reachedGoal) {
         this.complete() // assumes enemies only get one goal
-        if (this.game.lives <= 0) {
-          this.game.endGame()
-        }
       }
     }
     if (this.movementId) { // if already moving, continue in a new direction
@@ -185,7 +182,8 @@ class Unit {
   @action complete() {
     this.destroy()
     // @TODO Subtract from lives (and whatever else)
-    console.log(`Unit reached goal! Remaining lives: ${--this.game.lives}`);
+    const livesLeft = this.game.loseLife()
+    console.log(`Unit reached goal! Remaining lives: ${livesLeft}`);
   }
 
   isAlive() {
