@@ -111,7 +111,7 @@ class GameListener {
 
     socket.on('spawn wave early', () => {
       console.log('spawning next wave');
-      socket.game.spawnWave()
+      socket.game.wave.spawn()
       this.io.to(socket.roomId).emit('spawn wave')
     })
 

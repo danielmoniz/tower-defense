@@ -34,7 +34,7 @@ function setUpListeners(game, gameListener) {
   })
 
   socket.on('spawn wave', () => {
-    game.spawnWave()
+    game.wave.spawn()
   })
 }
 
