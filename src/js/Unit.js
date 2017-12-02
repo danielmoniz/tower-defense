@@ -200,6 +200,13 @@ class Unit {
     return Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2))
   }
 
+  getGoal() {
+    return {
+      x: -this.width,
+      y: this.game.height / 2,
+    }
+  }
+
 }
 
 /*

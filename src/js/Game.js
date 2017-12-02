@@ -9,14 +9,12 @@ import GameRenderer from './GameRenderer'
 import GameListener from './GameListener'
 import { UNIT_REFRESH_RATE } from './appConstants'
 import { setCorrectingInterval } from './utility/time'
+import WaveSpawner from './WaveSpawner'
 
 export default class Game {
   @observable placingTower = false
   @observable enemies = []
   @observable towers = []
-  @observable waveNumber = 0
-  @observable timeBetweenWaves = 15000
-  @observable enemiesInWave = 0 // @TODO This will likely become an array of wave sizes
   @observable gameCanvas = undefined
   @observable gameCanvasContext = undefined
   @observable credits = {
@@ -33,23 +31,16 @@ export default class Game {
   height = 700
   width = 700
   tickLength = 500
-  waveList = { // should be handled in another class
-    1: {
-      normal: 5,
-    },
-    2: {
-      normal: 5,
-      fast: 1,
-    },
-    3: {
-      normal: 5,
-      fast: 2,
-    },
-  }
 
   constructor(runningOnServer) {
     this.runningOnServer = runningOnServer
     this.gameListener = new GameListener(this, runningOnServer)
+    this.wave = new WaveSpawner(
+      this.handleSpawnWave.bind(this),
+      this.placeNewEnemy.bind(this),
+      runningOnServer,
+    )
+
     if (!this.runningOnServer) {
       this.setupUI()
     }
@@ -67,16 +58,15 @@ export default class Game {
   }
 
   start() {
+    this.reset()
     this.play()
-    // reset to new game values
-    this.waveNumber = 0
+    this.wave.initializeWaveTimer()
+  }
+
+  @action reset() {
+    this.wave.reset()
     this.lives = 20
-    this.credits.current = 55
-    //
-    if (!this.waveTimer) {
-      this.initializeWaveTimer()
-    }
-    // this.spawnWave()
+    this.credits.current = this.credits.start
   }
 
   sendPlay() {
@@ -105,7 +95,7 @@ export default class Game {
     return setCorrectingInterval(() => {
       // console.log('---');
       this.checkPerformance()
-      this.updateWaveTimer()
+      this.wave.updateWaveTimer()
       this.commandUnits(this.enemies)
       this.commandUnits(this.towers)
     }, UNIT_REFRESH_RATE, this.control)
@@ -133,77 +123,8 @@ export default class Game {
     }
   }
 
-  initializeWaveTimer() {
-    this.waveTimer = new Cooldown(this.timeBetweenWaves, { delayActivation: false, })
-  }
-
-  updateWaveTimer() {
-    if (!this.waveTimer) {
-      return
-    }
-    this.waveTimer.tick()
-    if (this.waveTimer.ready()) {
-      this.spawnWave()
-    }
-  }
-
-  spawnWaveEarly() {
-    this.gameListener.spawnWaveEarly()
-  }
-
-  spawnWave() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?
-    function randomizeSpawnArray(arrayLength) {
-      // returns array of length arrayLength, with integers from 0 to arrayLength - 1 in random order
-      // individual unit spawns simply .pop from array
-      let spawnArray = []
-      let randomArray = []
-      for (let i = 0; i < arrayLength; i++) {
-        randomArray.push(i)
-      }
-      while (randomArray.length > 0) {
-        if (randomArray.length == 1) {
-          spawnArray.push(randomArray.pop())
-        } else {
-          let randomIndex = Math.floor(Math.random() * randomArray.length)
-          spawnArray.push(randomArray.splice(randomIndex, 1)[0])
-        }
-      }
-
-      return spawnArray
-    }
-
-    this.waveTimer.activate()
-    this.waveNumber++
-    console.log(`Spawning wave ${this.waveNumber}!`);
-    this.enemiesInWave = 0
-    let currentWave
-    if (this.waveList.hasOwnProperty(this.waveNumber)) { // @TODO fetching wave list should be handled by another method
-      currentWave = this.waveList[this.waveNumber]
-    } else {
-      currentWave = {
-        normal: this.waveNumber,
-        fast: this.waveNumber,
-      }
-    }
-    for (let numberOfEnemies of Object.values(currentWave)) {
-      this.enemiesInWave += numberOfEnemies
-    }
-
-    const newEnemies = []
-    let enemySpawnArray = randomizeSpawnArray(this.enemiesInWave)
-
-    for (let enemyType of Object.keys(currentWave)) {
-      for (let i = 0; i < currentWave[enemyType]; i++) {
-        // @TODO Allow for other unit types
-        let enemy = new Tank(this, enemyType)
-        this.placeEnemy(enemy, enemySpawnArray.pop())
-        const enemyTarget = this.getEnemyGoal(enemy)
-        enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
-        newEnemies.push(enemy)
-        this.enemies.push(enemy)
-      }
-    }
-
+  handleSpawnWave(newEnemies) {
+    this.enemies = this.enemies.concat(newEnemies)
     this.render(newEnemies)
 
     // for fun! To see how many enemies there are.
@@ -212,9 +133,22 @@ export default class Game {
     console.log("Total enemies:", this.enemies.length);
   }
 
-  placeEnemy(enemy, numEnemy) {
-    const enemyDistance = Math.floor(this.height / this.enemiesInWave)
+  placeNewEnemy(enemyType, enemiesInWave, numEnemy) {
+    // @TODO Allow for other unit types
+    let enemy = new Tank(this, enemyType)
+    this.placeEnemy(enemy, enemiesInWave, numEnemy)
+    const enemyTarget = enemy.getGoal()
+    enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+    return enemy
+  }
+
+  placeEnemy(enemy, enemiesInWave, numEnemy) {
+    const enemyDistance = Math.floor(this.height / enemiesInWave)
     enemy.jumpTo(this.width, numEnemy * enemyDistance)
+  }
+
+  spawnWaveEarly() {
+    this.gameListener.spawnWaveEarly()
   }
 
   /*
@@ -291,7 +225,7 @@ export default class Game {
       // @TODO? if enemy has no health, maybe have to kill enemy
       enemy.startRender()
       this.enemies.push(enemy)
-      const enemyTarget = this.getEnemyGoal(enemy)
+      const enemyTarget = enemy.getGoal()
       enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
     })
   }
@@ -320,12 +254,14 @@ export default class Game {
 
   @action updateAll(data) {
     console.log('Updating all');
+    console.log(data);
+    console.log('this.enemies.length:', this.enemies.length);
     this.clearEnemies()
     this.addEnemies(data.enemies)
     this.clearTowers()
     this.addTowers(data.towers)
     this.credits.current = data.credits
-    this.waveNumber = data.waveNumber
+    this.wave.setNumber(data.waveNumber)
   }
 
   endGame() {
@@ -333,13 +269,6 @@ export default class Game {
     this.clearTowers()
     this.clearEnemies()
     this.waveTimer = null
-  }
-
-  getEnemyGoal(enemy) {
-    return {
-      x: -enemy.width,
-      y: this.height / 2,
-    }
   }
 
   getRandomPosition() {

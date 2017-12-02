@@ -51,7 +51,7 @@ class GameListener {
       enemies: game.enemies,
       towers: game.towers,
       credits: game.credits.current,
-      waveNumber: game.waveNumber,
+      waveNumber: game.wave.number,
       gameSpeedMultiplier: performance,
     }
   }
