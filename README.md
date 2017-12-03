@@ -22,3 +22,11 @@ Instead of `start-debug`, to have the server restart automatically when making s
 This will also run the server in debug mode. Should not be used in production.
 
 Then visit `localhost:3000/game` to play the game!
+
+If your server (run with `npm run start-watch`) will not exit, run:
+
+    lsof -n | grep LISTEN
+
+And use the `kill` command to kill any node processes. Eg.
+
+    kill 82335
