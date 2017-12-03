@@ -129,6 +129,10 @@ export default class Game {
   commandUnits(units) {
     for (let i = units.length - 1; i >= 0; i--) {
       let unit = units[i]
+      if (unit.completed) { // assume it also has `removed = true`
+        const livesLeft = this.loseLife()
+        console.log(`Unit reached goal! Remaining lives: ${livesLeft}`);
+      }
       if (unit.removed) {
         units.splice(i, 1)
         continue

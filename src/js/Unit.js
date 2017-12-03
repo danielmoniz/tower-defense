@@ -19,6 +19,7 @@ class Unit {
   @observable display = true
   @observable disabled = false // setting to true disables and greys the unit
   @observable removed = false // setting to true allows for units to be removed from the game
+  @observable completed = false
   @observable maxHitPoints = 50
   @observable currentHitPoints
   @observable killValue // should be overridden
@@ -180,10 +181,8 @@ class Unit {
   }
 
   @action complete() {
+    this.completed = true
     this.destroy()
-    // @TODO Subtract from lives (and whatever else)
-    const livesLeft = this.game.loseLife()
-    console.log(`Unit reached goal! Remaining lives: ${livesLeft}`);
   }
 
   isAlive() {
