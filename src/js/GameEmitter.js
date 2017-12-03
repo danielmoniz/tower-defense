@@ -1,7 +1,7 @@
 
 import socketListeners from './socketListeners'
 
-class GameListener {
+class GameEmitter {
 
   constructor(game, server) {
     this.game = game
@@ -58,4 +58,4 @@ class GameListener {
   }
 }
 
-export default GameListener
+export default GameEmitter

@@ -49,7 +49,7 @@ export default class GameRenderer {
   addNewGame() {
     const newGameButton = document.querySelector("button#new-game")
     newGameButton.addEventListener('click', () => {
-      this.game.gameListener.addNewGame()
+      this.game.emitter.addNewGame()
     })
   }
 

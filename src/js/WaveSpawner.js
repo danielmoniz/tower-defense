@@ -2,7 +2,7 @@
 import { observable, action } from 'mobx'
 
 import Cooldown from './Cooldown'
-import Tank from './Tank'
+import Tank from './units/Tank'
 
 class WaveSpawner {
   @observable number = 0

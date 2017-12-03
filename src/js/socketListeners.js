@@ -1,6 +1,6 @@
 
-function setUpListeners(game, gameListener) {
-  gameListener.socket.on('update', () => {
+function setUpListeners(game, emitter) {
+  emitter.socket.on('update', () => {
     console.log('updating');
   })
 
@@ -39,7 +39,7 @@ function setUpListeners(game, gameListener) {
   })
 
   socket.on('poll for game number', () => {
-    gameListener.joinGame()
+    emitter.joinGame()
   })
 }
 

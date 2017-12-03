@@ -4,9 +4,9 @@ import { observable, computed, action, autorun } from 'mobx'
 import Cooldown from './Cooldown'
 import Unit from './Unit'
 import Cannon from './Cannon'
-import Tank from './Tank'
+import Tank from './units/Tank'
 import GameRenderer from './GameRenderer'
-import GameListener from './GameListener'
+import GameEmitter from './GameEmitter'
 import { UNIT_REFRESH_RATE } from './appConstants'
 import { setCorrectingInterval } from './utility/time'
 import WaveSpawner from './WaveSpawner'
@@ -35,7 +35,7 @@ export default class Game {
 
   constructor(runningOnServer) {
     this.runningOnServer = runningOnServer
-    this.gameListener = new GameListener(this, runningOnServer)
+    this.emitter = new GameEmitter(this, runningOnServer)
     this.wave = new WaveSpawner(
       this.handleSpawnWave.bind(this),
       this.placeNewEnemy.bind(this),
@@ -74,7 +74,7 @@ export default class Game {
   sendPlay() {
     if (!this.inProgress) { return }
     this.play()
-    this.gameListener.play()
+    this.emitter.play()
   }
 
   /*
@@ -90,7 +90,7 @@ export default class Game {
   sendPause() {
     if (!this.inProgress) { return }
     this.pause()
-    this.gameListener.pause()
+    this.emitter.pause()
   }
 
   @action pause() {
@@ -169,7 +169,7 @@ export default class Game {
 
   spawnWaveEarly() {
     if (!this.inProgress) { return }
-    this.gameListener.spawnWaveEarly()
+    this.emitter.spawnWaveEarly()
   }
 
   /*
@@ -209,7 +209,7 @@ export default class Game {
   sendPlaceTower() {
     const placedTower = this.placeTower()
     if (!placedTower) { return }
-    this.gameListener.placeTower(placedTower)
+    this.emitter.placeTower(placedTower)
   }
 
   placeTower(tower) {
