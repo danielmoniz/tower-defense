@@ -2,6 +2,7 @@
 import GameManager from '../GameManager'
 import Cooldown from '../Cooldown'
 import GameEmitter from './GameEmitter'
+import socketListeners from './socketListeners'
 
 class GameListener {
 
@@ -14,16 +15,11 @@ class GameListener {
     this.io.on('connection', (socket) => {
       console.log('a user connected');
       this.setUpListeners(socket)
-      this.pollForGameNumber(socket)
+      socketListeners(socket, this.emitter)
+
+      this.emitter.pollForGameNumber(socket)
     })
     this.setUpSyncer()
-  }
-
-  /*
-   * Ask player to join game. Helps if connection is lost (eg. server restart).
-   */
-  pollForGameNumber(socket) {
-    socket.emit('poll for game number')
   }
 
   setUpSyncer() {
@@ -130,12 +126,6 @@ class GameListener {
       console.log('spawning next wave');
       const newEnemies = socket.gameManager.game.wave.spawn()
       this.io.to(socket.roomId).emit('spawn wave', newEnemies)
-    })
-
-    socket.on('place tower', (tower) => {
-      console.log('placing tower at:', tower.x, tower.y);
-      socket.gameManager.game.placeTower(tower)
-      socket.broadcast.to(socket.roomId).emit('place tower', tower)
     })
   }
 }
