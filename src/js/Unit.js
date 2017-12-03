@@ -52,12 +52,6 @@ class Unit {
     const renderTools = getUnitRenderTools(this)
     Object.defineProperty(this, 'render', { value: renderTools, writable: true })
     // this.render = getUnitRenderTools(this)
-    if (game.runningOnServer) {
-      // this.startRender = () => {} // do nothing
-    } else {
-      // this.render = getUnitRenderTools(this)
-      // this.startRender = getUnitRenderTools(this) // adds the render methods to this class
-    }
   }
 
   /*
@@ -195,13 +189,6 @@ class Unit {
 
   getDistanceToPoint(x, y) {
     return Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2))
-  }
-
-  getGoal() {
-    return {
-      x: -this.width,
-      y: this.game.height / 2,
-    }
   }
 
 }

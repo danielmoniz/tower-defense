@@ -157,7 +157,7 @@ export default class Game {
     // @TODO Allow for other unit types
     let enemy = new Tank(this, enemyType)
     this.placeEnemy(enemy, enemiesInWave, numEnemy)
-    const enemyTarget = enemy.getGoal()
+    const enemyTarget = this.getEnemyGoal(enemy)
     enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
     return enemy
   }
@@ -248,7 +248,7 @@ export default class Game {
       // @TODO? if enemy has no health, maybe have to kill enemy
       enemy.startRender()
       this.enemies.push(enemy)
-      const enemyTarget = enemy.getGoal()
+      const enemyTarget = this.getEnemyGoal(enemy)
       enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
     })
   }
@@ -296,6 +296,13 @@ export default class Game {
 
   getRandomPosition() {
     return Math.floor(Math.random() * this.height)
+  }
+
+  getEnemyGoal(enemy) {
+    return {
+      x: -enemy.width,
+      y: this.height / 2,
+    }
   }
 
 }
