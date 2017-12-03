@@ -34,7 +34,7 @@ export default class GameRenderer {
   }
 
   addEventHandlers() {
-    this.addEscape()
+    this.addKeyPresses()
     this.addPause()
     this.addResume()
     this.addPlaceTower()
@@ -127,14 +127,14 @@ export default class GameRenderer {
     })
   }
 
-  addEscape() {
+  addKeyPresses() {
     document.addEventListener('keydown', (event) => {
-      console.log(event.key);
+      // console.log(event.key);
       if (event.key === 'Escape') {
         this.game.deselectAll()
       } else if (event.key === ' ') {
         event.preventDefault()
-        this.game.sendSpawnWave()
+        this.game.spawnWaveEarly()
       }
     })
   }
