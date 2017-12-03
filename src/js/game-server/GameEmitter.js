@@ -14,6 +14,10 @@ class GameEmitter {
   pollForGameNumber(socket) {
     socket.emit('poll for game number')
   }
+
+  spawnWave(gameNumber, newEnemies) {
+    this.io.to(gameNumber).emit('spawn wave', newEnemies)
+  }
 }
 
 export default GameEmitter
