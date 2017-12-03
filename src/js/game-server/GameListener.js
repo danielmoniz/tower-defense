@@ -61,6 +61,7 @@ class GameListener {
       credits: game.credits.current,
       waveNumber: game.wave.number,
       gameSpeedMultiplier: performance,
+      inProgress: game.inProgress,
     }
   }
 

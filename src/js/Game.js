@@ -82,7 +82,6 @@ export default class Game {
    * Ie. play vs pause rather than starting a new game.
    */
   play() {
-    if (!this.inProgress) { return }
     if (!this.control.run) {
       this.initializeLoop()
     }
@@ -274,14 +273,13 @@ export default class Game {
 
   @action updateAll(data) {
     console.log('Updating all');
-    console.log(data);
-    console.log('this.enemies.length:', this.enemies.length);
     this.clearEnemies()
     this.addEnemies(data.enemies)
     this.clearTowers()
     this.addTowers(data.towers)
     this.credits.current = data.credits
     this.wave.setNumber(data.waveNumber)
+    this.inProgress = data.inProgress
   }
 
   endGame() {
