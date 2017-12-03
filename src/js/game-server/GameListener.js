@@ -11,8 +11,16 @@ class GameListener {
     this.io.on('connection', (socket) => {
       console.log('a user connected');
       this.setUpListeners(socket)
+      this.pollForGameNumber(socket)
     })
     this.setUpSyncer()
+  }
+
+  /*
+   * Ask player to join game. Helps if connection is lost (eg. server restart).
+   */
+  pollForGameNumber(socket) {
+    socket.emit('poll for game number')
   }
 
   setUpSyncer() {
@@ -56,6 +64,23 @@ class GameListener {
     }
   }
 
+  joinGame(socket, gameNumber) {
+    socket.roomId = gameNumber
+    socket.join(gameNumber)
+    socket.broadcast.to(gameNumber).emit('user joins room')
+
+    let game = this.games[gameNumber];
+    console.log('Games:', Object.keys(this.games));
+    if (game === undefined) {
+      game = new Game('server')
+    } else {
+      console.log("Game already exists!");
+    }
+    socket.game = game
+    this.games[gameNumber] = game
+    this.syncPlayer(socket)
+  }
+
   setUpListeners(socket) {
     socket.on('new game', (gameNumber) => {
       // const game = this.games[gameNumber]
@@ -81,20 +106,7 @@ class GameListener {
     })
 
     socket.on('join game', (gameNumber) => {
-      socket.roomId = gameNumber
-      socket.join(gameNumber) // join room
-      socket.broadcast.to(gameNumber).emit('user joins room')
-
-      let game = this.games[gameNumber];
-      console.log('Games:', Object.keys(this.games));
-      if (game === undefined) {
-        game = new Game('server')
-      } else {
-        console.log("Game already exists!");
-      }
-      socket.game = game
-      this.games[gameNumber] = game
-      this.syncPlayer(socket)
+      this.joinGame(socket, gameNumber)
     })
 
     socket.on('pause', () => {

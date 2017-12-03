@@ -10,7 +10,7 @@ class GameListener {
       this.socket = socket
       this.gameNumber = document.querySelector('input[name=gameNumber]').value
       if (this.gameNumber) {
-        this.joinGame(this.gameNumber)
+        this.joinGame()
       } else {
         console.log("No game number. Failed to join game.");
       }
@@ -23,8 +23,8 @@ class GameListener {
     socketListeners(this.game, this)
   }
 
-  joinGame(gameNumber) {
-    this.emit('join game', gameNumber)
+  joinGame() {
+    this.emit('join game', this.gameNumber)
   }
 
   addNewGame() {

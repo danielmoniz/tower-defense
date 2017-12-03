@@ -36,6 +36,10 @@ function setUpListeners(game, gameListener) {
   socket.on('spawn wave', () => {
     game.wave.spawn()
   })
+
+  socket.on('poll for game number', () => {
+    gameListener.joinGame()
+  })
 }
 
 export default setUpListeners
