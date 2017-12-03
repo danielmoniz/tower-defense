@@ -22,6 +22,7 @@ export default class Game {
     current: 55,
   }
   @observable lives = 20
+  @observable inProgress = false
 
   @observable control = {
     run: false,
@@ -58,6 +59,7 @@ export default class Game {
   }
 
   start() {
+    this.inProgress = true
     this.reset()
     this.play()
     this.wave.initializeWaveTimer()
@@ -70,22 +72,30 @@ export default class Game {
   }
 
   sendPlay() {
+    if (!this.inProgress) { return }
     this.play()
     this.gameListener.play()
   }
 
+  /*
+   * Simply starts the game loop. Does NOT actually start the game.
+   * Ie. play vs pause rather than starting a new game.
+   */
   play() {
+    if (!this.inProgress) { return }
     if (!this.control.run) {
       this.initializeLoop()
     }
   }
 
   sendPause() {
+    if (!this.inProgress) { return }
     this.pause()
     this.gameListener.pause()
   }
 
   @action pause() {
+    if (!this.inProgress) { return }
     this.control.run = false
   }
 
@@ -155,6 +165,7 @@ export default class Game {
   }
 
   spawnWaveEarly() {
+    if (!this.inProgress) { return }
     this.gameListener.spawnWaveEarly()
   }
 
@@ -162,6 +173,7 @@ export default class Game {
    * Selects a new (disabled/inactive) cannon to be placed on the map.
    */
   selectNewCannon() {
+    if (!this.inProgress) { return }
     this.placingTower = Unit.create(Cannon, this)
     return this.placingTower
   }
@@ -198,6 +210,7 @@ export default class Game {
   }
 
   placeTower(tower) {
+    if (!this.inProgress) { return }
     const placingTower = tower || this.placingTower
     if (!placingTower) { return }
 
@@ -276,6 +289,7 @@ export default class Game {
     this.clearTowers()
     this.clearEnemies()
     this.waveTimer = null
+    this.inProgress = false
   }
 
   getRandomPosition() {
