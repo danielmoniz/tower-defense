@@ -1,0 +1,50 @@
+
+.bullet {
+  width: 20px;
+  height: 20px;
+  /*border: 2px solid black;*/
+  border-radius: 50%;
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  transform: scaleX(-1);
+
+  animation-duration: 2s;
+  animation-name: shoot-bullet;
+  animation-iteration-count: infinite;
+  /*animation-direction: alternate;*/
+  animation-timing-function: linear;
+}
+
+@keyframes shoot-bullet {
+
+  to {
+    left: 1000px;
+    width: 0;
+    height: 0;
+    left: 975px
+    top: 5px;
+  }
+
+  92% {
+    width: 20px;
+    height: 20px;
+    left: 1000px;
+    top: 30px;
+    background-color: white;
+    visibility: visible;
+  }
+
+  94% {
+    background-color: yellow;
+  }
+
+  96% {
+    width: 60px;
+    height: 60px;
+    left: 975px;
+    top: 5px;
+    background-color: red;
+    visibility: hidden;
+  }
+}
