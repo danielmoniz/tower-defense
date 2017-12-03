@@ -4,7 +4,7 @@ import Cooldown from '../Cooldown'
 import GameEmitter from './GameEmitter'
 import socketListeners from './socketListeners'
 
-class GameListener {
+class GameServer {
 
   constructor(io) {
     this.io = io
@@ -83,17 +83,6 @@ class GameListener {
 
   setUpListeners(socket) {
     socket.on('new game', (gameNumber) => {
-      // const game = this.gameManagers[gameNumber]
-      // if (!game) {
-      //   console.log('Game not found!');
-      //   // @TODO Create new one?
-      //   return
-      // }
-
-      // if (socket.game) {
-      //   socket.game.pause()
-      //   delete socket.game
-      // }
       socket.gameManager.start()
       // @TODO should only go to this game/room specifically
       this.emitter.startGame(gameNumber)
@@ -109,19 +98,7 @@ class GameListener {
     socket.on('join game', (gameNumber) => {
       this.joinGame(socket, gameNumber)
     })
-
-    socket.on('pause', () => {
-      console.log('pausing');
-      socket.gameManager.game.pause()
-      socket.broadcast.to(socket.roomId).emit('pause')
-    })
-
-    socket.on('play', () => {
-      console.log('playing');
-      socket.gameManager.game.play()
-      socket.broadcast.to(socket.roomId).emit('play')
-    })
   }
 }
 
-module.exports = GameListener
+module.exports = GameServer

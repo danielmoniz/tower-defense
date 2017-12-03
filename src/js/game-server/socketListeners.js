@@ -11,4 +11,16 @@ export default function socketListeners(socket, emitter) {
     const newEnemies = socket.gameManager.game.wave.spawn()
     emitter.spawnWave(socket.roomId, newEnemies)
   })
+
+  socket.on('pause', () => {
+    console.log('pausing');
+    socket.gameManager.game.pause()
+    emitter.pause(socket)
+  })
+
+  socket.on('play', () => {
+    console.log('playing');
+    socket.gameManager.game.play()
+    emitter.play(socket)
+  })
 }

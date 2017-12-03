@@ -18,6 +18,14 @@ class GameEmitter {
   spawnWave(gameNumber, newEnemies) {
     this.io.to(gameNumber).emit('spawn wave', newEnemies)
   }
+
+  play(socket) {
+    socket.broadcast.to(socket.roomId).emit('play')
+  }
+
+  pause(socket) {
+    socket.broadcast.to(socket.roomId).emit('pause')
+  }
 }
 
 export default GameEmitter
