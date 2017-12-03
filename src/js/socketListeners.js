@@ -1,5 +1,6 @@
 
 function setUpListeners(game, emitter) {
+  if (!emitter) { return }
   emitter.socket.on('update', () => {
     console.log('updating');
   })

@@ -14,13 +14,7 @@ class GameEmitter {
       } else {
         console.log("No game number. Failed to join game.");
       }
-
-      this.setUpListeners()
     }
-  }
-
-  setUpListeners() {
-    socketListeners(this.game, this)
   }
 
   joinGame() {

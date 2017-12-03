@@ -33,9 +33,9 @@ export default class Game {
   width = 700
   tickLength = 500
 
-  constructor(runningOnServer) {
+  constructor(emitter, runningOnServer) {
     this.runningOnServer = runningOnServer
-    this.emitter = new GameEmitter(this, runningOnServer)
+    this.emitter = emitter
     this.wave = new WaveSpawner(
       this.handleSpawnWave.bind(this),
       this.placeNewEnemy.bind(this),

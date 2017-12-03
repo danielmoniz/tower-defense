@@ -1,10 +1,9 @@
 import { useStrict } from 'mobx'
 
-import Game from './Game'
+import GameManager from './GameManager'
 
 useStrict(true)
 
 socket.emit('latency', Date.now())
 
-let game = new Game()
-game.play()
+let gameManager = new GameManager()

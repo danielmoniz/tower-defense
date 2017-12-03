@@ -1,12 +1,12 @@
 
-import Game from '../Game'
+import GameManager from '../GameManager'
 import Cooldown from '../Cooldown'
 
 class GameListener {
 
   constructor(io) {
     this.io = io
-    this.games = {}
+    this.gameManagers = {}
     // this.users = {}
     this.io.on('connection', (socket) => {
       console.log('a user connected');
@@ -41,9 +41,9 @@ class GameListener {
   syncGames() {
     // console.log('Updating all games');
     const performance = this.updateCooldown.performance
-    Object.keys(this.games).forEach((gameId) => {
-      const game = this.games[gameId]
-      this.io.to(gameId).emit('update all', this.getGameData(game))
+    Object.keys(this.gameManagers).forEach((gameId) => {
+      const gameManager = this.gameManagers[gameId]
+      this.io.to(gameId).emit('update all', this.getGameData(gameManager.game))
     })
   }
 
@@ -51,7 +51,7 @@ class GameListener {
    * Update a the game for a single player (usually a newly entered player).
    */
   syncPlayer(socket) {
-    socket.emit('update all', this.getGameData(socket.game))
+    socket.emit('update all', this.getGameData(socket.gameManager.game))
   }
 
   getGameData(game, performance=1) {
@@ -70,21 +70,21 @@ class GameListener {
     socket.join(gameNumber)
     socket.broadcast.to(gameNumber).emit('user joins room')
 
-    let game = this.games[gameNumber];
-    console.log('Games:', Object.keys(this.games));
-    if (game === undefined) {
-      game = new Game('server')
+    let gameManager = this.gameManagers[gameNumber];
+    console.log('Games:', Object.keys(this.gameManagers));
+    if (gameManager === undefined) {
+      gameManager = new GameManager('server')
     } else {
       console.log("Game already exists!");
     }
-    socket.game = game
-    this.games[gameNumber] = game
+    socket.gameManager = gameManager
+    this.gameManagers[gameNumber] = gameManager
     this.syncPlayer(socket)
   }
 
   setUpListeners(socket) {
     socket.on('new game', (gameNumber) => {
-      // const game = this.games[gameNumber]
+      // const game = this.gameManagers[gameNumber]
       // if (!game) {
       //   console.log('Game not found!');
       //   // @TODO Create new one?
@@ -95,7 +95,7 @@ class GameListener {
       //   socket.game.pause()
       //   delete socket.game
       // }
-      socket.game.start()
+      socket.gameManager.start()
       // @TODO should only go to this game/room specifically
       this.io.to(gameNumber).emit('start game', Date.now())
     })
@@ -112,25 +112,25 @@ class GameListener {
 
     socket.on('pause', () => {
       console.log('pausing');
-      socket.game.pause()
+      socket.gameManager.game.pause()
       socket.broadcast.to(socket.roomId).emit('pause')
     })
 
     socket.on('play', () => {
       console.log('playing');
-      socket.game.play()
+      socket.gameManager.game.play()
       socket.broadcast.to(socket.roomId).emit('play')
     })
 
     socket.on('spawn wave early', () => {
       console.log('spawning next wave');
-      const newEnemies = socket.game.wave.spawn()
+      const newEnemies = socket.gameManager.game.wave.spawn()
       this.io.to(socket.roomId).emit('spawn wave', newEnemies)
     })
 
     socket.on('place tower', (tower) => {
       console.log('placing tower at:', tower.x, tower.y);
-      socket.game.placeTower(tower)
+      socket.gameManager.game.placeTower(tower)
       socket.broadcast.to(socket.roomId).emit('place tower', tower)
     })
   }
