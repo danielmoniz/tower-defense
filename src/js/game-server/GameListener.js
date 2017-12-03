@@ -124,8 +124,8 @@ class GameListener {
 
     socket.on('spawn wave early', () => {
       console.log('spawning next wave');
-      socket.game.wave.spawn()
-      this.io.to(socket.roomId).emit('spawn wave')
+      const newEnemies = socket.game.wave.spawn()
+      this.io.to(socket.roomId).emit('spawn wave', newEnemies)
     })
 
     socket.on('place tower', (tower) => {

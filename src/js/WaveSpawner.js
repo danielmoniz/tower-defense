@@ -62,6 +62,9 @@ class WaveSpawner {
   @action spawn() { // @TODO spawn box/timer so that all enemies don't appear simultaneously?
     this.cooldown.activate()
     this.increment()
+
+    if (!this.runningOnServer) { return } // force server to spawn units
+
     console.log(`Spawning wave ${this.number}!`);
     this.enemiesInWave = 0
 
@@ -90,6 +93,7 @@ class WaveSpawner {
     }
 
     this.gameCallback(newEnemies)
+    return newEnemies
   }
 
 
