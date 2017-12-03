@@ -241,9 +241,7 @@ export default class Game {
     enemies.forEach((enemyData) => {
       // @TODO Allow for other unit types
       let enemy = new Tank(this, enemyData.name)
-      Object.keys(enemyData).forEach((datum) => {
-        enemy.setAttr(datum, enemyData[datum])
-      })
+      this.buildEntityFromData(enemy, enemyData)
 
       // @TODO? if enemy has no health, maybe have to kill enemy
       enemy.startRender()
@@ -264,15 +262,20 @@ export default class Game {
     towers.forEach((towerData) => {
       // @TODO Allow for other tower types
       let tower = new Cannon(this, towerData.name)
-      Object.keys(towerData).forEach((datum) => {
-        if (datum in ['target']) { return }
-        tower.setAttr(datum, towerData[datum])
-      })
+      this.buildEntityFromData(tower, towerData)
 
       tower.startRender()
       tower.selectTarget() // unnecessary, but can be smoother
       this.towers.push(tower)
     })
+  }
+
+  buildEntityFromData(entity, data) {
+    Object.keys(data).forEach((datum) => {
+      if (datum in ['target']) { return } // ignore certain keys
+      entity.setAttr(datum, data[datum])
+    })
+    return entity
   }
 
   @action updateAll(data) {
@@ -292,10 +295,6 @@ export default class Game {
     this.clearEnemies()
     this.waveTimer = null
     this.inProgress = false
-  }
-
-  getRandomPosition() {
-    return Math.floor(Math.random() * this.height)
   }
 
   getEnemyGoal(enemy) {
