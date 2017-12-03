@@ -1,11 +1,14 @@
 
 import GameManager from '../GameManager'
 import Cooldown from '../Cooldown'
+import GameEmitter from './GameEmitter'
 
 class GameListener {
 
   constructor(io) {
     this.io = io
+    this.emitter = new GameEmitter(io)
+
     this.gameManagers = {}
     // this.users = {}
     this.io.on('connection', (socket) => {
@@ -97,7 +100,8 @@ class GameListener {
       // }
       socket.gameManager.start()
       // @TODO should only go to this game/room specifically
-      this.io.to(gameNumber).emit('start game', Date.now())
+      this.emitter.startGame(gameNumber)
+      // this.io.to(gameNumber).emit('start game', Date.now())
     })
 
     socket.on('latency', (thereTime) => {
