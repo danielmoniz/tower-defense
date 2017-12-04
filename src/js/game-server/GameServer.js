@@ -42,7 +42,9 @@ class GameServer {
     const performance = this.updateCooldown.performance
     Object.keys(this.gameManagers).forEach((gameId) => {
       const gameManager = this.gameManagers[gameId]
-      this.io.to(gameId).emit('update all', this.getGameData(gameManager.game))
+      if (gameManager.gameInProgress()) { // only update games in progress
+        this.io.to(gameId).emit('update all', this.getGameData(gameManager.game))
+      }
     })
   }
 
@@ -50,7 +52,10 @@ class GameServer {
    * Update a the game for a single player (usually a newly entered player).
    */
   syncPlayer(socket) {
-    socket.emit('update all', this.getGameData(socket.gameManager.game))
+    const gameManager = this.gameManagers[socket.roomId]
+    if (gameManager.gameInProgress()) {
+      socket.emit('update all', this.getGameData(socket.gameManager.game))
+    }
   }
 
   getGameData(game, performance=1) {

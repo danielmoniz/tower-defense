@@ -19,7 +19,11 @@ class GameManager {
   }
 
   destroyGame() {
-    // delete this.game
+    delete this.game
+  }
+
+  gameInProgress() {
+    return this.game && this.game.inProgress
   }
 }
 
