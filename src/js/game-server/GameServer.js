@@ -14,8 +14,9 @@ class GameServer {
     // this.users = {}
     this.io.on('connection', (socket) => {
       console.log('a user connected');
-      this.setUpListeners(socket)
-      socketListeners(socket, this.emitter)
+      socketListeners(socket, this.emitter, {
+        joinGame: this.joinGame.bind(this),
+      })
 
       this.emitter.pollForGameNumber(socket)
     })
@@ -24,7 +25,6 @@ class GameServer {
 
   setUpSyncer() {
     const syncInterval = 4000, tickInterval = 1000
-    console.log('Setting up syncer');
     this.updateCooldown = new Cooldown(syncInterval, {
       callback: this.syncGames.bind(this),
       autoActivate: true,
@@ -79,25 +79,6 @@ class GameServer {
     socket.gameManager = gameManager
     this.gameManagers[gameNumber] = gameManager
     this.syncPlayer(socket)
-  }
-
-  setUpListeners(socket) {
-    socket.on('new game', (gameNumber) => {
-      socket.gameManager.start()
-      // @TODO should only go to this game/room specifically
-      this.emitter.startGame(gameNumber)
-      // this.io.to(gameNumber).emit('start game', Date.now())
-    })
-
-    socket.on('latency', (thereTime) => {
-      var nowTime = Date.now()
-      var oneWayLatency = nowTime - thereTime
-      console.log('Latency (one-way):', oneWayLatency, 'ms');
-    })
-
-    socket.on('join game', (gameNumber) => {
-      this.joinGame(socket, gameNumber)
-    })
   }
 }
 

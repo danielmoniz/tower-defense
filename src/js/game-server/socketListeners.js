@@ -1,5 +1,5 @@
 
-export default function socketListeners(socket, emitter) {
+export default function socketListeners(socket, emitter, serverFunctions) {
   socket.on('place tower', (tower) => {
     console.log('placing tower at:', tower.x, tower.y);
     socket.gameManager.game.placeTower(tower)
@@ -22,5 +22,21 @@ export default function socketListeners(socket, emitter) {
     console.log('playing');
     socket.gameManager.game.play()
     emitter.play(socket)
+  })
+
+  socket.on('new game', (gameNumber) => {
+    socket.gameManager.start()
+    // @TODO should only go to this game/room specifically
+    emitter.startGame(gameNumber)
+  })
+
+  socket.on('latency', (thereTime) => {
+    var nowTime = Date.now()
+    var oneWayLatency = nowTime - thereTime
+    console.log('Latency (one-way):', oneWayLatency, 'ms');
+  })
+
+  socket.on('join game', (gameNumber) => {
+    serverFunctions.joinGame(socket, gameNumber)
   })
 }
