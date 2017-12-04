@@ -17,6 +17,11 @@ class GameManager {
   start() {
     this.game.start()
   }
+
+  destroyGame() {
+    this.game.endGame()
+    delete this.game
+  }
 }
 
 export default GameManager

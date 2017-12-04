@@ -80,6 +80,10 @@ class GameServer {
     this.gameManagers[gameNumber] = gameManager
     this.syncPlayer(socket)
   }
+
+  endGame(gameNumber) {
+    this.gameManagers[gameNumber].destroyGame()
+  }
 }
 
 module.exports = GameServer
