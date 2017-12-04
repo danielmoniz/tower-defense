@@ -33,7 +33,8 @@ export default class Game {
   width = 700
   tickLength = 500
 
-  constructor(emitter, runningOnServer) {
+  constructor(emitter, endGameCallback, runningOnServer) {
+    this.endGameCallback = endGameCallback
     this.runningOnServer = runningOnServer
     this.emitter = emitter
     this.wave = new WaveSpawner(
@@ -109,6 +110,7 @@ export default class Game {
       this.commandUnits(this.towers)
       if (this.lives <= 0) {
         this.endGame()
+        this.endGameCallback() // could possibly pass scores/end-state here
       }
     }, UNIT_REFRESH_RATE, this.control)
   }

@@ -9,7 +9,7 @@ class GameManager {
     if (!runningOnServer) { // @TODO should use the server emitter if on server
       emitter = new GameEmitter()
     }
-    this.game = new Game(emitter, runningOnServer)
+    this.game = new Game(emitter, this.destroyGame.bind(this), runningOnServer)
     socketListeners(this.game, emitter)
     this.game.play()
   }
@@ -19,8 +19,7 @@ class GameManager {
   }
 
   destroyGame() {
-    this.game.endGame()
-    delete this.game
+    // delete this.game
   }
 }
 
