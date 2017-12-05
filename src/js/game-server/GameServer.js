@@ -11,8 +11,14 @@ class GameServer {
     this.emitter = new GameEmitter(io)
 
     this.gameManagers = {}
-    // this.users = {}
+    this.users = getObjectProxy()
+
     this.io.on('connection', (socket) => {
+      socket.on('disconnect', () => {
+        console.log('a user disconnected');
+        this.removeUser(socket.id, socket.roomId)
+        this.clearGameIfEmpty(socket.roomId)
+      })
       console.log('a user connected');
       socketListeners(socket, this.emitter, {
         joinGame: this.joinGame.bind(this),
@@ -83,12 +89,46 @@ class GameServer {
     }
     socket.gameManager = gameManager
     this.gameManagers[gameNumber] = gameManager
+    console.log(socket.id);
+    this.addUser(socket.id, gameNumber)
     this.syncPlayer(socket)
+  }
+
+  addUser(id, gameNumber) {
+    const users = this.users[gameNumber]
+    if (users.indexOf(id) === -1) {
+      users.push(id)
+      this.users[gameNumber] = users
+    }
+    console.log(this.users);
+  }
+
+  removeUser(id, gameNumber) {
+    const index = this.users[gameNumber].indexOf(id)
+    if (index === -1) { return }
+    this.users[gameNumber].splice(index, 1)
+    console.log(this.users);
+  }
+
+  clearGameIfEmpty(gameNumber) {
+    const gameManager = this.gameManagers[gameNumber]
+    if (this.users[gameNumber].length === 0) {
+      gameManager.destroyGame()
+      delete this.users[gameNumber]
+    }
   }
 
   endGame(gameNumber) {
     this.gameManagers[gameNumber].destroyGame()
   }
+}
+
+function getObjectProxy() {
+  return new Proxy({}, {
+    get: function(object, property) {
+      return object.hasOwnProperty(property) ? object[property] : []
+    },
+  })
 }
 
 module.exports = GameServer
