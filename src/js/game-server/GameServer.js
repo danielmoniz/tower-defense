@@ -10,13 +10,15 @@ class GameServer {
     this.io = io
     this.emitter = new GameEmitter(io)
 
+    // @TODO May want to store both in same object to avoid desyncing of user/game data
     this.gameManagers = {}
     this.users = getObjectProxy()
+    this.timeouts = {}
 
     this.io.on('connection', (socket) => {
       socket.on('disconnect', () => {
         console.log('a user disconnected');
-        this.removeUser(socket.id, socket.roomId)
+        this.removeUserFromGame(socket.id, socket.roomId)
         this.clearGameIfEmpty(socket.roomId)
       })
       console.log('a user connected');
@@ -87,23 +89,25 @@ class GameServer {
     } else {
       console.log("Game already exists!");
     }
+    this.removeClearGameTimeout(gameNumber)
     socket.gameManager = gameManager
     this.gameManagers[gameNumber] = gameManager
     console.log(socket.id);
-    this.addUser(socket.id, gameNumber)
+    this.addUserToGame(socket.id, gameNumber)
     this.syncPlayer(socket)
   }
 
-  addUser(id, gameNumber) {
+  addUserToGame(id, gameNumber) {
     const users = this.users[gameNumber]
     if (users.indexOf(id) === -1) {
       users.push(id)
       this.users[gameNumber] = users
+      this.removeClearGameTimeout(gameNumber)
     }
     console.log(this.users);
   }
 
-  removeUser(id, gameNumber) {
+  removeUserFromGame(id, gameNumber) {
     const index = this.users[gameNumber].indexOf(id)
     if (index === -1) { return }
     this.users[gameNumber].splice(index, 1)
@@ -113,9 +117,18 @@ class GameServer {
   clearGameIfEmpty(gameNumber) {
     const gameManager = this.gameManagers[gameNumber]
     if (this.users[gameNumber].length === 0) {
-      gameManager.destroyGame()
-      delete this.users[gameNumber]
+      // Trigger 30 second timeout - destroy game after that
+      this.timeouts[gameNumber] = setTimeout(() => {
+        gameManager.game.endGame()
+        gameManager.destroyGame()
+        delete this.gameManagers[gameNumber]
+      }, 30000)
     }
+  }
+
+  removeClearGameTimeout(gameNumber) {
+    clearTimeout(this.timeouts[gameNumber])
+    delete this.timeouts[gameNumber]
   }
 
   endGame(gameNumber) {
