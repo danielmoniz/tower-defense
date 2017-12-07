@@ -89,6 +89,13 @@ class Cooldown {
   }
 
   /*
+   * Set timePassed to a new value (required for game updates/corrections).
+   */
+  setTimePassed(newTime) {
+    this.timePassed = newTime
+  }
+
+  /*
    * Calculates some metrics for performance purposes.
    * Used for determining which devices (clients/server) are running slow.
    */

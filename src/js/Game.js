@@ -268,6 +268,7 @@ export default class Game {
 
       tower.startRender()
       tower.selectTarget() // unnecessary, but can be smoother
+      tower.cooldown.setTimePassed(towerData.cooldown.timePassed)
       this.towers.push(tower)
     })
   }
