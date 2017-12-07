@@ -274,7 +274,7 @@ export default class Game {
 
   buildEntityFromData(entity, data) {
     Object.keys(data).forEach((datum) => {
-      if (datum in ['target']) { return } // ignore certain keys
+      if (['target', 'cooldown'].indexOf(datum) !== -1) { return } // ignore certain keys
       entity.setAttr(datum, data[datum])
     })
     return entity

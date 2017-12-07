@@ -25,9 +25,7 @@ export default class Cannon extends Unit {
     this.display = false // towers start invisible due to being unplaced
 
     // note that a change of cooldownLength will not affect the cooldown automatically! (@TODO fix this)
-    // ensure cooldown is not enumerable
-    const cooldown = new Cooldown(this.cooldownLength)
-    Object.defineProperty(this, 'cooldown', { value: cooldown, writable: true })
+    this.cooldown = new Cooldown(this.cooldownLength)
   }
 
   @action place() {

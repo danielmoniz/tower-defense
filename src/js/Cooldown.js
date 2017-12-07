@@ -23,6 +23,12 @@ class Cooldown {
     }
   }
 
+  toJSON() {
+    return {
+      timePassed: this.timePassed,
+    }
+  }
+
   /*
    * Increment time. Main function. Cooldown will become ready or closer to use.
    */
