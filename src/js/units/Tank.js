@@ -1,8 +1,8 @@
 
 import { GRID_SIZE } from '../appConstants'
-import Unit from './Unit'
+import Enemy from './Enemy'
 
-export default class Tank extends Unit {
+export default class Tank extends Enemy {
   constructor(game, enemyType) { // options moved to this constructor, not super
     super(game)
     let enemyTypes = {

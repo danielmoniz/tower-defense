@@ -4,9 +4,6 @@ import { observable, computed, action, autorun } from 'mobx'
 import { UNIT_REFRESH_RATE } from '../appConstants'
 import getUnitRenderTools from '../client/UnitRenderer'
 
-// this should come from an environment variable so the server can run code without rendering
-const RENDER_UNITS = true
-
 let ID = 1
 
 class Unit {
@@ -15,14 +12,11 @@ class Unit {
   @observable y = 0
   @observable id
   @observable name
-  @observable speed = 100 // pixels per second
   @observable display = true
   @observable disabled = false // setting to true disables and greys the unit
   @observable removed = false // setting to true allows for units to be removed from the game
-  @observable completed = false
   @observable maxHitPoints = 50
   @observable currentHitPoints
-  @observable killValue // should be overridden
 
   constructor(game, options) {
     options = options || {}
@@ -31,8 +25,6 @@ class Unit {
 
     // add a reference to game which avoids circular referencing
     Object.defineProperty(this, 'game', { value: game, writable: true})
-
-    this.movementId = undefined
 
     // set defaults
     this.width = undefined // must override
@@ -51,7 +43,6 @@ class Unit {
     // ensure unit.render() is not treated as data
     const renderTools = getUnitRenderTools(this)
     Object.defineProperty(this, 'render', { value: renderTools, writable: true })
-    // this.render = getUnitRenderTools(this)
   }
 
   /*
@@ -106,55 +97,6 @@ class Unit {
   }
 
   /*
-   * Clears the movement for the unit. Needs a new target before moving again.
-   */
-  @action clearMovement() {
-    delete this.act
-  }
-
-  /*
-   * This method should set a new move target for the unit.
-   * It should NOT actually trigger the unit to move if stopped.
-   * If the unit is already moving, it ensures they continue in the new direction.
-   */
-  @action setMoveTarget(finalX, finalY) {
-    this.act = () => {
-      const reachedGoal = this.moveXAndY(finalX, finalY)
-      if (reachedGoal) {
-        this.complete() // assumes enemies only get one goal
-      }
-    }
-    if (this.movementId) { // if already moving, continue in a new direction
-      this.startMovement()
-    }
-  }
-
-  /*
-   * Moves the unit by one 'turn' or tick. They should move up to their speed (or less
-   * if they are close to their objective).
-   */
-  @action moveXAndY(finalX, finalY) {
-    if (this.x === finalX && this.y === finalY) {
-      return true
-    }
-
-    const actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE)
-
-    // use polar coordinates to generate X and Y given target destination
-    const deltaX = finalX - this.x
-    const deltaY = finalY - this.y
-    let distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
-    distance = Math.min(actualSpeed, distance)
-    const angle = this.getAngleToPoint(finalX, finalY)
-
-    const xMovement = distance * Math.cos(angle)
-    const yMovement = distance * Math.sin(angle)
-
-    this.x += xMovement
-    this.y += yMovement
-  }
-
-  /*
    * Makes the unit take damage.
    * Returns true if the unit is killed.
    */
@@ -171,11 +113,6 @@ class Unit {
 
   @action kill() {
     // @TODO should explode
-    this.destroy()
-  }
-
-  @action complete() {
-    this.completed = true
     this.destroy()
   }
 
