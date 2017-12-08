@@ -52,7 +52,6 @@ class GameServer {
       const gameManager = this.gameManagers[gameId]
       if (gameManager.gameInProgress()) { // only update games in progress
         const gameData = this.getGameData(gameManager.game)
-        console.log(JSON.stringify(gameData));
         this.io.to(gameId).emit('update all', gameData)
       }
     })

@@ -1,7 +1,7 @@
 
 import Game from './Game'
-import GameEmitter from './GameEmitter'
-import socketListeners from './socketListeners'
+import GameEmitter from './client/GameEmitter'
+import socketListeners from './client/socketListeners'
 
 class GameManager {
   constructor(runningOnServer) {
