@@ -2,8 +2,8 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import Cooldown from './Cooldown'
-import Unit from './Unit'
-import Cannon from './Cannon'
+import Unit from './units/Unit'
+import Cannon from './units/Cannon'
 import Tank from './units/Tank'
 import GameRenderer from './client/GameRenderer'
 import GameEmitter from './client/GameEmitter'
