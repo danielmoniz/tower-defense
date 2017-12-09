@@ -226,6 +226,7 @@ export default class Game {
 
   addEnemies(enemies) {
     enemies.forEach((enemyData) => {
+      if (enemyData.currentHitPoints <= 0) { return }
       // @TODO Allow for other unit types
       let enemy = new Tank(this, enemyData.name)
       this.buildEntityFromData(enemy, enemyData)
