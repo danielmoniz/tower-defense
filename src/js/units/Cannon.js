@@ -6,8 +6,8 @@ import Unit from './Unit'
 import Cooldown from '../Cooldown'
 
 export default class Cannon extends Unit {
-  @observable attackPower = 110
-  @observable cooldownLength = 100
+  @observable attackPower = 11
+  @observable cooldownLength = 1000
   @observable range = 300 // pixels
   @observable target = undefined
   @observable purchaseCost = 25
