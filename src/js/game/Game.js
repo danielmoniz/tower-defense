@@ -1,15 +1,15 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
-import Cooldown from './Cooldown'
-import Unit from './units/Unit'
-import Cannon from './units/Cannon'
-import Tank from './units/Tank'
-import GameRenderer from './client/GameRenderer'
-import GameEmitter from './client/GameEmitter'
-import { UNIT_REFRESH_RATE } from './appConstants'
-import { setCorrectingInterval } from './utility/time'
-import WaveSpawner from './WaveSpawner'
+import Cooldown from '../Cooldown'
+import Unit from '../units/Unit'
+import Cannon from '../units/Cannon'
+import Tank from '../units/Tank'
+import GameRenderer from '../client/GameRenderer'
+import GameEmitter from '../client/GameEmitter'
+import { UNIT_REFRESH_RATE } from '../appConstants'
+import { setCorrectingInterval } from '../utility/time'
+import WaveSpawner from '../WaveSpawner'
 
 export default class Game {
   @observable placingTower = false
@@ -282,9 +282,12 @@ export default class Game {
   }
 
   @action updateAll(data) {
+    console.log(this.enemies.length);
     console.log('Updating all');
     this.clearEnemies()
     this.addEnemies(data.enemies)
+    console.log(this.enemies.length);
+    console.log('---');
     this.clearTowers()
     this.addTowers(data.towers)
     this.credits.current = data.credits

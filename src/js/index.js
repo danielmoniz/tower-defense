@@ -6,4 +6,10 @@ useStrict(true)
 
 socket.emit('latency', Date.now())
 
-let gameManager = new GameManager()
+const gameNumber = document.querySelector('input[name=gameNumber]').value
+let gameType
+if (gameNumber === 'solo') {
+  gameType = 'solo'
+}
+
+let gameManager = new GameManager(false, gameType)
