@@ -1,6 +1,4 @@
 
-import socketListeners from './socketListeners'
-
 class GameEmitter {
 
   constructor(game, server) {

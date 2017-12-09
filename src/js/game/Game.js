@@ -33,14 +33,16 @@ export default class Game {
   width = 700
   tickLength = 500
 
-  constructor(emitter, endGameCallback, runningOnServer) {
+  constructor(emitter, endGameCallback, runningOnServer, isSolo) {
     this.endGameCallback = endGameCallback
     this.runningOnServer = runningOnServer
+    this.solo = isSolo
     this.emitter = emitter
     this.wave = new WaveSpawner(
       this.handleSpawnWave.bind(this),
       this.placeNewEnemy.bind(this),
       runningOnServer,
+      isSolo,
     )
 
     if (!this.runningOnServer) {
@@ -53,6 +55,10 @@ export default class Game {
       delayActivation: true,
       softReset: true,
     })
+  }
+
+  newGame() {
+    this.start()
   }
 
   setupUI() {
@@ -72,36 +78,22 @@ export default class Game {
     this.credits.current = this.credits.start
   }
 
-  sendPlay() {
-    if (!this.inProgress) { return }
-    this.play()
-    this.emitter.play()
-  }
-
   /*
    * Simply starts the game loop. Does NOT actually start the game.
    * Ie. play vs pause rather than starting a new game.
    */
   play() {
-    if (!this.control.run) {
-      this.initializeLoop()
-    }
-  }
-
-  sendPause() {
-    if (!this.inProgress) { return }
-    this.pause()
-    this.emitter.pause()
+    if (this.control.run) { return }
+    this.control.run = true
+    this.initializeLoop()
   }
 
   @action pause() {
-    if (!this.inProgress) { return }
     this.control.run = false
   }
 
   initializeLoop() {
     // handle moving units, tower scanning, spawning waves, etc.
-    this.control.run = true
     return setCorrectingInterval(() => {
       // console.log('---');
       this.checkPerformance()
@@ -145,6 +137,10 @@ export default class Game {
     }
   }
 
+  spawnWave(newEnemies) {
+    this.wave.spawn()
+  }
+
   handleSpawnWave(newEnemies) {
     this.enemies = this.enemies.concat(newEnemies)
     this.render(newEnemies)
@@ -167,11 +163,6 @@ export default class Game {
   placeEnemy(enemy, enemiesInWave, numEnemy) {
     const enemyDistance = Math.floor(this.height / enemiesInWave)
     enemy.jumpTo(this.width, numEnemy * enemyDistance)
-  }
-
-  spawnWaveEarly() {
-    if (!this.inProgress) { return }
-    this.emitter.spawnWaveEarly()
   }
 
   /*
@@ -206,12 +197,6 @@ export default class Game {
 
   deselectAll() {
     this.deselectPlacingTower()
-  }
-
-  sendPlaceTower() {
-    const placedTower = this.placeTower()
-    if (!placedTower) { return }
-    this.emitter.placeTower(placedTower)
   }
 
   placeTower(tower) {

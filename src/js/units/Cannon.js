@@ -6,9 +6,9 @@ import Unit from './Unit'
 import Cooldown from '../Cooldown'
 
 export default class Cannon extends Unit {
-  @observable attackPower = 11
-  @observable cooldownLength = 1000
-  @observable range = 200 // pixels
+  @observable attackPower = 110
+  @observable cooldownLength = 100
+  @observable range = 300 // pixels
   @observable target = undefined
   @observable purchaseCost = 25
   @observable placed = false // towers generally start unplaced and become placed
@@ -58,7 +58,7 @@ export default class Cannon extends Unit {
     var targetValue = this.target.killValue
     const killedUnit = this.target.takeDamage(this.attackPower)
     if (killedUnit) {
-      console.log('Killed enemy!');
+      // console.log('Killed enemy!');
       // do cool stuff! Add experience? Make money? Mow the lawn?
       this.game.profit(targetValue * this.killProfitMultiplier)
     }

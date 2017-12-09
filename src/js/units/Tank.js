@@ -18,7 +18,7 @@ export default class Tank extends Enemy {
         height: GRID_SIZE * 1.5,
         speed: 40,
         maxHitPoints: 40,
-        killValue: 10,
+        killValue: 7,
       },
     }
     let enemyAttributes

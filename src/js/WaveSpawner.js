@@ -22,11 +22,12 @@ class WaveSpawner {
     },
   }
 
-  constructor(gameCallback, placeEnemyCallback, runningOnServer) {
+  constructor(gameCallback, placeEnemyCallback, runningOnServer, isSolo) {
     this.cooldown = null
     this.gameCallback = gameCallback
     this.placeEnemyCallback = placeEnemyCallback
     this.runningOnServer = runningOnServer
+    this.solo = isSolo
   }
 
   initializeWaveTimer() {
@@ -63,7 +64,7 @@ class WaveSpawner {
     this.cooldown.activate()
     this.increment()
 
-    if (!this.runningOnServer) { return } // force server to spawn units
+    if (!this.runningOnServer && !this.solo) { return } // force server to spawn units
 
     console.log(`Spawning wave ${this.number}!`);
     this.enemiesInWave = 0

@@ -1,5 +1,5 @@
 
-import ClientGame from './game/ClientGame'
+import ClientMultiGame from './game/ClientMultiGame'
 import SoloGame from './game/SoloGame'
 import ServerGame from './game/ServerGame'
 import GameEmitter from './client/GameEmitter'
@@ -12,20 +12,23 @@ class GameManager {
       emitter = new GameEmitter()
     }
     this.game = this.getGameObject(emitter, runningOnServer, isSolo)
+    if (isSolo) {
+      this.solo = true
+      console.log('PLAYING SOLO');
+    }
 
     socketListeners(this.game, emitter)
-    this.game.play()
+    // this.game.play()
   }
 
   getGameObject(emitter, runningOnServer, isSolo) {
     if (isSolo) {
-      console.log('PLAYING SOLO');
-      return new SoloGame(emitter, this.destroyGame.bind(this), runningOnServer)
-    } else if (runningOnServer) {
-      return new ServerGame(emitter, this.destroyGame.bind(this), runningOnServer)
-    } else {
-      return new ClientGame(emitter, this.destroyGame.bind(this), runningOnServer)
+      return new SoloGame(emitter, this.destroyGame.bind(this), runningOnServer, isSolo)
     }
+    if (runningOnServer) {
+      return new ServerGame(emitter, this.destroyGame.bind(this), runningOnServer, isSolo)
+    }
+    return new ClientMultiGame(emitter, this.destroyGame.bind(this), runningOnServer, isSolo)
   }
 
   start() {
