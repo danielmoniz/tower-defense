@@ -35,7 +35,7 @@ function setUpListeners(game, emitter) {
   })
 
   socket.on('spawn wave', (newEnemies) => {
-    game.spawnWave(newEnemies)
+    game.acceptSpawnedWave(newEnemies)
   })
 
   socket.on('poll for game number', () => {

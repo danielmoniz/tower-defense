@@ -10,6 +10,8 @@ import GameEmitter from '../client/GameEmitter'
 import { UNIT_REFRESH_RATE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
 import WaveSpawner from '../WaveSpawner'
+import WaveSpawnerLocal from '../WaveSpawnerLocal'
+
 
 export default class Game {
   @observable placingTower = false
@@ -38,9 +40,14 @@ export default class Game {
     this.runningOnServer = runningOnServer
     this.solo = isSolo
     this.emitter = emitter
-    this.wave = new WaveSpawner(
-      this.handleSpawnWave.bind(this),
-      this.placeNewEnemy.bind(this),
+
+    this.UNIT_TYPES = { Tank, Cannon }
+    let WaveSpawnerClass = WaveSpawner
+    if (this.solo || this.runningOnServer) {
+      WaveSpawnerClass = WaveSpawnerLocal
+    }
+    this.wave = new WaveSpawnerClass(
+      this.createEnemy.bind(this),
       runningOnServer,
       isSolo,
     )
@@ -66,6 +73,7 @@ export default class Game {
   }
 
   start() {
+    if (this.inProgress) { return }
     this.inProgress = true
     this.reset()
     this.play()
@@ -97,7 +105,7 @@ export default class Game {
     return setCorrectingInterval(() => {
       // console.log('---');
       this.checkPerformance()
-      this.wave.updateWaveTimer()
+      this.updateWave()
       this.commandUnits(this.enemies)
       this.commandUnits(this.towers)
       if (this.lives <= 0) {
@@ -137,11 +145,17 @@ export default class Game {
     }
   }
 
-  spawnWave(newEnemies) {
-    this.wave.spawn()
+  updateWave() {
+    this.wave.updateWaveTimer()
+    if (this.wave.ready()) {
+      this.spawnWave()
+    }
   }
 
-  handleSpawnWave(newEnemies) {
+  spawnWave() {
+    const newEnemies = this.wave.spawn()
+    this.placeWaveEnemies(newEnemies)
+
     this.enemies = this.enemies.concat(newEnemies)
     this.render(newEnemies)
 
@@ -149,15 +163,20 @@ export default class Game {
     // Note that enemies are not yet removed from the array upon death.
     console.log("Wave size:", newEnemies.length);
     console.log("Total enemies:", this.enemies.length);
+    return newEnemies
   }
 
-  placeNewEnemy(enemyType, enemiesInWave, numEnemy) {
-    // @TODO Allow for other unit types
-    let enemy = new Tank(this, enemyType)
-    this.placeEnemy(enemy, enemiesInWave, numEnemy)
-    const enemyTarget = this.getEnemyGoal(enemy)
-    enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
-    return enemy
+  createEnemy(type, subtype) {
+    const UnitClass = this.UNIT_TYPES[type]
+    return new UnitClass(this, subtype)
+  }
+
+  placeWaveEnemies(newEnemies) {
+    newEnemies.forEach((enemy, index) => {
+      this.placeEnemy(enemy, newEnemies.length, index)
+      const enemyTarget = this.getEnemyGoal(enemy)
+      enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+    })
   }
 
   placeEnemy(enemy, enemiesInWave, numEnemy) {
@@ -224,11 +243,31 @@ export default class Game {
     this.enemies = []
   }
 
+  endGame() {
+    this.pause()
+    this.clearTowers()
+    this.clearEnemies()
+    this.waveTimer = null
+    this.inProgress = false
+  }
+
+  getEnemyGoal(enemy) {
+    return {
+      x: -enemy.width,
+      y: this.height / 2,
+    }
+  }
+
+
+
+  // GAME UPDATE METHODS ---------------------
+
   addEnemies(enemies) {
     enemies.forEach((enemyData) => {
       if (enemyData.currentHitPoints <= 0) { return }
-      // @TODO Allow for other unit types
-      let enemy = new Tank(this, enemyData.name)
+      // @TODO Allow for other unit types\
+      const EnemyType = this.UNIT_TYPES['Tank']
+      let enemy = new EnemyType(this, enemyData.name)
       this.buildEntityFromData(enemy, enemyData)
 
       // @TODO? if enemy has no health, maybe have to kill enemy
@@ -249,7 +288,8 @@ export default class Game {
   addTowers(towers) {
     towers.forEach((towerData) => {
       // @TODO Allow for other tower types
-      let tower = new Cannon(this, towerData.name)
+      const TowerType = this.UNIT_TYPES['Cannon']
+      let tower = new TowerType(this, towerData.name)
       this.buildEntityFromData(tower, towerData)
 
       tower.startRender()
@@ -281,24 +321,6 @@ export default class Game {
     this.inProgress = data.inProgress
     if (this.inProgress && this.control.run) {
       this.play()
-    }
-    // else {
-    //   this.pause()
-    // }
-  }
-
-  endGame() {
-    this.pause()
-    this.clearTowers()
-    this.clearEnemies()
-    this.waveTimer = null
-    this.inProgress = false
-  }
-
-  getEnemyGoal(enemy) {
-    return {
-      x: -enemy.width,
-      y: this.height / 2,
     }
   }
 

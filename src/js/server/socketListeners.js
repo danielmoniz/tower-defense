@@ -7,8 +7,7 @@ export default function socketListeners(socket, emitter, serverFunctions) {
   })
 
   socket.on('spawn wave early', () => {
-    console.log('spawning next wave');
-    const newEnemies = socket.gameManager.game.wave.spawn()
+    const newEnemies = socket.gameManager.game.spawnWave()
     emitter.spawnWave(socket.roomId, newEnemies)
   })
 

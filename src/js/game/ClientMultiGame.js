@@ -27,8 +27,16 @@ class ClientMultiGame extends ClientGame {
     this.emitter.addNewGame()
   }
 
-  spawnWave(newEnemies) {
-    super.spawnWave()
+  /*
+   * Simply update the timer rather than spawn units. Assumes units are
+   * coming from elsewhere.
+   */
+  updateWave() {
+    this.wave.updateWaveTimer()
+  }
+
+  acceptSpawnedWave(newEnemies) {
+    this.wave.nextWave()
     this.addEnemies(newEnemies)
   }
 
@@ -36,6 +44,7 @@ class ClientMultiGame extends ClientGame {
     if (!this.inProgress) { return }
     this.emitter.spawnWaveEarly()
   }
+
 }
 
 export default ClientMultiGame

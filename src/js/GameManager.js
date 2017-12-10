@@ -11,7 +11,15 @@ class GameManager {
     if (!runningOnServer && !isSolo) {
       emitter = new GameEmitter()
     }
-    this.game = this.getGameObject(emitter, runningOnServer, isSolo)
+
+    const GameClass = this.getGameClass(runningOnServer, isSolo)
+    this.game = new GameClass(
+      emitter,
+      this.destroyGame.bind(this),
+      runningOnServer,
+      isSolo,
+    )
+
     if (isSolo) {
       this.solo = true
       console.log('PLAYING SOLO');
@@ -21,14 +29,10 @@ class GameManager {
     // this.game.play()
   }
 
-  getGameObject(emitter, runningOnServer, isSolo) {
-    if (isSolo) {
-      return new SoloGame(emitter, this.destroyGame.bind(this), runningOnServer, isSolo)
-    }
-    if (runningOnServer) {
-      return new ServerGame(emitter, this.destroyGame.bind(this), runningOnServer, isSolo)
-    }
-    return new ClientMultiGame(emitter, this.destroyGame.bind(this), runningOnServer, isSolo)
+  getGameClass(runningOnServer, isSolo) {
+    if (isSolo) { return SoloGame }
+    if (runningOnServer) { return ServerGame }
+    return ClientMultiGame
   }
 
   start() {
