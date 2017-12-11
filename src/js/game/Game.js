@@ -1,15 +1,13 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
+import WaveSpawner from '../WaveSpawner'
 import Cooldown from '../Cooldown'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Tank from '../units/Tank'
-import GameRenderer from '../client/GameRenderer'
 import { UNIT_REFRESH_RATE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
-import WaveSpawner from '../WaveSpawner'
-import WaveSpawnerLocal from '../WaveSpawnerLocal'
 
 
 export default class Game {
@@ -34,26 +32,15 @@ export default class Game {
   width = 700
   tickLength = 500
 
-  constructor(emitter, endGameCallback, runningOnServer, isSolo) {
+  constructor(emitter, endGameCallback) {
     this.endGameCallback = endGameCallback
-    this.runningOnServer = runningOnServer
-    this.solo = isSolo
     this.emitter = emitter
 
     this.UNIT_TYPES = { Tank, Cannon }
-    let WaveSpawnerClass = WaveSpawner
-    if (this.solo || this.runningOnServer) {
-      WaveSpawnerClass = WaveSpawnerLocal
-    }
-    this.wave = new WaveSpawnerClass(
-      this.createEnemy.bind(this),
-      runningOnServer,
-      isSolo,
-    )
 
-    if (!this.runningOnServer) {
-      this.setupUI()
-    }
+    // to be overwritten by a subclass if another wave spawner is needed
+    this.wave = new WaveSpawner(this.createEnemy.bind(this))
+
     this.performance = new Cooldown(1000, {
       callRate: UNIT_REFRESH_RATE,
       // log: true,
@@ -65,10 +52,6 @@ export default class Game {
 
   newGame() {
     this.start()
-  }
-
-  setupUI() {
-    this.renderer = new GameRenderer(this)
   }
 
   start() {

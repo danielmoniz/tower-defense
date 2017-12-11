@@ -55,14 +55,14 @@ class Unit {
 
   @action destroy() {
     this.remove()
-    if (this.game.runningOnServer) {
+    if (this.game.runningOnServer) { // @TODO Find way to remove runningOnServer
       return
     }
     this.render.destroy()
   }
 
   startRender() {
-    if (this.game.runningOnServer) {
+    if (this.game.runningOnServer) { // @TODO Find way to remove runningOnServer
       return
     }
     this.render.startRender()

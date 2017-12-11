@@ -15,15 +15,8 @@ class GameManager {
     this.game = new GameClass(
       emitter,
       this.destroyGame.bind(this),
-      runningOnServer,
-      isSolo,
       { gameNumber },
     )
-
-    if (isSolo) {
-      this.solo = true
-      console.log('PLAYING SOLO');
-    }
 
     if (!runningOnServer) {
       socketListeners(this.game, emitter)

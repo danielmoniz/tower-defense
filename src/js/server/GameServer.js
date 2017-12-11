@@ -118,7 +118,7 @@ class GameServer {
 
   clearGameIfEmpty(gameNumber) {
     const gameManager = this.gameManagers[gameNumber]
-    if (!gameManager) { return } // game must be solo - do not clear!
+    if (!gameManager) { return } // game is solo - do not clear!
 
     if (this.users[gameNumber].length === 0) {
       // Trigger 30 second timeout - destroy game after that
