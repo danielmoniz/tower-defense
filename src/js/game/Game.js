@@ -44,9 +44,7 @@ export default class Game {
     // to be overwritten by a subclass if another wave spawner is needed
     this.wave = new WaveSpawner(this.createEnemy.bind(this))
 
-    this.performance = new Cooldown(1000, {
-      callRate: GAME_REFRESH_RATE,
-      // log: true,
+    this.performance = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
       autoActivate: true,
       delayActivation: true,
       softReset: true,
@@ -62,7 +60,7 @@ export default class Game {
     this.inProgress = true
     this.reset()
     this.play()
-    this.wave.initializeWaveTimer()
+    this.wave.initializeWaveTimer(GAME_REFRESH_RATE)
   }
 
   @action reset() {
@@ -278,7 +276,7 @@ export default class Game {
 
       tower.startRender()
       tower.selectTarget() // unnecessary, but can be smoother
-      tower.cooldown.setTimePassed(towerData.cooldown.timePassed)
+      tower.cooldown.setTicksPassed(towerData.cooldown.ticksPassed)
       this.towers.push(tower)
     })
   }

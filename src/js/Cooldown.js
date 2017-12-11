@@ -1,32 +1,24 @@
 
 class Cooldown {
-  // for cooldown mechanics
-  timePassed = 0
-  ticks = 0
-  numActivations = 0
 
-  // for performance checks - @TODO Should be handled by a separate class
-  originalTime = undefined
-  latestTime = undefined
-  average = undefined
-  performance = 1 // speed performance (1 is perfect)
+  ticksPassed = 0
+  totalTicks = 0
+  numActivations = 0
 
   constructor(cooldownLength, options={}) {
     this.cooldownLength = cooldownLength
-    this.callback = options.callback || (() => {})
-    this.intendedCallRate = options.callRate
-    this.logOutput = options.log
     this.softReset = options.softReset
     this.autoActivate = options.autoActivate
+    this.callback = options.callback || (() => {})
 
     if (!options.delayActivation) {
-      this.timePassed = cooldownLength
+      this.ticksPassed = cooldownLength
     }
   }
 
   toJSON() {
     return {
-      timePassed: this.timePassed,
+      ticksPassed: this.ticksPassed,
     }
   }
 
@@ -34,51 +26,32 @@ class Cooldown {
    * Increment time. Main function. Cooldown will become ready or closer to use.
    */
   tick() {
-    const now = Date.now()
-    if (this.originalTime === undefined) {
-      this.initialize(now)
-      return
-    }
-
-    this.timePassed += (now - this.latestTime)
-    this.latestTime = now
-    this.calculateMetrics()
+    this.ticksPassed++
+    this.totalTicks++
     if (this.autoActivate && this.ready()) {
-      this.activate(now)
+      this.activate()
     }
-    this.ticks++
-  }
-
-  /*
-   * Set up variables for first time check.
-   */
-  initialize(now) {
-    this.originalTime = now
-    this.latestTime = now
   }
 
   /*
    * Inform the Cooldown class that the ability has been activated.
    * This will trigger the cooldown and potentially call a callback.
    */
-  activate(now) {
-    now = now || Date.now()
+  activate() {
+    this.coolDown()
     this.callback()
-    this.coolDown(now)
     this.numActivations += 1
-    this.log()
   }
 
   /*
    * Trigger the cooldown period.
    * Will either subtract time or reset to 0, depending on settings.
    */
-  coolDown(now) {
-    now = now || Date.now()
+  coolDown() {
     if (this.softReset) {
-      this.timePassed -= this.cooldownLength
+      this.ticksPassed -= this.cooldownLength
     } else {
-      this.timePassed = 0
+      this.ticksPassed = 0
     }
   }
 
@@ -86,35 +59,25 @@ class Cooldown {
    * Returns whether or not the ability is ready to use.
    */
   ready() {
-    return this.timePassed > this.cooldownLength
+    return this.ticksPassed > this.cooldownLength
   }
 
   /*
-   * Set timePassed to a new value (required for game updates/corrections).
+   * Set ticksPassed to a new value (required for game updates/corrections).
    */
-  setTimePassed(newTime) {
-    this.timePassed = newTime
+  setTicksPassed(newTicksPassed) {
+    this.ticksPassed = newTicksPassed
   }
+}
 
-  /*
-   * Calculates some metrics for performance purposes.
-   * Used for determining which devices (clients/server) are running slow.
-   */
-  calculateMetrics() {
-    this.average = (this.latestTime - this.originalTime) / this.ticks
-    this.performance = parseFloat(this.intendedCallRate) / this.average
-  }
-
-  /*
-   * Output some information about the metrics.
-   */
-  log() {
-    if (this.logOutput && this.average) {
-      // console.log('Average interval:', this.average);
-      console.log('Average slowdown:', this.performance);
-      console.log("Number of activations:", this.numActivations);
-    }
-  }
+/*
+ * This function allows for passing time-based information to build a tick-based
+ * Cooldown.
+ * This allows for cooldowns that are not dependent on the frequency of ticks.
+ */
+Cooldown.createTimeBased = function(cooldownLength, tickLength, options={}) {
+  const numTicks = parseInt(cooldownLength / tickLength)
+  return new Cooldown(numTicks, options)
 }
 
 export default Cooldown

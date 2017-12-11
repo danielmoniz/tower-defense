@@ -33,10 +33,9 @@ class GameServer {
 
   setUpSyncer() {
     const syncInterval = 4000, tickInterval = 1000
-    this.updateCooldown = new Cooldown(syncInterval, {
+    this.updateCooldown = Cooldown.createTimeBased(syncInterval, tickInterval, {
       callback: this.syncGames.bind(this),
       autoActivate: true,
-      log: true,
       callRate: tickInterval,
     })
     setInterval(() => {

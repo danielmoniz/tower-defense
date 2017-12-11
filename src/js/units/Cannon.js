@@ -25,7 +25,7 @@ export default class Cannon extends Unit {
     this.display = false // towers start invisible due to being unplaced
 
     // note that a change of cooldownLength will not affect the cooldown automatically! (@TODO fix this)
-    this.cooldown = new Cooldown(this.cooldownLength)
+    this.cooldown = Cooldown.createTimeBased(this.cooldownLength, GAME_REFRESH_RATE)
   }
 
   @action place() {
