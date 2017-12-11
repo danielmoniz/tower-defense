@@ -12,4 +12,4 @@ if (gameNumber === 'solo') {
   gameType = 'solo'
 }
 
-let gameManager = new GameManager(false, gameType)
+let gameManager = new GameManager(gameNumber, false, gameType)

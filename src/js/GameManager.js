@@ -2,14 +2,13 @@
 import ClientMultiGame from './game/ClientMultiGame'
 import SoloGame from './game/SoloGame'
 import ServerGame from './game/ServerGame'
-import GameEmitter from './client/GameEmitter'
+import ClientEmitter from './client/GameEmitter'
 import socketListeners from './client/socketListeners'
 
 class GameManager {
-  constructor(runningOnServer, isSolo) {
-    let emitter
-    if (!runningOnServer && !isSolo) {
-      emitter = new GameEmitter()
+  constructor(gameNumber, runningOnServer, isSolo, emitter) {
+    if (emitter === undefined && !runningOnServer && !isSolo) {
+      emitter = new ClientEmitter()
     }
 
     const GameClass = this.getGameClass(runningOnServer, isSolo)
@@ -18,6 +17,7 @@ class GameManager {
       this.destroyGame.bind(this),
       runningOnServer,
       isSolo,
+      { gameNumber },
     )
 
     if (isSolo) {
@@ -25,7 +25,9 @@ class GameManager {
       console.log('PLAYING SOLO');
     }
 
-    socketListeners(this.game, emitter)
+    if (!runningOnServer) {
+      socketListeners(this.game, emitter)
+    }
     // this.game.play()
   }
 

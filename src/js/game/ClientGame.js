@@ -5,6 +5,12 @@ import Game from './Game'
 
 class ClientGame extends Game {
 
+  spawnWave() {
+    const newEnemies = super.spawnWave()
+    this.render(newEnemies)
+    return newEnemies
+  }
+
   sendPause() {
     this.pause()
   }

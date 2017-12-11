@@ -6,7 +6,6 @@ import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Tank from '../units/Tank'
 import GameRenderer from '../client/GameRenderer'
-import GameEmitter from '../client/GameEmitter'
 import { UNIT_REFRESH_RATE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
 import WaveSpawner from '../WaveSpawner'
@@ -157,7 +156,6 @@ export default class Game {
     this.placeWaveEnemies(newEnemies)
 
     this.enemies = this.enemies.concat(newEnemies)
-    this.render(newEnemies)
 
     // for fun! To see how many enemies there are.
     // Note that enemies are not yet removed from the array upon death.

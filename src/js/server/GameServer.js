@@ -86,14 +86,15 @@ class GameServer {
     let gameManager = this.gameManagers[gameNumber];
     console.log('Games:', Object.keys(this.gameManagers));
     if (gameManager === undefined) {
-      gameManager = new GameManager('server')
+      gameManager = new GameManager(gameNumber, 'server', false, this.emitter)
+      gameManager.gameNumber = gameNumber
     } else {
       console.log("Game already exists!");
     }
     this.removeClearGameTimeout(gameNumber)
     socket.gameManager = gameManager
     this.gameManagers[gameNumber] = gameManager
-    console.log(socket.id);
+
     this.addUserToGame(socket.id, gameNumber)
     this.syncPlayer(socket)
   }
