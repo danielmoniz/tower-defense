@@ -11,15 +11,16 @@ class Cooldown {
   average = undefined
   performance = 1 // speed performance (1 is perfect)
 
-  constructor(tickLength, options={}) {
-    this.tickLength = tickLength
+  constructor(cooldownLength, options={}) {
+    this.cooldownLength = cooldownLength
     this.callback = options.callback || (() => {})
     this.intendedCallRate = options.callRate
     this.logOutput = options.log
     this.softReset = options.softReset
     this.autoActivate = options.autoActivate
+    this.
     if (!options.delayActivation) {
-      this.timePassed = tickLength
+      this.timePassed = cooldownLength
     }
   }
 
@@ -75,7 +76,7 @@ class Cooldown {
   coolDown(now) {
     now = now || Date.now()
     if (this.softReset) {
-      this.timePassed -= this.tickLength
+      this.timePassed -= this.cooldownLength
     } else {
       this.timePassed = 0
     }
@@ -85,7 +86,7 @@ class Cooldown {
    * Returns whether or not the ability is ready to use.
    */
   ready() {
-    return this.timePassed > this.tickLength
+    return this.timePassed > this.cooldownLength
   }
 
   /*

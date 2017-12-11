@@ -6,7 +6,7 @@ import Cooldown from '../Cooldown'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Tank from '../units/Tank'
-import { UNIT_REFRESH_RATE } from '../appConstants'
+import { GAME_REFRESH_RATE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
 
 
@@ -30,7 +30,6 @@ export default class Game {
 
   height = 700
   width = 700
-  tickLength = 500
 
   constructor(emitter, endGameCallback) {
     this.endGameCallback = endGameCallback
@@ -42,7 +41,7 @@ export default class Game {
     this.wave = new WaveSpawner(this.createEnemy.bind(this))
 
     this.performance = new Cooldown(1000, {
-      callRate: UNIT_REFRESH_RATE,
+      callRate: GAME_REFRESH_RATE,
       // log: true,
       autoActivate: true,
       delayActivation: true,
@@ -94,7 +93,7 @@ export default class Game {
         this.endGame()
         this.endGameCallback() // could possibly pass scores/end-state here
       }
-    }, UNIT_REFRESH_RATE, this.control)
+    }, GAME_REFRESH_RATE, this.control)
   }
 
   loseLife() {

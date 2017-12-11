@@ -2,7 +2,7 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import Unit from './Unit'
-import { UNIT_REFRESH_RATE } from '../appConstants'
+import { GAME_REFRESH_RATE } from '../appConstants'
 import getUnitRenderTools from '../client/UnitRenderer'
 
 class Enemy extends Unit {
@@ -49,7 +49,7 @@ class Enemy extends Unit {
       return true
     }
 
-    const actualSpeed = this.speed / (1000 / UNIT_REFRESH_RATE)
+    const actualSpeed = this.speed / (1000 / GAME_REFRESH_RATE)
 
     // use polar coordinates to generate X and Y given target destination
     const deltaX = finalX - this.x
