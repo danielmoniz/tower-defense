@@ -58,8 +58,11 @@ export default function getUnitRenderTools(unit) {
   }
 
   function renderPosition(unitElement) {
-    unitElement.style['left'] = unit.x + 'px'
-    unitElement.style['top'] = unit.y + 'px'
+    // window.requestAnimationFrame(() => { // not working, not sure why
+      // console.log('animation happening');
+      unitElement.style['left'] = unit.xFloor + 'px'
+      unitElement.style['top'] = unit.yFloor + 'px'
+    // })
   }
 
   function renderDisplay(unitElement) {
@@ -95,7 +98,7 @@ export default function getUnitRenderTools(unit) {
 
       // tower rotation toward target (ideally only gun rotation)
       if (unit.target) {
-        const angle = unit.getAngleToPoint(unit.target.x, unit.target.y)
+        const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
         image.style.transform = `rotate(${angle}rad)`
       }
     }

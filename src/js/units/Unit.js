@@ -45,6 +45,14 @@ class Unit {
     Object.defineProperty(this, 'render', { value: renderTools, writable: true })
   }
 
+  @computed get xFloor() {
+    return Math.floor(this.x)
+  }
+
+  @computed get yFloor() {
+    return Math.floor(this.y)
+  }
+
   /*
    * Used for setting any key/value pair on the object.
    * Good for building a mid-game active unit from scratch.

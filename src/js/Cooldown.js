@@ -18,7 +18,7 @@ class Cooldown {
     this.logOutput = options.log
     this.softReset = options.softReset
     this.autoActivate = options.autoActivate
-    this.
+
     if (!options.delayActivation) {
       this.timePassed = cooldownLength
     }
