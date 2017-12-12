@@ -11,6 +11,7 @@ class GameServer {
     this.emitter = new GameEmitter(io)
 
     // @TODO May want to store both in same object to avoid desyncing of user/game data
+    this.rooms = {}
     this.gameManagers = {}
     this.users = getObjectProxy()
     this.timeouts = {}
@@ -19,7 +20,7 @@ class GameServer {
       socket.on('disconnect', () => {
         console.log('a user disconnected');
         this.removeUserFromGame(socket.id, socket.roomId)
-        this.clearGameIfEmpty(socket.roomId)
+        this.clearRoomIfEmpty(socket.roomId)
       })
       console.log('a user connected');
       socketListeners(socket, this.emitter, {
@@ -47,8 +48,8 @@ class GameServer {
   syncGames() {
     // console.log('Updating all games');
     const performance = this.updateCooldown.performance
-    Object.keys(this.gameManagers).forEach((gameId) => {
-      const gameManager = this.gameManagers[gameId]
+    Object.keys(this.rooms).forEach((gameId) => {
+      const gameManager = this.getGameManager(gameId)
       if (gameManager.gameInProgress()) { // only update games in progress
         const gameData = this.getGameData(gameManager.game)
         this.io.to(gameId).emit('update all', gameData)
@@ -60,7 +61,7 @@ class GameServer {
    * Update a the game for a single player (usually a newly entered player).
    */
   syncPlayer(socket) {
-    const gameManager = this.gameManagers[socket.roomId]
+    const gameManager = this.getGameManager(socket.roomId)
     if (gameManager.gameInProgress()) {
       socket.emit('update all', this.getGameData(socket.gameManager.game))
     }
@@ -82,8 +83,7 @@ class GameServer {
     socket.join(gameNumber)
     socket.broadcast.to(gameNumber).emit('user joins room')
 
-    let gameManager = this.gameManagers[gameNumber];
-    console.log('Games:', Object.keys(this.gameManagers));
+    let gameManager = this.getGameManager(gameNumber);
     if (gameManager === undefined) {
       gameManager = new GameManager(gameNumber, 'server', false, this.emitter)
       gameManager.gameNumber = gameNumber
@@ -92,7 +92,7 @@ class GameServer {
     }
     this.removeClearGameTimeout(gameNumber)
     socket.gameManager = gameManager
-    this.gameManagers[gameNumber] = gameManager
+    this.rooms[gameNumber] = { manager: gameManager }
 
     this.addUserToGame(socket.id, gameNumber)
     this.syncPlayer(socket)
@@ -115,8 +115,8 @@ class GameServer {
     console.log(this.users);
   }
 
-  clearGameIfEmpty(gameNumber) {
-    const gameManager = this.gameManagers[gameNumber]
+  clearRoomIfEmpty(gameNumber) {
+    const gameManager = this.getGameManager(gameNumber)
     if (!gameManager) { return } // game is solo - do not clear!
 
     if (this.users[gameNumber].length === 0) {
@@ -124,7 +124,7 @@ class GameServer {
       this.timeouts[gameNumber] = setTimeout(() => {
         gameManager.game.endGame()
         gameManager.destroyGame()
-        delete this.gameManagers[gameNumber]
+        delete this.rooms[gameNumber]
       }, 30000)
     }
   }
@@ -135,7 +135,12 @@ class GameServer {
   }
 
   endGame(gameNumber) {
-    this.gameManagers[gameNumber].destroyGame()
+    this.getGameManager(gameNumber).destroyGame()
+  }
+
+  getGameManager(roomId) {
+    if (this.rooms[roomId] === undefined) { return undefined }
+    return this.rooms[roomId].manager
   }
 }
 
