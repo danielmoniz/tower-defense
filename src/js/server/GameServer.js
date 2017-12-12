@@ -12,9 +12,7 @@ class GameServer {
 
     // @TODO May want to store both in same object to avoid desyncing of user/game data
     this.rooms = {}
-    this.gameManagers = {}
     this.users = getObjectProxy()
-    this.timeouts = {}
 
     this.io.on('connection', (socket) => {
       socket.on('disconnect', () => {
@@ -121,7 +119,8 @@ class GameServer {
 
     if (this.users[gameNumber].length === 0) {
       // Trigger 30 second timeout - destroy game after that
-      this.timeouts[gameNumber] = setTimeout(() => {
+      this.rooms[gameNumber].timeout = setTimeout(() => {
+        console.log("Clearing room " + gameNumber);
         gameManager.game.endGame()
         gameManager.destroyGame()
         delete this.rooms[gameNumber]
@@ -130,8 +129,9 @@ class GameServer {
   }
 
   removeClearGameTimeout(gameNumber) {
-    clearTimeout(this.timeouts[gameNumber])
-    delete this.timeouts[gameNumber]
+    if (!this.rooms[gameNumber]) { return } // nothing to clear
+    clearTimeout(this.rooms[gameNumber].timeout)
+    delete this.rooms[gameNumber].timeout
   }
 
   endGame(gameNumber) {
