@@ -2,8 +2,24 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import ClientGame from './ClientGame'
+import Performance from '../Performance'
+import Cooldown from '../Cooldown'
+import { GAME_REFRESH_RATE } from '../appConstants'
 
 class ClientMultiGame extends ClientGame {
+
+  constructor(emitter, endGameCallback) {
+    super(emitter, endGameCallback)
+
+    // for calculating performance
+    this.performance = new Performance(1000, GAME_REFRESH_RATE)
+
+    // for sending performance data to the server
+    this.performanceCooldown = Cooldown.createTimeBased(2000, GAME_REFRESH_RATE, {
+      callback: this.sendPerformance.bind(this),
+      autoActivate: true,
+    })
+  }
 
   sendPause() {
     super.sendPause()
@@ -43,6 +59,21 @@ class ClientMultiGame extends ClientGame {
   spawnWaveEarly() {
     if (!this.inProgress) { return }
     this.emitter.spawnWaveEarly()
+  }
+
+  sendPerformance() {
+    this.emitter.sendPerformance(this.performance.getAverage())
+  }
+
+  // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
+  checkPerformance() {
+    this.performance.next()
+    this.performanceCooldown.tick()
+  }
+
+  gameLogic() {
+    super.gameLogic()
+    this.checkPerformance()
   }
 
 }

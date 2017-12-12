@@ -3,6 +3,7 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import WaveSpawner from '../WaveSpawner'
 import Cooldown from '../Cooldown'
+import Performance from '../Performance'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Tank from '../units/Tank'
@@ -43,12 +44,6 @@ export default class Game {
 
     // to be overwritten by a subclass if another wave spawner is needed
     this.wave = new WaveSpawner(this.createEnemy.bind(this))
-
-    this.performance = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
-      autoActivate: true,
-      delayActivation: true,
-      softReset: true,
-    })
   }
 
   newGame() {
@@ -85,26 +80,29 @@ export default class Game {
 
   initializeLoop() {
     // handle moving units, tower scanning, spawning waves, etc.
-    return setCorrectingInterval(() => {
-      // console.log('---');
-      this.checkPerformance()
-      this.updateWave()
-      this.commandUnits(this.enemies)
-      this.commandUnits(this.towers)
-      if (this.lives <= 0) {
-        this.endGame()
-        this.endGameCallback() // could possibly pass scores/end-state here
-      }
-    }, GAME_REFRESH_RATE, this.control)
+    return setCorrectingInterval(
+      this.gameLogic.bind(this),
+      GAME_REFRESH_RATE,
+      this.control,
+    )
+  }
+
+  /*
+   * The core logic for the game.
+   * Called as part of the game loop. Should likely never be called separately.
+   */
+  gameLogic() {
+    this.updateWave()
+    this.commandUnits(this.enemies)
+    this.commandUnits(this.towers)
+    if (this.lives <= 0) {
+      this.endGame()
+      this.endGameCallback() // could possibly pass scores/end-state here
+    }
   }
 
   loseLife() {
     return --this.lives
-  }
-
-  // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
-  checkPerformance() {
-    this.performance.tick()
   }
 
   render(entities) {
@@ -290,12 +288,10 @@ export default class Game {
   }
 
   @action updateAll(data) {
-    console.log(this.enemies.length);
     console.log('Updating all');
     this.clearEnemies()
     this.addEnemies(data.enemies)
-    console.log(this.enemies.length);
-    console.log('---');
+
     this.clearTowers()
     this.addTowers(data.towers)
     this.credits.current = data.credits

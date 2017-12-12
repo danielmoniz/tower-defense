@@ -34,20 +34,29 @@ class Performance {
     const timePerTick = latestTimePassed / latestTicksPassed
     const performance = this.tickLength / timePerTick
     this.marks.push(performance)
-    console.log('-----');
-    console.log(this.marks);
+    // console.log('-----');
+    // console.log(this.marks);
 
-    const currentAverage = this.marks.length / this.marks.reduce((memo, mark) => {
-      return memo + mark
-    })
-    console.log("Average over last " + this.marks.length + " data points:", currentAverage);
+    // console.log(this.getAverage());
 
     if (this.times.length > this.maxTimePoints) {
-      // @TODO Remove data
       this.times.splice(0, 1)
       this.ticks.splice(0, 1)
       this.marks.splice(0, 1)
     }
+  }
+
+  getAverage() {
+    if (this.marks.length < 2) { return 1 }
+    const currentAverage = this.marks.length / this.marks.reduce((memo, mark) => {
+      return memo + mark
+    })
+    console.log("Average over last " + this.marks.length + " data points:", currentAverage);
+    return currentAverage
+  }
+
+  ready() {
+    return this.cooldown.ready()
   }
 }
 
