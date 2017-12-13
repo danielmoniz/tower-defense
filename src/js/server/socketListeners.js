@@ -39,7 +39,7 @@ export default function socketListeners(socket, emitter, serverFunctions) {
     serverFunctions.joinGame(socket, gameNumber)
   })
 
-  socket.on('send performance', (data) => {
-    // console.log(data);
+  socket.on('send performance', (performanceData) => {
+    serverFunctions.updatePerformance(socket.roomId, socket.id, performanceData)
   })
 }

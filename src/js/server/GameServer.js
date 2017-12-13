@@ -22,6 +22,7 @@ class GameServer {
       console.log('a user connected');
       socketListeners(socket, this.emitter, {
         joinGame: this.joinGame.bind(this),
+        updatePerformance: this.updatePerformance.bind(this),
       })
 
       this.emitter.pollForGameNumber(socket)
@@ -99,6 +100,7 @@ class GameServer {
     return {
       manager: gameManager,
       users: [],
+      performance: {},
     }
   }
 
@@ -142,6 +144,15 @@ class GameServer {
 
   endGame(gameNumber) {
     this.getGameManager(gameNumber).destroyGame()
+  }
+
+  /*
+   * Updates the performance object for a room with a specific key-value pair.
+   * Keys are usually socket ids, but can also be 'server'.
+   */
+  updatePerformance(roomId, key, performance) {
+    if (!this.rooms[roomId]) { return }
+    this.rooms[roomId].performance[key] = performance
   }
 
   getGameManager(roomId) {
