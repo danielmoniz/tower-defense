@@ -59,7 +59,9 @@ class Performance {
   }
 
   getSpeedSuggestion() {
-    return Math.max(1, this.getAverage()) // < 1 is faster than normal, so cap out at 1
+    const average = this.getAverage()
+    const difference = Math.max(1, average) - 1
+    return 1 + (difference * 0.9)
   }
 
   ready() {
