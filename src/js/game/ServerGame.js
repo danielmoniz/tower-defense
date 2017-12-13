@@ -9,8 +9,8 @@ import { GAME_REFRESH_RATE } from '../appConstants'
 
 class ServerGame extends Game {
 
-  constructor(emitter, endGameCallback, serverInfo) {
-    super(emitter, endGameCallback)
+  constructor(emitter, actions, serverInfo) {
+    super(emitter, actions)
     this.runningOnServer = true
     this.serverInfo = serverInfo
     this.wave = new WaveSpawnerLocal(this.createEnemy.bind(this))
@@ -32,7 +32,12 @@ class ServerGame extends Game {
 
   sendPerformance() {
     // this.emitter.sendPerformance(this.performance.getAverage())
-    console.log('Should be sending performance instructions to all clients!');
+    this.actions.updatePerformance(
+      this.serverInfo.gameNumber,
+      'server',
+      this.performance.getAverage(),
+    )
+    console.log('Should have updated server performance data.');
   }
 
   // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced

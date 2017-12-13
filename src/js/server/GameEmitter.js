@@ -26,6 +26,10 @@ class GameEmitter {
   pause(socket) {
     socket.broadcast.to(socket.roomId).emit('pause')
   }
+
+  sendPerformance(roomId, performance) {
+    this.io.to(roomId).emit('send performance', performance)
+  }
 }
 
 export default GameEmitter

@@ -34,8 +34,8 @@ export default class Game {
   height = 700
   width = 700
 
-  constructor(emitter, endGameCallback) {
-    this.endGameCallback = endGameCallback
+  constructor(emitter, actions) {
+    this.actions = actions
     this.emitter = emitter
 
     this.UNIT_TYPES = { Tank, Cannon }
@@ -97,7 +97,7 @@ export default class Game {
     this.commandUnits(this.towers)
     if (this.lives <= 0) {
       this.endGame()
-      this.endGameCallback() // could possibly pass scores/end-state here
+      this.actions.destroyGame() // could possibly pass scores/end-state here
     }
   }
 

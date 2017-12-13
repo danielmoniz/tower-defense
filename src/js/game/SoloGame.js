@@ -6,8 +6,8 @@ import WaveSpawnerLocal from '../WaveSpawnerLocal'
 
 class SoloGame extends ClientGame {
 
-  constructor(emitter, endGameCallback) {
-    super(emitter, endGameCallback)
+  constructor(emitter, actions) {
+    super(emitter, actions)
     this.wave = new WaveSpawnerLocal(this.createEnemy.bind(this))
   }
 

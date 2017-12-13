@@ -83,7 +83,15 @@ class GameServer {
 
     let gameManager = this.getGameManager(gameNumber);
     if (gameManager === undefined) {
-      gameManager = new GameManager(gameNumber, 'server', false, this.emitter)
+      gameManager = new GameManager(
+        gameNumber,
+        'server',
+        false,
+        this.emitter,
+        {
+          updatePerformance: this.updatePerformance.bind(this)
+        },
+      )
       gameManager.gameNumber = gameNumber
       this.rooms[gameNumber] = this.createNewRoom(gameManager)
     } else {
@@ -153,6 +161,7 @@ class GameServer {
   updatePerformance(roomId, key, performance) {
     if (!this.rooms[roomId]) { return }
     this.rooms[roomId].performance[key] = performance
+    // console.log(this.rooms[roomId].performance);
   }
 
   getGameManager(roomId) {

@@ -8,8 +8,8 @@ import { GAME_REFRESH_RATE } from '../appConstants'
 
 class ClientMultiGame extends ClientGame {
 
-  constructor(emitter, endGameCallback) {
-    super(emitter, endGameCallback)
+  constructor(emitter, actions) {
+    super(emitter, actions)
 
     // for calculating performance
     this.performance = new Performance(1000, GAME_REFRESH_RATE)
