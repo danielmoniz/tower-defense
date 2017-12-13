@@ -52,7 +52,7 @@ class Performance {
       return memo + mark
     })
     console.log("Average over last " + this.marks.length + " data points:", currentAverage);
-    return currentAverage
+    return Math.max(1, currentAverage) // < 1 is faster than normal, so cap out at 1
   }
 
   ready() {
