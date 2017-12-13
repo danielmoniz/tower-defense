@@ -62,7 +62,7 @@ class ClientMultiGame extends ClientGame {
   }
 
   sendPerformance() {
-    this.emitter.sendPerformance(this.performance.getAverage())
+    this.emitter.sendPerformance(this.performance.getSpeedSuggestion())
   }
 
   // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced

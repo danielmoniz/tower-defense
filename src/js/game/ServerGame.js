@@ -31,11 +31,10 @@ class ServerGame extends Game {
   }
 
   sendPerformance() {
-    // this.emitter.sendPerformance(this.performance.getAverage())
     this.actions.updatePerformance(
       this.serverInfo.gameNumber,
       'server',
-      this.performance.getAverage(),
+      this.performance.getSpeedSuggestion(),
     )
   }
 

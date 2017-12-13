@@ -5,6 +5,8 @@ class Performance {
 
   maxTimePoints = 5
 
+  // @TODO Allow for passing in current adjusted speed.
+  // This should allow for the game to speed back up if performing well.
   constructor(cooldownLength, tickLength, options={}) {
     this.cooldown = Cooldown.createTimeBased(cooldownLength, tickLength, options)
     this.tickLength = tickLength
@@ -13,6 +15,7 @@ class Performance {
     this.marks = []
   }
 
+  // @TODO Refactor this function into smaller pieces.
   next() {
     const now = Date.now()
     this.cooldown.tick()
@@ -51,8 +54,12 @@ class Performance {
     const currentAverage = this.marks.length / this.marks.reduce((memo, mark) => {
       return memo + mark
     })
-    console.log("Average over last " + this.marks.length + " data points:", currentAverage);
-    return Math.max(1, currentAverage) // < 1 is faster than normal, so cap out at 1
+    // console.log("Average over last " + this.marks.length + " data points:", currentAverage);
+    return currentAverage
+  }
+
+  getSpeedSuggestion() {
+    return Math.max(1, this.getAverage()) // < 1 is faster than normal, so cap out at 1
   }
 
   ready() {
