@@ -12,7 +12,6 @@ class GameServer {
 
     // @TODO May want to store both in same object to avoid desyncing of user/game data
     this.rooms = {}
-    this.users = getObjectProxy()
 
     this.io.on('connection', (socket) => {
       socket.on('disconnect', () => {
@@ -85,39 +84,46 @@ class GameServer {
     if (gameManager === undefined) {
       gameManager = new GameManager(gameNumber, 'server', false, this.emitter)
       gameManager.gameNumber = gameNumber
+      this.rooms[gameNumber] = this.createNewRoom(gameManager)
     } else {
       console.log("Game already exists!");
     }
     this.removeClearGameTimeout(gameNumber)
     socket.gameManager = gameManager
-    this.rooms[gameNumber] = { manager: gameManager }
 
     this.addUserToGame(socket.id, gameNumber)
     this.syncPlayer(socket)
   }
 
+  createNewRoom(gameManager) {
+    return {
+      manager: gameManager,
+      users: [],
+    }
+  }
+
   addUserToGame(id, gameNumber) {
-    const users = this.users[gameNumber]
+    const users = this.getUsers(gameNumber)
     if (users.indexOf(id) === -1) {
       users.push(id)
-      this.users[gameNumber] = users
       this.removeClearGameTimeout(gameNumber)
     }
-    console.log(this.users);
+    console.log(`Room ${gameNumber} users: ${this.getUsers(gameNumber)}`);
   }
 
   removeUserFromGame(id, gameNumber) {
-    const index = this.users[gameNumber].indexOf(id)
+    console.log(`removing user from game (room ${gameNumber})`);
+    const index = this.getUsers(gameNumber).indexOf(id)
     if (index === -1) { return }
-    this.users[gameNumber].splice(index, 1)
-    console.log(this.users);
+    this.getUsers(gameNumber).splice(index, 1)
+    console.log(`Room ${gameNumber} users: ${this.getUsers(gameNumber)}`);
   }
 
   clearRoomIfEmpty(gameNumber) {
     const gameManager = this.getGameManager(gameNumber)
     if (!gameManager) { return } // game is solo - do not clear!
 
-    if (this.users[gameNumber].length === 0) {
+    if (this.getUsers(gameNumber).length === 0) {
       // Trigger 30 second timeout - destroy game after that
       this.rooms[gameNumber].timeout = setTimeout(() => {
         console.log("Clearing room " + gameNumber);
@@ -142,14 +148,10 @@ class GameServer {
     if (this.rooms[roomId] === undefined) { return undefined }
     return this.rooms[roomId].manager
   }
-}
 
-function getObjectProxy() {
-  return new Proxy({}, {
-    get: function(object, property) {
-      return object.hasOwnProperty(property) ? object[property] : []
-    },
-  })
+  getUsers(roomId) {
+    return this.rooms[roomId] && this.rooms[roomId].users
+  }
 }
 
 module.exports = GameServer
