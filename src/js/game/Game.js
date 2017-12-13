@@ -239,7 +239,7 @@ export default class Game {
   }
 
   @action adjustGameSpeed(multiplier) {
-    console.log('Setting game speed to:', multiplier);
+    // console.log('Setting game speed to:', multiplier);
     this.control.speedMultiplier = multiplier
   }
 

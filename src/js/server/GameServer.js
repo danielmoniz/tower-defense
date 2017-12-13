@@ -76,9 +76,14 @@ class GameServer {
     const slowestGameSpeed = Object.values(performanceData).reduce((memo, speed) => {
       return Math.max(memo, speed)
     })
-    console.log('Slowest game speed is:', slowestGameSpeed);
-    console.log('All game speeds:', Object.values(performanceData));
+    this.printGameSpeeds(roomId, performanceData, slowestGameSpeed);
     return slowestGameSpeed
+  }
+
+  printGameSpeeds(roomId, performanceData, slowestGameSpeed) {
+    console.log(`Game speeds for room ${roomId}:`);
+    console.log(`  Server: ${performanceData.server}`)
+    console.log(`  Slowest game speed: ${slowestGameSpeed}`)
   }
 
   /*
