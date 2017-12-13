@@ -28,7 +28,7 @@ export default class Game {
 
   @observable control = {
     run: false,
-    // speedMultiplier: 1,
+    speedMultiplier: 1,
   }
 
   height = 700
@@ -82,7 +82,7 @@ export default class Game {
     // handle moving units, tower scanning, spawning waves, etc.
     return setCorrectingInterval(
       this.gameLogic.bind(this),
-      GAME_REFRESH_RATE,
+      GAME_REFRESH_RATE * this.control.speedMultiplier,
       this.control,
     )
   }
@@ -236,6 +236,11 @@ export default class Game {
       x: -enemy.width,
       y: this.height / 2,
     }
+  }
+
+  @action adjustGameSpeed(multiplier) {
+    console.log('Setting game speed to:', multiplier);
+    this.control.speedMultiplier = multiplier
   }
 
 

@@ -41,18 +41,44 @@ class GameServer {
       this.updateCooldown.tick()
     }, tickInterval)
 
+    setInterval(() => {
+      this.syncSpeed()
+    }, 1000)
+
   }
 
   syncGames() {
     // console.log('Updating all games');
-    const performance = this.updateCooldown.performance
-    Object.keys(this.rooms).forEach((gameId) => {
-      const gameManager = this.getGameManager(gameId)
+    Object.keys(this.rooms).forEach((roomId) => {
+      const gameManager = this.getGameManager(roomId)
       if (gameManager.gameInProgress()) { // only update games in progress
         const gameData = this.getGameData(gameManager.game)
-        this.io.to(gameId).emit('update all', gameData)
+        this.io.to(roomId).emit('update all', gameData)
       }
     })
+  }
+
+  // @TODO Refactor to re-use code from syncGames()
+  syncSpeed() {
+    Object.keys(this.rooms).forEach((roomId) => {
+      const gameManager = this.getGameManager(roomId)
+      if (gameManager.gameInProgress()) { // only update games in progress
+        const gameSpeed = this.getSlowestGameSpeed(roomId)
+        this.io.to(roomId).emit('set game speed', gameSpeed)
+        // set game speed on server
+        gameManager.game.adjustGameSpeed(gameSpeed)
+      }
+    })
+  }
+
+  getSlowestGameSpeed(roomId) {
+    const performanceData = this.rooms[roomId].performance
+    const slowestGameSpeed = Object.values(performanceData).reduce((memo, speed) => {
+      return Math.max(memo, speed)
+    })
+    console.log('Slowest game speed is:', slowestGameSpeed);
+    console.log('All game speeds:', Object.values(performanceData));
+    return slowestGameSpeed
   }
 
   /*

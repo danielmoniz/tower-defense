@@ -41,6 +41,10 @@ function setUpListeners(game, emitter) {
   socket.on('poll for game number', () => {
     emitter.joinGame()
   })
+
+  socket.on('set game speed', (newSpeed) => {
+    game.adjustGameSpeed(newSpeed)
+  })
 }
 
 export default setUpListeners

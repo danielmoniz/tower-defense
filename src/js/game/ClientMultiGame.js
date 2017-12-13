@@ -12,10 +12,10 @@ class ClientMultiGame extends ClientGame {
     super(emitter, actions)
 
     // for calculating performance
-    this.performance = new Performance(1000, GAME_REFRESH_RATE)
+    this.performance = new Performance(200, GAME_REFRESH_RATE)
 
     // for sending performance data to the server
-    this.performanceCooldown = Cooldown.createTimeBased(2000, GAME_REFRESH_RATE, {
+    this.performanceCooldown = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
       callback: this.sendPerformance.bind(this),
       autoActivate: true,
     })

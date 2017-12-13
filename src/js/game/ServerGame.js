@@ -16,9 +16,9 @@ class ServerGame extends Game {
     this.wave = new WaveSpawnerLocal(this.createEnemy.bind(this))
 
     // for calculating performance
-    this.performance = new Performance(1000, GAME_REFRESH_RATE)
+    this.performance = new Performance(200, GAME_REFRESH_RATE)
 
-    this.performanceCooldown = Cooldown.createTimeBased(2000, GAME_REFRESH_RATE, {
+    this.performanceCooldown = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
       callback: this.sendPerformance.bind(this),
       autoActivate: true,
     })
@@ -37,7 +37,6 @@ class ServerGame extends Game {
       'server',
       this.performance.getAverage(),
     )
-    console.log('Should have updated server performance data.');
   }
 
   // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
