@@ -6,6 +6,7 @@ import Cooldown from '../Cooldown'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Tank from '../units/Tank'
+import Map from '../map/Map'
 import { UNIT_REFRESH_RATE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
 
@@ -37,6 +38,8 @@ export default class Game {
     this.emitter = emitter
 
     this.UNIT_TYPES = { Tank, Cannon }
+
+    this.map = new Map(this)
 
     // to be overwritten by a subclass if another wave spawner is needed
     this.wave = new WaveSpawner(this.createEnemy.bind(this))
