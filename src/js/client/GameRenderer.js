@@ -1,5 +1,6 @@
 
 import { autorun } from 'mobx'
+import * as PIXI from 'pixi.js'
 
 import { GRID_SIZE } from '../appConstants'
 
@@ -16,6 +17,17 @@ export default class GameRenderer {
   }
 
   setupGameBox() {
+    this.app = new PIXI.Application({
+      width: this.game.width,
+      height: this.game.height,
+      antialias: true,
+      transparent: false,
+      resolution: 1,
+    })
+    document.body.appendChild(this.app.view)
+    this.app.renderer.backgroundColor = 0xFFFFFF
+    this.app.renderer.view.style.border = '2px solid black'
+
     this.gameBox = document.querySelector("#display-box")
     this.gameBox.style.width = this.game.width + 'px'
     this.gameBox.style.height = this.game.height + 'px'
