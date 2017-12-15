@@ -191,7 +191,7 @@ export default class Game {
     if (!placingTower) { return }
 
     // @TODO Handle placing other tower types
-    const finalTower = Unit.create(Cannon, this)
+    const finalTower = new Cannon(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
     if (finalTower && this.buyTower(finalTower)) {

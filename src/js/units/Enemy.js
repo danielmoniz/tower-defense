@@ -71,12 +71,4 @@ class Enemy extends Unit {
   }
 }
 
-/*
- * Creates a new unit of the given class provided (eg. Cannon, Tank, etc.).
- * Also triggers their initial rendering loop.
- */
-Enemy.create = function(UnitClass, game, options) {
-  return new UnitClass(game, options)
-}
-
 export default Enemy

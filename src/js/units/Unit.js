@@ -125,12 +125,4 @@ class Unit {
 
 }
 
-/*
- * Creates a new unit of the given class provided (eg. Cannon, Tank, etc.).
- * @TODO Remove this ASAP! No longer useful.
- */
-Unit.create = function(UnitClass, game, options) {
-  return new UnitClass(game, options)
-}
-
 export default Unit

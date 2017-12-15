@@ -45,7 +45,7 @@ class ClientGame extends Game {
    */
   selectNewCannon() {
     if (!this.inProgress) { return }
-    this.placingTower = Unit.create(Cannon, this)
+    this.placingTower = new Cannon(this)
     this.renderer.renderEntity(this.placingTower)
     return this.placingTower
   }
