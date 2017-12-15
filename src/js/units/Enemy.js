@@ -3,7 +3,6 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import Unit from './Unit'
 import { GAME_REFRESH_RATE } from '../appConstants'
-import getUnitRenderTools from '../client/UnitRenderer'
 
 class Enemy extends Unit {
   // defaults (observables)

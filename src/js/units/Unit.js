@@ -2,7 +2,6 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../appConstants'
-import getUnitRenderTools from '../client/UnitRenderer'
 
 let ID = 1
 
