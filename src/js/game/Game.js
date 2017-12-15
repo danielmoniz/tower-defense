@@ -195,8 +195,9 @@ export default class Game {
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
     if (finalTower && this.buyTower(finalTower)) {
+      finalTower.place()
+      finalTower.show()
       this.towers.push(finalTower)
-      finalTower.enable()
       return finalTower
     }
   }
@@ -241,7 +242,7 @@ export default class Game {
       this.buildEntityFromData(enemy, enemyData)
 
       // @TODO? if enemy has no health, maybe have to kill enemy
-      enemy.startRender()
+      this.renderer.renderEntity(enemy)
       this.enemies.push(enemy)
       const enemyTarget = this.getEnemyGoal(enemy)
       enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
@@ -262,7 +263,7 @@ export default class Game {
       let tower = new TowerType(this, towerData.name)
       this.buildEntityFromData(tower, towerData)
 
-      tower.startRender()
+      this.renderer.renderEntity(tower)
       tower.selectTarget() // unnecessary, but can be smoother
       tower.cooldown.setTicksPassed(towerData.cooldown.ticksPassed)
       this.towers.push(tower)
@@ -284,6 +285,7 @@ export default class Game {
 
     this.clearTowers()
     this.addTowers(data.towers)
+    console.log('adding towers');
     this.credits.current = data.credits
     this.wave.setNumber(data.waveNumber)
     this.inProgress = data.inProgress

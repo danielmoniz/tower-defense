@@ -58,19 +58,14 @@ class ClientGame extends Game {
     this.play()
   }
 
-  sendPlaceTower() {
-    return this.placeTower()
-  }
-
   /*
    * Place a tower as normal, but render it as well.
    */
   placeTower(tower) {
     tower = super.placeTower(tower)
     if (!tower) { return }
-    tower.place()
-    tower.show()
     this.renderer.renderEntity(tower)
+    return tower
   }
 
   spawnWaveEarly() {}

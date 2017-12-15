@@ -41,9 +41,7 @@ export default class UnitRenderer {
     // app.stage.addChild(rectangle)
 
     autorun(() => {
-      if (unit.derender) {
-        element.remove()
-      }
+      destroy(unit, element)
     })
 
     autorun(() => {
@@ -69,6 +67,12 @@ export default class UnitRenderer {
     unit.startRender = () => console.log("can't call me again")
   }
 
+}
+
+function destroy(unit, element) {
+  if (unit.derender) {
+    element.remove()
+  }
 }
 
 function renderPosition(unit, unitElement) {
