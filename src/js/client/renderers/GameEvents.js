@@ -5,9 +5,6 @@ import { GRID_SIZE } from '../../appConstants'
 import BoardRenderer from './BoardRenderer'
 
 export default class GameEvents {
-  constructor(game) {
-    // this.addEventHandlers()
-  }
 
   addEventHandlers(game, gameBox) {
     this.addKeyPresses(game)

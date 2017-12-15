@@ -7,22 +7,26 @@ import GameEvents from './GameEvents'
 
 export default class GameRenderer {
   constructor(game) {
-    this.game = game
-
     this.board = new BoardRenderer()
     this.events = new GameEvents()
 
-    this.createGameBoard()
+    this.createGameBoard(game)
 
-    this.setUpEvents() // relies on game board being set up
+    this.setUpEvents(game, this.board) // relies on game board being set up
   }
 
-  createGameBoard() {
-    this.board.setupGameBox(this.game)
+  createGameBoard(game) {
+    this.board.setupGameBox(game)
   }
 
-  setUpEvents() {
-    this.events.addEventHandlers(this.game, this.board.gameBox)
+  setUpEvents(game, board) {
+    this.events.addEventHandlers(game, board.gameBox)
+  }
+
+  destroyGame() {
+    // destroy board
+    // destroy events
+    // destroy units
   }
 
 }
