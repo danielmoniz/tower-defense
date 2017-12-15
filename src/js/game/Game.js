@@ -285,7 +285,7 @@ export default class Game {
 
     this.clearTowers()
     this.addTowers(data.towers)
-    console.log('adding towers');
+
     this.credits.current = data.credits
     this.wave.setNumber(data.waveNumber)
     this.inProgress = data.inProgress
