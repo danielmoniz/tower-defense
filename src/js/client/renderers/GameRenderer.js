@@ -1,14 +1,15 @@
 
 import { autorun } from 'mobx'
 
-import { GRID_SIZE } from '../../appConstants'
 import BoardRenderer from './BoardRenderer'
 import GameEvents from './GameEvents'
+import UnitRenderer from './UnitRenderer'
 
 export default class GameRenderer {
   constructor(game) {
     this.board = new BoardRenderer()
     this.events = new GameEvents()
+    this.unitRenderer = new UnitRenderer(this.board)
 
     this.createGameBoard(game)
 
@@ -27,6 +28,10 @@ export default class GameRenderer {
     // destroy board
     // destroy events
     // destroy units
+  }
+
+  addUnit(unit) {
+    this.unitRenderer.addUnit(unit)
   }
 
 }

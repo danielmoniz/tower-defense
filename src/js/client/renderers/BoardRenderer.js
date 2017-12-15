@@ -32,4 +32,8 @@ export default class BoardRenderer {
     })
   }
 
+  addElement(element) {
+    this.gameBox.appendChild(element)
+  }
+
 }
