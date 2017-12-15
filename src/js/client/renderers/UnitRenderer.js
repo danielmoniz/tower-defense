@@ -41,6 +41,11 @@ export default class UnitRenderer {
     // rectangle.endFill();
     // app.stage.addChild(rectangle)
 
+    autorun(() => {
+      if (unit.derender) {
+        element.remove()
+      }
+    })
 
     autorun(() => {
       renderPosition(unit, element)

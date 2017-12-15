@@ -15,6 +15,7 @@ class Unit {
   @observable display = true
   @observable disabled = false // setting to true disables and greys the unit
   @observable removed = false // setting to true allows for units to be removed from the game
+  @observable derender = false
   @observable maxHitPoints = 50
   @observable currentHitPoints
 
@@ -39,10 +40,6 @@ class Unit {
         this[key] = options[key]
       }
     }
-
-    // ensure unit.render() is not treated as data
-    // const renderTools = getUnitRenderTools(this)
-    // Object.defineProperty(this, 'render', { value: renderTools, writable: true })
   }
 
   @computed get xFloor() {
@@ -63,10 +60,7 @@ class Unit {
 
   @action destroy() {
     this.remove()
-    if (this.game.runningOnServer) { // @TODO Find way to remove runningOnServer
-      return
-    }
-    this.render.destroy()
+    this.derender = true
   }
 
   @action hide() {
@@ -133,7 +127,7 @@ class Unit {
 
 /*
  * Creates a new unit of the given class provided (eg. Cannon, Tank, etc.).
- * Also triggers their initial rendering loop.
+ * @TODO Remove this ASAP! No longer useful.
  */
 Unit.create = function(UnitClass, game, options) {
   return new UnitClass(game, options)
