@@ -30,7 +30,7 @@ export default class GameRenderer {
     // destroy units
   }
 
-  addUnit(unit) {
+  renderUnit(unit) {
     this.unitRenderer.addUnit(unit)
   }
 

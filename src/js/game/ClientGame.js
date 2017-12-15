@@ -28,6 +28,10 @@ class ClientGame extends Game {
     this.renderer = new GameRenderer(this)
   }
 
+  render(entities) {
+    entities.forEach((entity) => this.renderer.renderUnit(entity))
+  }
+
   spawnWave() {
     const newEnemies = super.spawnWave()
     this.render(newEnemies)

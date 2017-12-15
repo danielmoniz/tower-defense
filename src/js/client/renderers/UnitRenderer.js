@@ -14,7 +14,7 @@ export default class UnitRenderer {
   }
 
   startRender(unit, board) {
-    element = document.createElement("div")
+    const element = document.createElement("div")
     element.id = "unit-" + unit.id
     element.style.position = 'absolute'
     element.style.width = unit.width + 'px'
@@ -43,23 +43,23 @@ export default class UnitRenderer {
 
 
     autorun(() => {
-      renderPosition(element)
+      renderPosition(unit, element)
     })
 
     autorun(() => {
-      renderDisplay(element)
+      renderDisplay(unit, element)
     })
 
     autorun(() => {
-      renderDisable(element)
+      renderDisable(unit, element)
     })
 
     autorun(() => {
-      renderHitPointsBar(element, hitPointsBar)
+      renderHitPointsBar(unit, element, hitPointsBar)
     })
 
     autorun(() => {
-      renderTower(element, image)
+      renderTower(unit, element, image)
     })
 
     unit.startRender = () => console.log("can't call me again")
@@ -67,7 +67,7 @@ export default class UnitRenderer {
 
 }
 
-function renderPosition(unitElement) {
+function renderPosition(unit, unitElement) {
   // window.requestAnimationFrame(() => { // not working, not sure why
     // console.log('animation happening');
     unitElement.style['left'] = unit.xFloor + 'px'
@@ -75,11 +75,11 @@ function renderPosition(unitElement) {
   // })
 }
 
-function renderDisplay(unitElement) {
+function renderDisplay(unit, unitElement) {
   unitElement.style.display = unit.display ? 'initial' : 'none'
 }
 
-function renderDisable(unitElement) {
+function renderDisable(unit, unitElement) {
   if (unit.disabled) {
     unitElement.classList.add('disabled')
   } else {
@@ -87,11 +87,11 @@ function renderDisable(unitElement) {
   }
 }
 
-function renderHitPointsBar(unitElement, hitPointsBar) {
+function renderHitPointsBar(unit, unitElement, hitPointsBar) {
   hitPointsBar.innerHTML = unit.currentHitPoints
 }
 
-function renderTower(unitElement, image) {
+function renderTower(unit, unitElement, image) {
 
   // tower-specific styles can go here (for now)
   // @TODO This belongs in a class/method specific to rendering towers

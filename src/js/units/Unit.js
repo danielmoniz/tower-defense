@@ -41,8 +41,8 @@ class Unit {
     }
 
     // ensure unit.render() is not treated as data
-    const renderTools = getUnitRenderTools(this)
-    Object.defineProperty(this, 'render', { value: renderTools, writable: true })
+    // const renderTools = getUnitRenderTools(this)
+    // Object.defineProperty(this, 'render', { value: renderTools, writable: true })
   }
 
   @computed get xFloor() {
@@ -67,13 +67,6 @@ class Unit {
       return
     }
     this.render.destroy()
-  }
-
-  startRender() {
-    if (this.game.runningOnServer) { // @TODO Find way to remove runningOnServer
-      return
-    }
-    this.render.startRender()
   }
 
   @action hide() {
@@ -143,10 +136,7 @@ class Unit {
  * Also triggers their initial rendering loop.
  */
 Unit.create = function(UnitClass, game, options) {
-  // const unit = observable(new UnitClass(game, options))
-  const unit = new UnitClass(game, options)
-  unit.startRender()
-  return unit
+  return new UnitClass(game, options)
 }
 
 export default Unit

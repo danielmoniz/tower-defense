@@ -76,10 +76,7 @@ class Enemy extends Unit {
  * Also triggers their initial rendering loop.
  */
 Enemy.create = function(UnitClass, game, options) {
-  // const unit = observable(new UnitClass(game, options))
-  const unit = new UnitClass(game, options)
-  unit.startRender()
-  return unit
+  return new UnitClass(game, options)
 }
 
 export default Enemy

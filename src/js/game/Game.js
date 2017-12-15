@@ -105,10 +105,6 @@ export default class Game {
     return --this.lives
   }
 
-  render(entities) {
-    entities.forEach((entity) => entity.startRender())
-  }
-
   commandUnits(units) {
     for (let i = units.length - 1; i >= 0; i--) {
       let unit = units[i]
