@@ -3,6 +3,8 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import Game from './Game'
 import GameRenderer from '../client/renderers/GameRenderer'
+import Unit from '../units/Unit'
+import Cannon from '../units/Cannon'
 
 class ClientGame extends Game {
 
@@ -29,13 +31,23 @@ class ClientGame extends Game {
   }
 
   render(entities) {
-    entities.forEach((entity) => this.renderer.renderUnit(entity))
+    entities.forEach((entity) => this.renderer.renderEntity(entity))
   }
 
   spawnWave() {
     const newEnemies = super.spawnWave()
     this.render(newEnemies)
     return newEnemies
+  }
+
+  /*
+   * Selects a new (disabled/inactive) cannon to be placed on the map.
+   */
+  selectNewCannon() {
+    if (!this.inProgress) { return }
+    this.placingTower = Unit.create(Cannon, this)
+    this.renderer.renderEntity(this.placingTower)
+    return this.placingTower
   }
 
   sendPause() {
@@ -48,6 +60,17 @@ class ClientGame extends Game {
 
   sendPlaceTower() {
     return this.placeTower()
+  }
+
+  /*
+   * Place a tower as normal, but render it as well.
+   */
+  placeTower(tower) {
+    tower = super.placeTower(tower)
+    if (!tower) { return }
+    tower.place()
+    tower.show()
+    this.renderer.renderEntity(tower)
   }
 
   spawnWaveEarly() {}

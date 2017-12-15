@@ -160,15 +160,6 @@ export default class Game {
     enemy.jumpTo(this.width, numEnemy * enemyDistance)
   }
 
-  /*
-   * Selects a new (disabled/inactive) cannon to be placed on the map.
-   */
-  selectNewCannon() {
-    if (!this.inProgress) { return }
-    this.placingTower = Unit.create(Cannon, this)
-    return this.placingTower
-  }
-
   canAfford(unit) {
     return this.credits.current >= unit.purchaseCost
   }
@@ -204,10 +195,8 @@ export default class Game {
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
     if (finalTower && this.buyTower(finalTower)) {
-      finalTower.place()
       this.towers.push(finalTower)
       finalTower.enable()
-      finalTower.show()
       return finalTower
     }
   }

@@ -24,7 +24,6 @@ export default class UnitRenderer {
     const image = document.createElement("img")
     image.src = `../images/${unit.name.toLowerCase()}.png`
     element.append(image)
-    image.style
 
     const hitPointsBar = document.createElement("div")
     hitPointsBar.classList.add('hitPointsBar')
