@@ -3,6 +3,7 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import WaveSpawner from '../WaveSpawner'
 import Cooldown from '../Cooldown'
+import Performance from '../Performance'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Tank from '../units/Tank'
@@ -27,14 +28,14 @@ export default class Game {
 
   @observable control = {
     run: false,
-    // speedMultiplier: 1,
+    speedMultiplier: 1,
   }
 
   height = 700
   width = 700
 
-  constructor(emitter, endGameCallback) {
-    this.endGameCallback = endGameCallback
+  constructor(emitter, actions) {
+    this.actions = actions
     this.emitter = emitter
 
     this.UNIT_TYPES = { Tank, Cannon }
@@ -43,14 +44,6 @@ export default class Game {
 
     // to be overwritten by a subclass if another wave spawner is needed
     this.wave = new WaveSpawner(this.createEnemy.bind(this))
-
-    this.performance = new Cooldown(1000, {
-      callRate: GAME_REFRESH_RATE,
-      // log: true,
-      autoActivate: true,
-      delayActivation: true,
-      softReset: true,
-    })
   }
 
   newGame() {
@@ -62,7 +55,7 @@ export default class Game {
     this.inProgress = true
     this.reset()
     this.play()
-    this.wave.initializeWaveTimer()
+    this.wave.initializeWaveTimer(GAME_REFRESH_RATE)
   }
 
   @action reset() {
@@ -87,26 +80,29 @@ export default class Game {
 
   initializeLoop() {
     // handle moving units, tower scanning, spawning waves, etc.
-    return setCorrectingInterval(() => {
-      // console.log('---');
-      this.checkPerformance()
-      this.updateWave()
-      this.commandUnits(this.enemies)
-      this.commandUnits(this.towers)
-      if (this.lives <= 0) {
-        this.endGame()
-        this.endGameCallback() // could possibly pass scores/end-state here
-      }
-    }, GAME_REFRESH_RATE, this.control)
+    return setCorrectingInterval(
+      this.gameLogic.bind(this),
+      GAME_REFRESH_RATE * this.control.speedMultiplier,
+      this.control,
+    )
+  }
+
+  /*
+   * The core logic for the game.
+   * Called as part of the game loop. Should likely never be called separately.
+   */
+  gameLogic() {
+    this.updateWave()
+    this.commandUnits(this.enemies)
+    this.commandUnits(this.towers)
+    if (this.lives <= 0) {
+      this.endGame()
+      this.actions.destroyGame() // could possibly pass scores/end-state here
+    }
   }
 
   loseLife() {
     return --this.lives
-  }
-
-  // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
-  checkPerformance() {
-    this.performance.tick()
   }
 
   render(entities) {
@@ -242,6 +238,11 @@ export default class Game {
     }
   }
 
+  @action adjustGameSpeed(multiplier) {
+    // console.log('Setting game speed to:', multiplier);
+    this.control.speedMultiplier = multiplier
+  }
+
 
 
   // GAME UPDATE METHODS ---------------------
@@ -278,7 +279,7 @@ export default class Game {
 
       tower.startRender()
       tower.selectTarget() // unnecessary, but can be smoother
-      tower.cooldown.setTimePassed(towerData.cooldown.timePassed)
+      tower.cooldown.setTicksPassed(towerData.cooldown.ticksPassed)
       this.towers.push(tower)
     })
   }
@@ -292,12 +293,10 @@ export default class Game {
   }
 
   @action updateAll(data) {
-    console.log(this.enemies.length);
     console.log('Updating all');
     this.clearEnemies()
     this.addEnemies(data.enemies)
-    console.log(this.enemies.length);
-    console.log('---');
+
     this.clearTowers()
     this.addTowers(data.towers)
     this.credits.current = data.credits

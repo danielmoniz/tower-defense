@@ -6,7 +6,7 @@ import ClientEmitter from './client/GameEmitter'
 import socketListeners from './client/socketListeners'
 
 class GameManager {
-  constructor(gameNumber, runningOnServer, isSolo, emitter) {
+  constructor(gameNumber, runningOnServer, isSolo, emitter, actions) {
     if (emitter === undefined && !runningOnServer && !isSolo) {
       emitter = new ClientEmitter()
     }
@@ -14,7 +14,10 @@ class GameManager {
     const GameClass = this.getGameClass(runningOnServer, isSolo)
     this.game = new GameClass(
       emitter,
-      this.destroyGame.bind(this),
+      {
+        ...actions,
+        destroyGame: this.destroyGame.bind(this),
+      },
       { gameNumber },
     )
 

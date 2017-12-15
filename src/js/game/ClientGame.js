@@ -6,8 +6,8 @@ import GameRenderer from '../client/GameRenderer'
 
 class ClientGame extends Game {
 
-  constructor(emitter, endGameCallback) {
-    super(emitter, endGameCallback)
+  constructor(emitter, actions) {
+    super(emitter, actions)
     this.setupUI()
   }
 

@@ -39,6 +39,10 @@ class GameEmitter {
     this.emit('place tower', tower)
   }
 
+  sendPerformance(data) {
+    this.emit('send performance', data)
+  }
+
   /*
    * Emit to the server, but only if this is a client.
    * Otherwise, do nothing (or log for testing).

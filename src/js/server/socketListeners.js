@@ -38,4 +38,8 @@ export default function socketListeners(socket, emitter, serverFunctions) {
   socket.on('join game', (gameNumber) => {
     serverFunctions.joinGame(socket, gameNumber)
   })
+
+  socket.on('send performance', (performanceData) => {
+    serverFunctions.updatePerformance(socket.roomId, socket.id, performanceData)
+  })
 }

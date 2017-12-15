@@ -14,11 +14,13 @@ export function setCorrectingInterval(func, delay, control) {
               setTimeout( tick, delay );
             }
         } else {
+            var speedMultiplier = control.speedMultiplier || 1;
             var elapsed = new Date().valueOf() - instance.startTime,
-            adjust = instance.target - elapsed;
+                adjust = instance.target - elapsed;
+
 
             instance.func();
-            instance.target += instance.delay;
+            instance.target += (instance.delay * speedMultiplier);
 
             if (control.run) {
               setTimeout( tick, instance.delay + adjust );
