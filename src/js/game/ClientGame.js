@@ -58,6 +58,10 @@ class ClientGame extends Game {
     this.play()
   }
 
+  sendPlaceTower(tower) {
+    return this.placeTower(tower)
+  }
+
   /*
    * Place a tower as normal, but render it as well.
    */
