@@ -2,7 +2,7 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import Game from './Game'
-import GameRenderer from '../client/GameRenderer'
+import GameRenderer from '../client/renderers/GameRenderer'
 
 class ClientGame extends Game {
 

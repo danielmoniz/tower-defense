@@ -1,7 +1,7 @@
 
 import { autorun } from 'mobx'
 
-import { GRID_SIZE } from '../appConstants'
+import { GRID_SIZE } from '../../appConstants'
 
 export default class GameRenderer {
   constructor(game) {
