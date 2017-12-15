@@ -1,4 +1,5 @@
 import { useStrict } from 'mobx'
+import * as PIXI from 'pixi.js'
 
 import GameManager from './GameManager'
 
@@ -12,4 +13,5 @@ if (gameNumber === 'solo') {
   gameType = 'solo'
 }
 
+// let gameManager = new GameManager(gameNumber, false, gameType, undefined, PIXI)
 let gameManager = new GameManager(gameNumber, false, gameType)

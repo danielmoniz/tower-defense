@@ -12,6 +12,19 @@ class ClientGame extends Game {
   }
 
   setupUI() {
+    // @TODO This block should move to somewhere UI-specific
+    // this.app = new this.renderingEngine.Application({
+    //   width: this.width,
+    //   height: this.height,
+    //   antialias: true,
+    //   transparent: false,
+    //   resolution: 1,
+    // })
+    // console.log(this.app);
+    // document.body.appendChild(this.app.view)
+    // this.app.renderer.backgroundColor = 0xFFFFFF
+    // this.app.renderer.view.style.border = '2px solid black'
+
     this.renderer = new GameRenderer(this)
   }
 
