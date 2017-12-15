@@ -1,6 +1,5 @@
 
 import { autorun } from 'mobx'
-import * as PIXI from 'pixi.js'
 
 import { GRID_SIZE } from '../appConstants'
 
