@@ -10,8 +10,9 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     const container = super.startRender(unit, board)
 
     const gunHeight = 8
+    const circleRadius = unit.width / 2
 
-    let disableBackground = new PIXI.Graphics()
+    const disableBackground = new PIXI.Graphics()
     disableBackground.beginFill(0xFF4444)
     disableBackground.drawRect(0, 0, unit.width, unit.height)
     disableBackground.endFill()
@@ -19,28 +20,35 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     container.addChild(disableBackground)
 
 
-    let background = new PIXI.Graphics()
+    const background = new PIXI.Graphics()
     background.beginFill(0xCCCCCC)
     // background.lineStyle(2, 0x000000, 1);
     background.drawRect(0, 0, unit.width, unit.height);
     background.endFill();
     container.addChild(background)
 
-    let towerBase = new PIXI.Graphics()
-    const circleRadius = unit.width / 2
+    const towerBase = new PIXI.Graphics()
     towerBase.beginFill(0x66CCFF)
     towerBase.lineStyle(2, 0x000000, 1);
     towerBase.drawCircle(circleRadius, circleRadius, circleRadius - 3);
     towerBase.endFill();
     container.addChild(towerBase)
 
-    let gun = new PIXI.Graphics()
+    const gun = new PIXI.Graphics()
     gun.beginFill(0x666666)
     gun.lineStyle(1, 0x000000, 1)
     gun.drawRect(unit.width / 2, unit.height / 2, unit.width * 0.6, gunHeight)
     gun.endFill()
     gun.pivot.y = gunHeight / 2
     container.addChild(gun)
+
+    const maxRange = new PIXI.Graphics()
+    maxRange.beginFill(0x40ef4c)
+    maxRange.lineStyle(3, 0x000000, 1)
+    maxRange.drawCircle(0, 0, unit.range)
+    maxRange.endFill()
+    maxRange.alpha = 0.2
+    container.addChild(maxRange)
 
     board.app.stage.addChild(container)
 
@@ -52,9 +60,21 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
       rotateToTarget(unit, container)
     })
 
+    autorun(() => {
+      displayRange(unit, maxRange)
+    })
+
     return container
   }
 
+}
+
+function displayRange(unit, maxRange) {
+  if (!unit.placed || unit.selected) {
+    maxRange.visible = true
+  } else {
+    maxRange.visible = false
+  }
 }
 
 function rotateToTarget(unit, unitElement) {
