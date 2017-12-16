@@ -26,6 +26,8 @@ export default class Game {
   @observable lives = 20
   @observable inProgress = false
 
+  @observable selectedEntity
+
   @observable control = {
     run: false,
     speedMultiplier: 1,
@@ -183,6 +185,13 @@ export default class Game {
 
   deselectAll() {
     this.deselectPlacingTower()
+  }
+
+  selectEntity(entity) {
+    if (this.selectedEntity) {
+      this.selectedEntity.deselect()
+    }
+    entity.select()
   }
 
   placeTower(tower) {

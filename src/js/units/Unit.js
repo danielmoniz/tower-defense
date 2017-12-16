@@ -82,6 +82,14 @@ class Unit {
     this.removed = true
   }
 
+  @action select() {
+    this.selected = true
+  }
+
+  @action deselect() {
+    this.selected = false
+  }
+
   /*
    * Jumps/teleports a unit to the given position.
    */
