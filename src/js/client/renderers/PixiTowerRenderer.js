@@ -7,22 +7,19 @@ import PixiUnitRenderer from './PixiUnitRenderer'
 export default class PixiTowerRenderer extends PixiUnitRenderer {
 
   startRender(unit, board) {
-    const element = super.startRender(unit, board)
-
-
-    let container = new PIXI.Container()
+    const container = super.startRender(unit, board)
 
     let background = new PIXI.Graphics()
     background.beginFill(0xCCCCCC)
     // background.lineStyle(2, 0x000000, 1);
-    background.drawRect(unit.x, unit.y, unit.width, unit.height);
+    background.drawRect(0, 0, unit.width, unit.height);
     background.endFill();
 
     let towerBase = new PIXI.Graphics()
     const circleRadius = unit.width / 2
     towerBase.beginFill(0x66CCFF)
     towerBase.lineStyle(2, 0x000000, 1);
-    towerBase.drawCircle(unit.x + circleRadius, unit.y + circleRadius, circleRadius - 3);
+    towerBase.drawCircle(circleRadius, circleRadius, circleRadius - 3);
     towerBase.endFill();
 
     container.addChild(background)

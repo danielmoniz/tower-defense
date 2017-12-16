@@ -56,8 +56,8 @@ export default class GameRenderer {
 
   renderTower(tower) {
     this.towerRenderer.render(tower)
-    this.pixiUnitRenderer.render(tower)
-    // this.pixiTowerRenderer.render(tower)
+    // this.pixiUnitRenderer.render(tower)
+    this.pixiTowerRenderer.render(tower)
   }
 
 }
