@@ -3,6 +3,7 @@ import { autorun } from 'mobx'
 
 import BoardRenderer from './BoardRenderer'
 import GameEvents from './GameEvents'
+import PixiUnitRenderer from './PixiUnitRenderer'
 import UnitRenderer from './UnitRenderer'
 import EnemyRenderer from './EnemyRenderer'
 import TowerRenderer from './TowerRenderer'
@@ -14,6 +15,10 @@ export default class GameRenderer {
     this.unitRenderer = new UnitRenderer(this.board)
     this.enemyRenderer = new EnemyRenderer(this.board)
     this.towerRenderer = new TowerRenderer(this.board)
+
+    // EXPERIMENTAL
+    this.pixiUnitRenderer = new PixiUnitRenderer(this.board)
+
 
     this.createGameBoard(game)
 
@@ -36,14 +41,17 @@ export default class GameRenderer {
 
   renderEntity(entity) {
     this.unitRenderer.render(entity)
+    this.pixiUnitRenderer.render(entity)
   }
 
   renderEnemy(enemy) {
     this.enemyRenderer.render(enemy)
+    this.pixiUnitRenderer.render(enemy)
   }
 
-  renderTower(enemy) {
-    this.towerRenderer.render(enemy)
+  renderTower(tower) {
+    this.towerRenderer.render(tower)
+    this.pixiUnitRenderer.render(tower)
   }
 
 }
