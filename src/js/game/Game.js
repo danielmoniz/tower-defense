@@ -192,6 +192,7 @@ export default class Game {
       this.selectedEntity.deselect()
     }
     entity.select()
+    this.selectedEntity = entity
   }
 
   placeTower(tower) {

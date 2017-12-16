@@ -5,9 +5,9 @@ import { GRID_SIZE } from '../../appConstants'
 
 export default class PixiUnitRenderer {
 
-  constructor(board, app) {
+  constructor(board, gameActions) {
     this.board = board
-    this.app = app
+    this.actions = gameActions
   }
 
   render(unit) {
@@ -20,7 +20,14 @@ export default class PixiUnitRenderer {
     container.pivot.x = unit.width / 2
     container.pivot.y = unit.height / 2
 
+    container.interactive = true
+    container.buttonMode = true
+
     board.app.stage.addChild(container)
+
+    container.on('click', () => {
+      this.actions.selectEntity(unit)
+    })
 
     autorun(() => {
       destroy(unit, container)

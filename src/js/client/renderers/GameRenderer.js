@@ -12,6 +12,11 @@ import PixiTowerRenderer from './PixiTowerRenderer'
 
 export default class GameRenderer {
   constructor(game) {
+    // @TODO Game should have an object of actions - shouldn't be done here!
+    const actions = {
+      selectEntity: game.selectEntity.bind(game),
+    }
+
     this.board = new BoardRenderer()
     this.events = new GameEvents()
     this.unitRenderer = new UnitRenderer(this.board)
@@ -19,9 +24,9 @@ export default class GameRenderer {
     this.towerRenderer = new TowerRenderer(this.board)
 
     // EXPERIMENTAL
-    this.pixiUnitRenderer = new PixiUnitRenderer(this.board)
-    this.pixiTowerRenderer = new PixiTowerRenderer(this.board)
-    this.pixiEnemyRenderer = new PixiEnemyRenderer(this.board)
+    this.pixiUnitRenderer = new PixiUnitRenderer(this.board, actions)
+    this.pixiTowerRenderer = new PixiTowerRenderer(this.board, actions)
+    this.pixiEnemyRenderer = new PixiEnemyRenderer(this.board, actions)
 
 
     this.createGameBoard(game)

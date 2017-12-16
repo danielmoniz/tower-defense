@@ -17,6 +17,7 @@ class Unit {
   @observable derender = false
   @observable maxHitPoints = 50
   @observable currentHitPoints
+  @observable selected = false
 
   constructor(game, options) {
     options = options || {}

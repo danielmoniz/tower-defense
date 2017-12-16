@@ -5,9 +5,8 @@ import { GRID_SIZE } from '../../appConstants'
 
 export default class UnitRenderer {
 
-  constructor(board, app) {
+  constructor(board, gameActions) {
     this.board = board
-    this.app = app
   }
 
   render(unit) {
