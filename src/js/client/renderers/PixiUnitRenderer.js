@@ -17,6 +17,9 @@ export default class PixiUnitRenderer {
   startRender(unit, board) {
 
     let container = new PIXI.Container()
+    container.pivot.x = unit.width / 2
+    container.pivot.y = unit.height / 2
+
     board.app.stage.addChild(container)
 
     autorun(() => {
@@ -49,8 +52,8 @@ function destroy(unit, unitElement) {
 function renderPosition(unit, unitElement) {
   // window.requestAnimationFrame(() => { // not working, not sure why
     // console.log('animation happening');
-    unitElement.x = unit.xFloor
-    unitElement.y = unit.yFloor
+    unitElement.x = unit.xFloor + unit.width / 2
+    unitElement.y = unit.yFloor + unit.height / 2
   // })
 }
 
