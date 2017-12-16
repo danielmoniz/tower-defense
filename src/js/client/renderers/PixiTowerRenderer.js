@@ -45,7 +45,11 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     board.app.stage.addChild(container)
 
     autorun(() => {
-      renderTower(unit, container, background, disableBackground)
+      disable(unit, background, disableBackground)
+    })
+
+    autorun(() => {
+      rotateToTarget(unit, container)
     })
 
     return container
@@ -53,30 +57,23 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
 
 }
 
-function renderTower(unit, unitElement, background, disableBackground) {
-
-  // tower-specific styles can go here (for now)
-  // @TODO This belongs in a class/method specific to rendering towers
-  if (unit.purchaseCost !== undefined) { // ie. is purchasable, so must be a tower. @FIXME hacky!
-
-    // background highlight (affordability)
-    if (!unit.placed && !unit.game.canAfford(unit)) {
-      // @TODO Make red 'disabled' background visible
-      background.alpha = 0
-      disableBackground.alpha = 1
-    } else if (!unit.placed && unit.game.canAfford(unit)) {
-      background.alpha = 0.5
-      disableBackground.alpha = 0
-    } else {
-      background.alpha = 0.15
-      disableBackground.alpha = 0
-    }
-
-    // tower rotation toward target (ideally only gun rotation)
-    if (unit.target) {
-      const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
-      unitElement.rotation = angle
-    }
+function rotateToTarget(unit, unitElement) {
+  // tower rotation toward target (ideally only gun rotation)
+  if (unit.target) {
+    const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
+    unitElement.rotation = angle
   }
+}
 
+function disable(unit, background, disableBackground) {
+  if (unit.placed) {
+    background.alpha = 0.2
+    disableBackground.alpha = 0
+  } else if (unit.game.canAfford(unit)) {
+    background.alpha = 1
+    disableBackground.alpha = 0
+  } else {
+    background.alpha = 0
+    disableBackground.alpha = 1
+  }
 }
