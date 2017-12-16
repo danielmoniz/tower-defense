@@ -302,7 +302,7 @@ export default class Game {
     this.credits.current = data.credits
     this.wave.setNumber(data.waveNumber)
     this.inProgress = data.inProgress
-    if (this.inProgress && this.control.run) {
+    if (this.inProgress) {
       this.play()
     }
   }
