@@ -153,6 +153,7 @@ class GameServer {
   }
 
   removeUserFromGame(id, gameNumber) {
+    if (gameNumber === undefined) { return } // must be in solo game
     console.log(`removing user from game (room ${gameNumber})`);
     const index = this.getUsers(gameNumber).indexOf(id)
     if (index === -1) { return }
