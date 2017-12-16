@@ -30,13 +30,13 @@ class ClientGame extends Game {
     this.renderer = new GameRenderer(this)
   }
 
-  render(entities) {
-    entities.forEach((entity) => this.renderer.renderEntity(entity))
+  renderEnemies(enemies) {
+    enemies.forEach((enemy) => this.renderer.renderEntity(enemy))
   }
 
   spawnWave() {
     const newEnemies = super.spawnWave()
-    this.render(newEnemies)
+    this.renderEnemies(newEnemies)
     return newEnemies
   }
 
@@ -46,7 +46,7 @@ class ClientGame extends Game {
   selectNewCannon() {
     if (!this.inProgress) { return }
     this.placingTower = new Cannon(this)
-    this.renderer.renderEntity(this.placingTower)
+    this.renderer.renderTower(this.placingTower)
     return this.placingTower
   }
 
@@ -68,7 +68,7 @@ class ClientGame extends Game {
   placeTower(tower) {
     tower = super.placeTower(tower)
     if (!tower) { return }
-    this.renderer.renderEntity(tower)
+    this.renderer.renderTower(tower)
     return tower
   }
 

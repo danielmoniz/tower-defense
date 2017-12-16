@@ -9,7 +9,7 @@ export default class UnitRenderer {
     this.board = board
   }
 
-  addUnit(unit) {
+  render(unit) {
     this.startRender(unit, this.board)
   }
 
@@ -21,15 +21,6 @@ export default class UnitRenderer {
     element.style.height = unit.height + 'px'
     element.classList.add('unit')
 
-    const image = document.createElement("img")
-    image.src = `../images/${unit.name.toLowerCase()}.png`
-    element.append(image)
-
-    const hitPointsBar = document.createElement("div")
-    hitPointsBar.classList.add('hitPointsBar')
-    element.append(hitPointsBar)
-
-    // const gameBox = document.querySelector("#display-box")
     board.gameBox.append(element)
 
 
@@ -56,15 +47,7 @@ export default class UnitRenderer {
       renderDisable(unit, element)
     })
 
-    autorun(() => {
-      renderHitPointsBar(unit, element, hitPointsBar)
-    })
-
-    autorun(() => {
-      renderTower(unit, element, image)
-    })
-
-    unit.startRender = () => console.log("can't call me again")
+    return element
   }
 
 }
@@ -93,32 +76,4 @@ function renderDisable(unit, unitElement) {
   } else {
     unitElement.classList.remove('disabled')
   }
-}
-
-function renderHitPointsBar(unit, unitElement, hitPointsBar) {
-  hitPointsBar.innerHTML = unit.currentHitPoints
-}
-
-function renderTower(unit, unitElement, image) {
-
-  // tower-specific styles can go here (for now)
-  // @TODO This belongs in a class/method specific to rendering towers
-  if (unit.purchaseCost !== undefined) { // ie. is purchasable, so must be a tower. @FIXME hacky!
-
-    // background highlight (affordability)
-    if (!unit.placed && !unit.game.canAfford(unit)) {
-      unitElement.style['background-color'] = 'red'
-    } else if (!unit.placed && unit.game.canAfford(unit)) {
-      unitElement.style['background-color'] = 'rgba(0, 0, 0, 0.5)'
-    } else {
-      unitElement.style['background-color'] = 'rgba(0, 0, 0, 0.15)'
-    }
-
-    // tower rotation toward target (ideally only gun rotation)
-    if (unit.target) {
-      const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
-      image.style.transform = `rotate(${angle}rad)`
-    }
-  }
-
 }

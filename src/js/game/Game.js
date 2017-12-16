@@ -242,7 +242,7 @@ export default class Game {
       this.buildEntityFromData(enemy, enemyData)
 
       // @TODO? if enemy has no health, maybe have to kill enemy
-      this.renderer.renderEntity(enemy)
+      this.renderer.renderEnemy(enemy)
       this.enemies.push(enemy)
       const enemyTarget = this.getEnemyGoal(enemy)
       enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
@@ -263,7 +263,7 @@ export default class Game {
       let tower = new TowerType(this, towerData.name)
       this.buildEntityFromData(tower, towerData)
 
-      this.renderer.renderEntity(tower)
+      this.renderer.renderTower(tower)
       tower.selectTarget() // unnecessary, but can be smoother
       tower.cooldown.setTicksPassed(towerData.cooldown.ticksPassed)
       this.towers.push(tower)
