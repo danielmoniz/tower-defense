@@ -9,6 +9,8 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
   startRender(unit, board) {
     const container = super.startRender(unit, board)
 
+    const gunHeight = 8
+
     let background = new PIXI.Graphics()
     background.beginFill(0xCCCCCC)
     // background.lineStyle(2, 0x000000, 1);
@@ -22,12 +24,20 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     towerBase.drawCircle(circleRadius, circleRadius, circleRadius - 3);
     towerBase.endFill();
 
+    let gun = new PIXI.Graphics()
+    gun.beginFill(0x666666)
+    gun.lineStyle(1, 0x000000, 1)
+    gun.drawRect(unit.width / 2, unit.height / 2, unit.width * 0.6, gunHeight)
+    gun.endFill()
+    gun.pivot.y = gunHeight / 2
+
     container.addChild(background)
     container.addChild(towerBase)
+    container.addChild(gun)
     board.app.stage.addChild(container)
 
     autorun(() => {
-      renderTower(unit, container, background)
+      renderTower(unit, container, background, gun)
     })
 
     return container
@@ -52,10 +62,10 @@ function renderTower(unit, unitElement, background) {
     }
 
     // tower rotation toward target (ideally only gun rotation)
-    // if (unit.target) {
-    //   const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
-    //   image.style.transform = `rotate(${angle}rad)`
-    // }
+    if (unit.target) {
+      const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
+      unitElement.rotation = angle
+    }
   }
 
 }
