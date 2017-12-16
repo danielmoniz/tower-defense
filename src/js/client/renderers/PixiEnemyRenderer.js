@@ -18,7 +18,7 @@ export default class PixiEnemyRenderer extends PixiUnitRenderer {
     container.addChild(unitBase)
 
     let healthBar = new PIXI.Graphics()
-    healthBar.beginFill(0x8000)
+    healthBar.beginFill(0x40ef4c)
     healthBar.lineStyle(1, 0x000000, 1)
     healthBar.drawRect(0, unit.height - healthBarHeight, unit.width, healthBarHeight)
     healthBar.endFill()
