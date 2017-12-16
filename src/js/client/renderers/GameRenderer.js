@@ -6,6 +6,7 @@ import GameEvents from './GameEvents'
 import UnitRenderer from './UnitRenderer'
 import PixiUnitRenderer from './PixiUnitRenderer'
 import EnemyRenderer from './EnemyRenderer'
+import PixiEnemyRenderer from './PixiEnemyRenderer'
 import TowerRenderer from './TowerRenderer'
 import PixiTowerRenderer from './PixiTowerRenderer'
 
@@ -20,6 +21,7 @@ export default class GameRenderer {
     // EXPERIMENTAL
     this.pixiUnitRenderer = new PixiUnitRenderer(this.board)
     this.pixiTowerRenderer = new PixiTowerRenderer(this.board)
+    this.pixiEnemyRenderer = new PixiEnemyRenderer(this.board)
 
 
     this.createGameBoard(game)
@@ -48,7 +50,8 @@ export default class GameRenderer {
 
   renderEnemy(enemy) {
     this.enemyRenderer.render(enemy)
-    this.pixiUnitRenderer.render(enemy)
+    // this.pixiUnitRenderer.render(enemy)
+    this.pixiEnemyRenderer.render(enemy)
   }
 
   renderTower(tower) {

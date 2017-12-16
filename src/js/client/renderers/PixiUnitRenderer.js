@@ -16,31 +16,26 @@ export default class PixiUnitRenderer {
 
   startRender(unit, board) {
 
-    // let container = new PIXI.Container()
-    let rectangle = new PIXI.Graphics()
-    rectangle.beginFill(0x66CCFF)
-    rectangle.lineStyle(4, 0xFF3300, 1);
-    rectangle.drawRect(0, 0, 20, 20);
-    rectangle.endFill();
-    board.app.stage.addChild(rectangle)
+    let container = new PIXI.Container()
+    board.app.stage.addChild(container)
 
     autorun(() => {
-      destroy(unit, rectangle)
+      destroy(unit, container)
     })
 
     autorun(() => {
-      renderPosition(unit, rectangle)
+      renderPosition(unit, container)
     })
 
     autorun(() => {
-      renderDisplay(unit, rectangle)
+      renderDisplay(unit, container)
     })
 
     autorun(() => {
-      renderDisable(unit, rectangle)
+      renderDisable(unit, container)
     })
 
-    return rectangle
+    return container
   }
 
 }
