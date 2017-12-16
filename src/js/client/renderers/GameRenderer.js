@@ -3,10 +3,11 @@ import { autorun } from 'mobx'
 
 import BoardRenderer from './BoardRenderer'
 import GameEvents from './GameEvents'
-import PixiUnitRenderer from './PixiUnitRenderer'
 import UnitRenderer from './UnitRenderer'
+import PixiUnitRenderer from './PixiUnitRenderer'
 import EnemyRenderer from './EnemyRenderer'
 import TowerRenderer from './TowerRenderer'
+import PixiTowerRenderer from './PixiTowerRenderer'
 
 export default class GameRenderer {
   constructor(game) {
@@ -18,6 +19,7 @@ export default class GameRenderer {
 
     // EXPERIMENTAL
     this.pixiUnitRenderer = new PixiUnitRenderer(this.board)
+    this.pixiTowerRenderer = new PixiTowerRenderer(this.board)
 
 
     this.createGameBoard(game)
@@ -52,6 +54,7 @@ export default class GameRenderer {
   renderTower(tower) {
     this.towerRenderer.render(tower)
     this.pixiUnitRenderer.render(tower)
+    // this.pixiTowerRenderer.render(tower)
   }
 
 }

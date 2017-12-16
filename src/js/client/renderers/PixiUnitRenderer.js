@@ -3,7 +3,7 @@ import { autorun } from 'mobx'
 
 import { GRID_SIZE } from '../../appConstants'
 
-export default class UnitRenderer {
+export default class PixiUnitRenderer {
 
   constructor(board, app) {
     this.board = board
@@ -16,6 +16,7 @@ export default class UnitRenderer {
 
   startRender(unit, board) {
 
+    // let container = new PIXI.Container()
     let rectangle = new PIXI.Graphics()
     rectangle.beginFill(0x66CCFF)
     rectangle.lineStyle(4, 0xFF3300, 1);

@@ -1,38 +1,44 @@
 
 import { autorun } from 'mobx'
 
-import UnitRenderer from './UnitRenderer'
+import { GAME_REFRESH_RATE } from '../../appConstants'
+import PixiUnitRenderer from './PixiUnitRenderer'
 
-export default class TowerRenderer extends UnitRenderer {
+export default class PixiTowerRenderer extends PixiUnitRenderer {
 
   startRender(unit, board) {
     const element = super.startRender(unit, board)
 
-    element.id = "tower-" + unit.id
-    element.classList.add('tower')
 
-    const image = document.createElement("img")
-    image.src = `../images/${unit.name.toLowerCase()}.png`
-    element.append(image)
+    let container = new PIXI.Container()
 
+    let background = new PIXI.Graphics()
+    background.beginFill(0xCCCCCC)
+    // background.lineStyle(2, 0x000000, 1);
+    background.drawRect(unit.x, unit.y, unit.width, unit.height);
+    background.endFill();
 
-    // let rectangle = new PIXI.Graphics()
-    // rectangle.beginFill(0x66CCFF)
-    // rectangle.lineStyle(4, 0xFF3300, 1);
-    // rectangle.drawRect(0, 0, 20, 20);
-    // rectangle.endFill();
-    // app.stage.addChild(rectangle)
+    let towerBase = new PIXI.Graphics()
+    const circleRadius = unit.width / 2
+    towerBase.beginFill(0x66CCFF)
+    towerBase.lineStyle(2, 0x000000, 1);
+    towerBase.drawCircle(unit.x + circleRadius, unit.y + circleRadius, circleRadius - 3);
+    towerBase.endFill();
+
+    container.addChild(background)
+    container.addChild(towerBase)
+    board.app.stage.addChild(container)
 
     autorun(() => {
-      renderTower(unit, element, image)
+      renderTower(unit, container, background)
     })
 
-    return element
+    return container
   }
 
 }
 
-function renderTower(unit, unitElement, image) {
+function renderTower(unit, unitElement, background) {
 
   // tower-specific styles can go here (for now)
   // @TODO This belongs in a class/method specific to rendering towers
@@ -40,18 +46,19 @@ function renderTower(unit, unitElement, image) {
 
     // background highlight (affordability)
     if (!unit.placed && !unit.game.canAfford(unit)) {
-      unitElement.style['background-color'] = 'red'
+      // @TODO Make red 'disabled' background visible
+      background.alpha = 1
     } else if (!unit.placed && unit.game.canAfford(unit)) {
-      unitElement.style['background-color'] = 'rgba(0, 0, 0, 0.5)'
+      background.alpha = 0.5
     } else {
-      unitElement.style['background-color'] = 'rgba(0, 0, 0, 0.15)'
+      background.alpha = 0.15
     }
 
     // tower rotation toward target (ideally only gun rotation)
-    if (unit.target) {
-      const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
-      image.style.transform = `rotate(${angle}rad)`
-    }
+    // if (unit.target) {
+    //   const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
+    //   image.style.transform = `rotate(${angle}rad)`
+    // }
   }
 
 }
