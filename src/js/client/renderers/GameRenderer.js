@@ -55,13 +55,11 @@ export default class GameRenderer {
 
   renderEnemy(enemy) {
     this.enemyRenderer.render(enemy)
-    // this.pixiUnitRenderer.render(enemy)
     this.pixiEnemyRenderer.render(enemy)
   }
 
   renderTower(tower) {
     this.towerRenderer.render(tower)
-    // this.pixiUnitRenderer.render(tower)
     this.pixiTowerRenderer.render(tower)
   }
 
