@@ -34,13 +34,22 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     towerBase.endFill();
     container.addChild(towerBase)
 
+    // Create container for the gun so it can be rotated separately
+    const gunContainer = new PIXI.Container()
+    gunContainer.height = unit.height
+    gunContainer.width = unit.width
+    gunContainer.anchor = 0.5
+    gunContainer.x = unit.width / 2
+    gunContainer.y = unit.height / 2
+    container.addChild(gunContainer)
+
     const gun = new PIXI.Graphics()
     gun.beginFill(0x666666)
     gun.lineStyle(1, 0x000000, 1)
-    gun.drawRect(unit.width / 2, unit.height / 2, unit.width * 0.6, gunHeight)
+    gun.drawRect(0, 0, unit.width * 0.6, gunHeight)
     gun.endFill()
     gun.pivot.y = gunHeight / 2
-    container.addChild(gun)
+    gunContainer.addChild(gun)
 
     const maxRange = new PIXI.Graphics()
     maxRange.beginFill(0x40ef4c)
@@ -57,7 +66,7 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     })
 
     autorun(() => {
-      rotateToTarget(unit, container)
+      rotateToTarget(unit, gunContainer)
     })
 
     autorun(() => {
