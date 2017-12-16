@@ -73,6 +73,43 @@ class ClientGame extends Game {
   }
 
   spawnWaveEarly() {}
+
+  /*
+   * Add and render enemies to the game given data describing those enemies.
+   */
+  addEnemies(enemies) {
+    enemies.forEach((enemyData) => {
+      if (enemyData.currentHitPoints <= 0) { return }
+      // @TODO Allow for other unit types\
+      const EnemyType = this.UNIT_TYPES['Tank']
+      let enemy = new EnemyType(this, enemyData.name)
+      this.buildEntityFromData(enemy, enemyData)
+
+      // @TODO? if enemy has no health, maybe have to kill enemy
+      this.renderer.renderEnemy(enemy)
+      this.enemies.push(enemy)
+      const enemyTarget = this.getEnemyGoal(enemy)
+      enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+    })
+  }
+
+  /*
+   * Add and render towers to the game given data describing those enemies.
+   */
+  addTowers(towers) {
+    towers.forEach((towerData) => {
+      // @TODO Allow for other tower types
+      const TowerType = this.UNIT_TYPES['Cannon']
+      let tower = new TowerType(this, towerData.name)
+      this.buildEntityFromData(tower, towerData)
+
+      this.renderer.renderTower(tower)
+      tower.selectTarget() // unnecessary, but can be smoother
+      tower.cooldown.setTicksPassed(towerData.cooldown.ticksPassed)
+      this.towers.push(tower)
+    })
+  }
+
 }
 
 export default ClientGame
