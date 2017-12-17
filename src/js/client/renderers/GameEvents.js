@@ -41,9 +41,11 @@ export default class GameEvents {
   }
 
   addPlaceTower(game) {
-    const placeTowerButton = document.querySelector("button#place-tower")
-    placeTowerButton.addEventListener('click', () => {
-      game.selectNewCannon()
+    const placeTowerButtons = document.querySelectorAll("button.place-tower")
+    placeTowerButtons.forEach((button) => {
+      button.addEventListener('click', function() {
+        game.selectNewTower(this.dataset.towertype)
+      })
     })
   }
 

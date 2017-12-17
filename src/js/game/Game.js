@@ -6,7 +6,7 @@ import Cooldown from '../Cooldown'
 import Performance from '../Performance'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
-// import Flamethrower from '../units/Flamethrower'
+import Flamethrower from '../units/Flamethrower'
 import Tank from '../units/Tank'
 
 import Map from '../map/Map'
@@ -41,7 +41,7 @@ export default class Game {
     this.actions = actions
     this.emitter = emitter
 
-    this.UNIT_TYPES = { Tank, Cannon }
+    this.UNIT_TYPES = { Tank, Cannon, Flamethrower }
 
     this.map = new Map(this)
 
@@ -201,8 +201,8 @@ export default class Game {
     const placingTower = tower || this.placingTower
     if (!placingTower) { return }
 
-    // @TODO Handle placing other tower types
-    const finalTower = new Cannon(this)
+    const TowerType = this.UNIT_TYPES[placingTower.type]
+    const finalTower = new TowerType(this)
     // const finalTower = new Flamethrower(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 

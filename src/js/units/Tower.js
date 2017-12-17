@@ -68,7 +68,7 @@ export default class Tower extends Unit {
   targetIsValid() {
     // test that the target even has an isAlive function
     // -> must be a server-updated target that no longer exists
-    return this.target.isAlive && this.unitInRange(this.target) && this.target.isAlive()
+    return this.target && this.target.isAlive && this.unitInRange(this.target) && this.target.isAlive()
   }
 
   unitInRange(unit) {
