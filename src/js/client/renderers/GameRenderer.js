@@ -9,7 +9,7 @@ import EnemyRenderer from './EnemyRenderer'
 import PixiEnemyRenderer from './PixiEnemyRenderer'
 import TowerRenderer from './TowerRenderer'
 import PixiTowerRenderer from './PixiTowerRenderer'
-import { CannonRenderer, PixiCannonRenderer } from './towers'
+import { CannonRenderer, PixiCannonRenderer, FlamethrowerRenderer, PixiFlamethrowerRenderer } from './towers'
 
 
 export default class GameRenderer {
@@ -26,21 +26,25 @@ export default class GameRenderer {
     this.enemyRenderer = new EnemyRenderer(this.board)
     this.towerRenderer = new TowerRenderer(this.board)
     this.cannonRenderer = new CannonRenderer(this.board)
+    this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions)
 
     // EXPERIMENTAL - PIXI SPECIFIC
     this.pixiUnitRenderer = new PixiUnitRenderer(this.board, actions)
     this.pixiTowerRenderer = new PixiTowerRenderer(this.board, actions)
     this.pixiEnemyRenderer = new PixiEnemyRenderer(this.board, actions)
     this.pixiCannonRenderer = new PixiCannonRenderer(this.board, actions)
+    this.pixiFlamethrowerRenderer = new PixiFlamethrowerRenderer(this.board, actions)
 
     this.towerRenderers = {
       Tower: this.towerRenderer, // default?
       Cannon: this.cannonRenderer,
+      Flamethrower: this.flamethrowerRenderer
     }
 
     this.pixiTowerRenderers = {
       Tower: this.pixiTowerRenderer, // default?
       Cannon: this.pixiCannonRenderer,
+      Flamethrower: this.pixiFlamethrowerRenderer
     }
 
 

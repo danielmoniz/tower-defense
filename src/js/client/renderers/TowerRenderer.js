@@ -16,13 +16,6 @@ export default class TowerRenderer extends UnitRenderer {
     element.append(image)
 
 
-    // let rectangle = new PIXI.Graphics()
-    // rectangle.beginFill(0x66CCFF)
-    // rectangle.lineStyle(4, 0xFF3300, 1);
-    // rectangle.drawRect(0, 0, 20, 20);
-    // rectangle.endFill();
-    // app.stage.addChild(rectangle)
-
     autorun(() => {
       renderTower(unit, element, image)
     })
