@@ -10,6 +10,7 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     const container = super.startRender(unit, board)
 
     const gunHeight = 8
+    const gunLength = unit.width * 0.6
     const circleRadius = unit.width / 2
 
     const disableBackground = new PIXI.Graphics()
@@ -46,7 +47,7 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     const gun = new PIXI.Graphics()
     gun.beginFill(0x666666)
     gun.lineStyle(1, 0x000000, 1)
-    gun.drawRect(0, 0, unit.width * 0.6, gunHeight)
+    gun.drawRect(0, 0, gunLength, gunHeight)
     gun.endFill()
     gun.pivot.y = gunHeight / 2
     gunContainer.addChild(gun)
@@ -61,12 +62,97 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
 
     board.app.stage.addChild(container)
 
+    let myEmitter = new PIXI.particles.Emitter(
+      gunContainer,
+      [PIXI.Texture.fromImage('/images/Fire.png')],
+      {
+        "alpha": {
+					"start": 0.62,
+					"end": 0
+				},
+				"scale": {
+					"start": 0.25,
+					"end": 0.75
+				},
+				"color": {
+					"start": "fff191",
+					"end": "ff622c"
+				},
+				"speed": {
+					"start": 500,
+					"end": 200
+				},
+				"startRotation": {
+					"min": -5,
+					"max": 5
+				},
+				"rotationSpeed": {
+					"min": 50,
+					"max": 50
+				},
+				"lifetime": {
+					"min": 0.1,
+					"max": 0.75
+				},
+				"blendMode": "normal",
+				"frequency": 0.001,
+				"emitterLifetime": 0,
+				"maxParticles": 1000,
+				"pos": {
+					"x": gunLength,
+					"y": 0
+				},
+				"addAtBack": false,
+				"spawnType": "circle",
+				"spawnCircle": {
+					"x": 0,
+					"y": 0,
+					"r": 10
+				}
+      }
+    )
+    console.log(myEmitter);
+
+    var elapsed = Date.now()
+
+    var update = function(){
+
+    	// Update the next frame
+    	requestAnimationFrame(update);
+
+    	var now = Date.now();
+
+    	// The emitter requires the elapsed
+    	// number of seconds since the last update
+    	myEmitter.update((now - elapsed) * 0.001);
+
+    	elapsed = now;
+
+    	// Should re-render the PIXI Stage
+    	// renderer.render(stage);
+    };
+
+    myEmitter.emit = true
+    update()
+
+    // autorun(() => {
+    //   if (!unit.lastFired) {
+    //     unit.lastFired = Date.now()
+    //     return
+    //   }
+    //   if (unit.firingTest) {
+    //     const time = Date.now()
+    //     myEmitter.update(time - unit.lastFired)
+    //   }
+    // })
+
+
     autorun(() => {
       disable(unit, background, disableBackground)
     })
 
     autorun(() => {
-      rotateToTarget(unit, gunContainer)
+      rotateToTarget(unit, gunContainer, myEmitter)
     })
 
     autorun(() => {
@@ -86,7 +172,7 @@ function displayRange(unit, maxRange) {
   }
 }
 
-function rotateToTarget(unit, unitElement) {
+function rotateToTarget(unit, unitElement, emitter) {
   // tower rotation toward target (ideally only gun rotation)
   if (unit.target) {
     const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)

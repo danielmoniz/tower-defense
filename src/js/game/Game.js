@@ -6,6 +6,7 @@ import Cooldown from '../Cooldown'
 import Performance from '../Performance'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
+// import Flamethrower from '../units/Flamethrower'
 import Tank from '../units/Tank'
 
 import Map from '../map/Map'
@@ -202,6 +203,7 @@ export default class Game {
 
     // @TODO Handle placing other tower types
     const finalTower = new Cannon(this)
+    // const finalTower = new Flamethrower(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
     if (finalTower && this.buyTower(finalTower)) {

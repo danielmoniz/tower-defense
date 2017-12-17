@@ -1,6 +1,9 @@
 import { useStrict } from 'mobx'
 import * as PIXI from 'pixi.js'
+import * as particles from 'pixi-particles'
 
+window.particles = particles
+// console.log(particles);
 import GameManager from './GameManager'
 
 useStrict(true)
