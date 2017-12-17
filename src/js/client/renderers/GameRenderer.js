@@ -9,6 +9,8 @@ import EnemyRenderer from './EnemyRenderer'
 import PixiEnemyRenderer from './PixiEnemyRenderer'
 import TowerRenderer from './TowerRenderer'
 import PixiTowerRenderer from './PixiTowerRenderer'
+import { CannonRenderer, PixiCannonRenderer } from './towers'
+
 
 export default class GameRenderer {
   constructor(game) {
@@ -19,14 +21,27 @@ export default class GameRenderer {
 
     this.board = new BoardRenderer()
     this.events = new GameEvents()
+
     this.unitRenderer = new UnitRenderer(this.board)
     this.enemyRenderer = new EnemyRenderer(this.board)
     this.towerRenderer = new TowerRenderer(this.board)
+    this.cannonRenderer = new CannonRenderer(this.board)
 
-    // EXPERIMENTAL
+    // EXPERIMENTAL - PIXI SPECIFIC
     this.pixiUnitRenderer = new PixiUnitRenderer(this.board, actions)
     this.pixiTowerRenderer = new PixiTowerRenderer(this.board, actions)
     this.pixiEnemyRenderer = new PixiEnemyRenderer(this.board, actions)
+    this.pixiCannonRenderer = new PixiCannonRenderer(this.board, actions)
+
+    this.towerRenderers = {
+      Tower: this.towerRenderer, // default?
+      Cannon: this.cannonRenderer,
+    }
+
+    this.pixiTowerRenderers = {
+      Tower: this.pixiTowerRenderer, // default?
+      Cannon: this.pixiCannonRenderer,
+    }
 
 
     this.createGameBoard(game)
@@ -59,8 +74,10 @@ export default class GameRenderer {
   }
 
   renderTower(tower) {
-    this.towerRenderer.render(tower)
-    this.pixiTowerRenderer.render(tower)
+    const renderer = this.towerRenderers[tower.type]
+    renderer.render(tower)
+    const pixiRenderer = this.pixiTowerRenderers[tower.type]
+    pixiRenderer.render(tower)
   }
 
 }
