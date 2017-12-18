@@ -80,6 +80,13 @@ export default class GameRenderer {
     // destroy units
   }
 
+  getValidTower(towerType) {
+    if (!(towerType in this.towerRenderers)) {
+      towerType = 'Cannon' // default tower for rendering purposes
+    }
+    return towerType
+  }
+
   renderEntity(entity) {
     this.unitRenderer.render(entity)
     this.pixiUnitRenderer.render(entity)
@@ -91,9 +98,12 @@ export default class GameRenderer {
   }
 
   renderTower(tower) {
-    const renderer = this.towerRenderers[tower.type]
+    const towerType = this.getValidTower(tower.type)
+
+    const renderer = this.towerRenderers[towerType]
     renderer.render(tower)
-    const pixiRenderer = this.pixiTowerRenderers[tower.type]
+
+    const pixiRenderer = this.pixiTowerRenderers[towerType]
     pixiRenderer.render(tower)
   }
 

@@ -7,6 +7,7 @@ import Performance from '../Performance'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Flamethrower from '../units/Flamethrower'
+import MachineGun from '../units/MachineGun'
 import Tank from '../units/Tank'
 
 import Map from '../map/Map'
@@ -41,7 +42,7 @@ export default class Game {
     this.actions = actions
     this.emitter = emitter
 
-    this.UNIT_TYPES = { Tank, Cannon, Flamethrower }
+    this.UNIT_TYPES = { Tank, Cannon, Flamethrower, MachineGun }
 
     this.map = new Map(this)
 
