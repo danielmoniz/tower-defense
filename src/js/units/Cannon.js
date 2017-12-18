@@ -16,9 +16,9 @@ export default class Cannon extends Tower {
     this.attackPower = 11
     this.range = 300
     this.purchaseCost = 25
-    this.firingTime = 300
-    this.clipSize = 10
-    this.reloadTime = 2000
+    this.firingTime = 0
+    this.clipSize = 1
+    this.reloadTime = 1000
     this.killProfitMultiplier = 1
 
     this.width = GRID_SIZE * 3
