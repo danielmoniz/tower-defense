@@ -15,7 +15,7 @@ export default class Flamethrower extends Tower {
     this.type = 'Flamethrower'
     this.name = 'Flamethrower'
 
-    this.attackPower = 11
+    this.attackPower = 1
     this.range = 200
     this.firingTime = 0
     this.clipSize = 30
@@ -31,7 +31,7 @@ export default class Flamethrower extends Tower {
     super.act()
     this.firingTest += 1
 
-    if (this.targetIsValid()) {
+    if (this.targetIsValid() && this.canAttack()) {
       this.isFiring = true
     } else {
       this.isFiring = false
