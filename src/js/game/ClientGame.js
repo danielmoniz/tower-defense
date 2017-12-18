@@ -91,14 +91,16 @@ class ClientGame extends Game {
    */
   addTowers(towers) {
     towers.forEach((towerData) => {
-      // @TODO Allow for other tower types
-      const TowerType = this.UNIT_TYPES['Cannon']
+      const TowerType = this.UNIT_TYPES[towerData.type]
       let tower = new TowerType(this, towerData.name)
       this.buildEntityFromData(tower, towerData)
 
       this.renderer.renderTower(tower)
-      tower.selectTarget() // unnecessary, but can be smoother
-      tower.cooldown.setTicksPassed(towerData.cooldown.ticksPassed)
+      // @TODO Refactor setting of cooldown ticksPassed
+      tower.setCooldowns()
+      tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
+      tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
+      tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
       this.towers.push(tower)
     })
   }
