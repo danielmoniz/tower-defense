@@ -38,4 +38,11 @@ export default class Flamethrower extends Tower {
     }
   }
 
+  @action attack() {
+    const target = super.attack()
+    if (target) {
+      target.ignite()
+    }
+  }
+
 }

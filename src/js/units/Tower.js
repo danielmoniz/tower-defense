@@ -90,6 +90,10 @@ export default class Tower extends Unit {
     }
   }
 
+  /*
+   * Attacks the current target if possible.
+   * Returns the target if still alive.
+   */
   @action attack() {
     this.selectTarget()
     if (!this.target) { return }
@@ -100,7 +104,9 @@ export default class Tower extends Unit {
       // console.log('Killed enemy!');
       // do cool stuff! Add experience? Make money? Mow the lawn?
       this.game.profit(targetValue * this.killProfitMultiplier)
+      return
     }
+    return this.target
   }
 
   targetIsValid() {

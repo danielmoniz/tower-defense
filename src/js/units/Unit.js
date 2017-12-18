@@ -18,6 +18,7 @@ class Unit {
   @observable maxHitPoints = 50
   @observable currentHitPoints
   @observable selected = false
+  @observable burning = false
 
   constructor(game, options) {
     options = options || {}
@@ -117,6 +118,14 @@ class Unit {
   @action kill() {
     // @TODO should explode
     this.destroy()
+  }
+
+  @action ignite() {
+    this.burning = true
+  }
+
+  @action extinguish() {
+    this.burning = false
   }
 
   isAlive() {
