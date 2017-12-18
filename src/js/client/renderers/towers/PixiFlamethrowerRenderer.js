@@ -16,7 +16,6 @@ export default class PixiFlamethrowerRenderer extends PixiTowerRenderer {
     let flameEmitter = this.getFlameEmitter(gunContainer, gunLength)
 
     this.registerEmitterCallback(() => {
-      console.log('updating flame emitter');
       flameEmitter.update(0.005) // higher numbers mean more/faster fire
     })
 
