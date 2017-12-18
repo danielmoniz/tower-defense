@@ -37,5 +37,5 @@ export default class EnemyRenderer extends UnitRenderer {
 }
 
 function renderHitPointsBar(unit, unitElement, hitPointsBar) {
-  hitPointsBar.innerHTML = unit.currentHitPoints
+  hitPointsBar.innerHTML = Math.ceil(unit.currentHitPoints)
 }
