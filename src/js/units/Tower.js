@@ -24,14 +24,17 @@ export default class Tower extends Unit {
 
     this.disabled = true // towers start unplaced and disabled
     this.display = false // towers start invisible due to being unplaced
+  }
 
-    // note that a change of cooldownLength will not affect the cooldown automatically! (@TODO fix this)
+  setCooldown() {
     this.cooldown = Cooldown.createTimeBased(this.cooldownLength, GAME_REFRESH_RATE)
   }
 
   @action place() {
+    this.setCooldown()
     this.enable()
     this.placed = true
+    // note that a change of cooldownLength will not affect the cooldown automatically! (@TODO fix this)
   }
 
   act() {
