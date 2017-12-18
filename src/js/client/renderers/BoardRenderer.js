@@ -28,7 +28,7 @@ export default class BoardRenderer {
   setupCredits(game) {
     const creditsDisplay = document.querySelector(".remainingCredits")
     autorun(() => {
-      creditsDisplay.innerHTML = game.credits.current
+      creditsDisplay.innerHTML = Math.floor(game.credits.current)
     })
   }
 
