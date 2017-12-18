@@ -59,7 +59,14 @@ class Cooldown {
    * Returns whether or not the ability is ready to use.
    */
   ready() {
-    return this.ticksPassed > this.cooldownLength
+    return this.ticksPassed >= this.cooldownLength
+  }
+
+  /*
+   * A synonym for ready() for certain contexts (eg. ammo used up)
+   */
+  spent() {
+    return this.ready()
   }
 
   /*

@@ -16,10 +16,12 @@ export default class Flamethrower extends Tower {
     this.name = 'Flamethrower'
 
     this.attackPower = 11
-    this.firingTime = 1000
     this.range = 200
-    this.purchaseCost = 30
+    this.firingTime = 0
+    this.clipSize = 30
+    this.reloadTime = 2000
     this.killProfitMultiplier = 0.8
+    this.purchaseCost = 30
 
     this.width = GRID_SIZE * 3
     this.height = GRID_SIZE * 3

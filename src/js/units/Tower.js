@@ -34,14 +34,23 @@ export default class Tower extends Unit {
   }
 
   setCooldowns() {
+    // note that a change of firingTime will not affect the firingTimeCooldown automatically! (@TODO fix this)
     this.firingTimeCooldown = Cooldown.createTimeBased(this.firingTime, GAME_REFRESH_RATE)
+    this.ammoCooldown = new Cooldown(this.clipSize, {
+      delayActivation: true,
+    })
+    this.reloadCooldown = Cooldown.createTimeBased(this.reloadTime, GAME_REFRESH_RATE, {
+      delayActivation: true,
+    })
   }
 
+  /*
+   * Generally prepares the unit for actual use in-game.
+   */
   @action place() {
     this.setCooldowns()
     this.enable()
     this.placed = true
-    // note that a change of firingTime will not affect the firingTimeCooldown automatically! (@TODO fix this)
   }
 
   act() {
@@ -49,11 +58,30 @@ export default class Tower extends Unit {
     if (this.canAttack()) {
       this.attack()
       this.firingTimeCooldown.activate()
+      this.expendAmmo()
+    } else if (this.reloading) {
+      this.attemptReload()
+    }
+  }
+
+  expendAmmo() {
+    this.ammoCooldown.tick()
+    if (this.ammoCooldown.spent()) {
+      this.reloading = true
+      this.ammoCooldown.activate()
+    }
+  }
+
+  attemptReload() {
+    this.reloadCooldown.tick()
+    if (this.reloadCooldown.ready()) {
+      this.reloading = false
+      this.reloadCooldown.activate()
     }
   }
 
   canAttack() {
-    return this.firingTimeCooldown.ready()
+    return this.firingTimeCooldown.ready() && !this.reloading
   }
 
   @action selectTarget() {
