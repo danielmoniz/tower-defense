@@ -21,6 +21,11 @@ class ClientGame extends Game {
     enemies.forEach((enemy) => this.renderer.renderEntity(enemy))
   }
 
+  gameLogic() {
+    super.gameLogic()
+    this.renderer.tick()
+  }
+
   spawnWave() {
     const newEnemies = super.spawnWave()
     this.renderEnemies(newEnemies)

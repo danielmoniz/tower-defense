@@ -22,6 +22,7 @@ export default class GameRenderer {
     this.board = new BoardRenderer()
     this.events = new GameEvents()
 
+    // @TODO This system is clearly horrendous. Find a way to do this dynamically.
     this.unitRenderer = new UnitRenderer(this.board)
     this.enemyRenderer = new EnemyRenderer(this.board)
     this.towerRenderer = new TowerRenderer(this.board)
@@ -29,11 +30,12 @@ export default class GameRenderer {
     this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions)
 
     // EXPERIMENTAL - PIXI SPECIFIC
-    this.pixiUnitRenderer = new PixiUnitRenderer(this.board, actions)
-    this.pixiTowerRenderer = new PixiTowerRenderer(this.board, actions)
-    this.pixiEnemyRenderer = new PixiEnemyRenderer(this.board, actions)
-    this.pixiCannonRenderer = new PixiCannonRenderer(this.board, actions)
-    this.pixiFlamethrowerRenderer = new PixiFlamethrowerRenderer(this.board, actions)
+    this.pixiUnitRenderer = new PixiUnitRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.pixiTowerRenderer = new PixiTowerRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.pixiEnemyRenderer = new PixiEnemyRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.pixiCannonRenderer = new PixiCannonRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.pixiFlamethrowerRenderer = new PixiFlamethrowerRenderer(this.board, actions, this.registerEmitter.bind(this))
+
 
     this.towerRenderers = {
       Tower: this.towerRenderer, // default?
@@ -47,6 +49,7 @@ export default class GameRenderer {
       Flamethrower: this.pixiFlamethrowerRenderer
     }
 
+    this.emitterCallbacks = []
 
     this.createGameBoard(game)
 
@@ -55,6 +58,16 @@ export default class GameRenderer {
 
   createGameBoard(game) {
     this.board.setupGameBox(game)
+  }
+
+  tick() {
+    this.emitterCallbacks.forEach((emitter) => {
+      emitter()
+    })
+  }
+
+  registerEmitter(emitterCallback) {
+    this.emitterCallbacks.push(emitterCallback)
   }
 
   setUpEvents(game, board) {

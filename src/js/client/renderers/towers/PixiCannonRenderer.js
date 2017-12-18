@@ -7,7 +7,7 @@ import PixiTowerRenderer from '../PixiTowerRenderer'
 export default class PixiCannonrRenderer extends PixiTowerRenderer {
 
   startRender(unit, board) {
-    const container = super.startRender(unit, board)
+    const { container, gunContainer } = super.startRender(unit, board)
 
     // const gunHeight = 8
     // const gunLength = unit.width * 0.6

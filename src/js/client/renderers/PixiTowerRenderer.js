@@ -75,7 +75,7 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
       displayRange(unit, maxRange)
     })
 
-    return container
+    return { container, gunContainer }
   }
 
 }
