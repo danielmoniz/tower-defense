@@ -31,7 +31,6 @@ export default class PixiFlamethrowerRenderer extends PixiTowerRenderer {
   }
 
   startFlames(emitter) {
-    console.log(emitter);
     emitter.emit = true
   }
 
