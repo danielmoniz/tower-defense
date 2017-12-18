@@ -98,6 +98,7 @@ class ClientGame extends Game {
       this.renderer.renderTower(tower)
       // @TODO Refactor setting of cooldown ticksPassed
       tower.setCooldowns()
+      tower.selectTarget() // makes towers pick a (new) target, making it look more continuous
       tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
       tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
       tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
