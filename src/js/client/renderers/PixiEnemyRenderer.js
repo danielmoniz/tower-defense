@@ -39,7 +39,7 @@ export default class PixiEnemyRenderer extends PixiUnitRenderer {
     container.addChild(healthBar)
 
     autorun(() => {
-      renderHitPointsBar(unit, container, healthBar)
+      renderHitPointsBar(unit, healthBar)
     })
 
     return container
@@ -47,6 +47,6 @@ export default class PixiEnemyRenderer extends PixiUnitRenderer {
 
 }
 
-function renderHitPointsBar(unit, container, healthBar) {
-  healthBar.width = container.width * (unit.currentHitPoints / unit.maxHitPoints)
+function renderHitPointsBar(unit, healthBar) {
+  healthBar.width = unit.width * (unit.currentHitPoints / unit.maxHitPoints)
 }
