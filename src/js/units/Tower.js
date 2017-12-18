@@ -7,13 +7,20 @@ import Cooldown from '../Cooldown'
 
 export default class Tower extends Unit {
   // default stats
-  @observable attackPower = 0
-  @observable cooldownLength = 1000
-  @observable range = 300 // pixels
   @observable target
-  @observable purchaseCost = 100
   @observable placed = false // towers generally start unplaced and become placed
-  @observable killProfitMultiplier = 1 // certain towers can gain extra credits when killing units
+
+  // @NOTE All of the below must be overwritten on every Tower!
+  @observable name
+  @observable type
+  @observable attackPower
+  @observable firingTime
+  @observable range // pixels
+  @observable purchaseCost
+  @observable killProfitMultiplier // certain towers can gain extra credits when killing units
+  @observable clipSize
+  @observable reloadTime
+
 
   // default size: 1 tile
   @observable width = GRID_SIZE
@@ -26,27 +33,27 @@ export default class Tower extends Unit {
     this.display = false // towers start invisible due to being unplaced
   }
 
-  setCooldown() {
-    this.cooldown = Cooldown.createTimeBased(this.cooldownLength, GAME_REFRESH_RATE)
+  setCooldowns() {
+    this.firingTimeCooldown = Cooldown.createTimeBased(this.firingTime, GAME_REFRESH_RATE)
   }
 
   @action place() {
-    this.setCooldown()
+    this.setCooldowns()
     this.enable()
     this.placed = true
-    // note that a change of cooldownLength will not affect the cooldown automatically! (@TODO fix this)
+    // note that a change of firingTime will not affect the firingTimeCooldown automatically! (@TODO fix this)
   }
 
   act() {
-    this.cooldown.tick()
+    this.firingTimeCooldown.tick()
     if (this.canAttack()) {
       this.attack()
-      this.cooldown.activate()
+      this.firingTimeCooldown.activate()
     }
   }
 
   canAttack() {
-    return this.cooldown.ready()
+    return this.firingTimeCooldown.ready()
   }
 
   @action selectTarget() {
