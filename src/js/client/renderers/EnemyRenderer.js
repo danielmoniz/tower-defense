@@ -19,14 +19,6 @@ export default class EnemyRenderer extends UnitRenderer {
     hitPointsBar.classList.add('hitPointsBar')
     element.append(hitPointsBar)
 
-
-    // let rectangle = new PIXI.Graphics()
-    // rectangle.beginFill(0x66CCFF)
-    // rectangle.lineStyle(4, 0xFF3300, 1);
-    // rectangle.drawRect(0, 0, 20, 20);
-    // rectangle.endFill();
-    // app.stage.addChild(rectangle)
-
     autorun(() => {
       renderHitPointsBar(unit, element, hitPointsBar)
     })
