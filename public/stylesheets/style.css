@@ -7,11 +7,6 @@ a {
   color: #00B7FF;
 }
 
-#display-box {
-  position: relative;
-  outline: 2px solid black;
-}
-
 .remainingCredits {
   display: inline-block;
   width: 30px;

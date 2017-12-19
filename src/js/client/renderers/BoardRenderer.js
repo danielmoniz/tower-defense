@@ -14,18 +14,13 @@ export default class BoardRenderer {
       resolution: 1,
     })
     this.app.view.id = "game-viewport"
-    document.body.appendChild(this.app.view)
+    const displayBox = document.querySelector("#display-box")
+    displayBox.appendChild(this.app.view)
     this.app.renderer.backgroundColor = 0xFFFFFF
     this.app.renderer.view.style.border = '2px solid black'
 
     this.loadUnitAssets()
-
     this.setupCredits(game)
-
-    this.gameBox = document.querySelector("#display-box")
-    this.gameBox.style.width = game.width + 'px'
-    this.gameBox.style.height = game.height + 'px'
-    this.gameBoxBound = this.gameBox.getBoundingClientRect()
   }
 
   loadUnitAssets() {
