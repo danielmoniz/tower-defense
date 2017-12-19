@@ -71,7 +71,8 @@ export default class GameRenderer {
   }
 
   setUpEvents(game, board) {
-    this.events.addEventHandlers(game, board.gameBox)
+    this.events.addEventHandlers(game, board.app.view)
+    // this.events.addEventHandlers(game, board.gameBox)
   }
 
   destroyGame() {

@@ -13,6 +13,7 @@ export default class BoardRenderer {
       transparent: false,
       resolution: 1,
     })
+    this.app.view.id = "game-viewport"
     document.body.appendChild(this.app.view)
     this.app.renderer.backgroundColor = 0xFFFFFF
     this.app.renderer.view.style.border = '2px solid black'
