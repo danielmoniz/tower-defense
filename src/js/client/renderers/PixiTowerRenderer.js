@@ -9,6 +9,9 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
   startRender(unit, board) {
     const container = super.startRender(unit, board)
 
+    const unitContainer = new PIXI.Container()
+    container.addChild(unitContainer)
+
     const gunHeight = 8
     const gunLength = unit.width * 0.6
     const circleRadius = unit.width / 2
@@ -18,22 +21,22 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     disableBackground.drawRect(0, 0, unit.width, unit.height)
     disableBackground.endFill()
     disableBackground.alpha = 0
-    container.addChild(disableBackground)
+    unitContainer.addChild(disableBackground)
 
 
     const background = new PIXI.Graphics()
     background.beginFill(0xCCCCCC)
-    // background.lineStyle(2, 0x000000, 1);
+    background.lineStyle(1, 0x000000, 0.5);
     background.drawRect(0, 0, unit.width, unit.height);
     background.endFill();
-    container.addChild(background)
+    unitContainer.addChild(background)
 
     const towerBase = new PIXI.Graphics()
     towerBase.beginFill(0x66CCFF)
     towerBase.lineStyle(2, 0x000000, 1);
     towerBase.drawCircle(circleRadius, circleRadius, circleRadius - 3);
     towerBase.endFill();
-    container.addChild(towerBase)
+    unitContainer.addChild(towerBase)
 
     // Create container for the gun so it can be rotated separately
     const gunContainer = new PIXI.Container()
@@ -42,7 +45,7 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     gunContainer.anchor = 0.5
     gunContainer.x = unit.width / 2
     gunContainer.y = unit.height / 2
-    container.addChild(gunContainer)
+    unitContainer.addChild(gunContainer)
 
     const gun = new PIXI.Graphics()
     gun.beginFill(0x666666)
@@ -55,16 +58,16 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     const maxRange = new PIXI.Graphics()
     maxRange.beginFill(0x40ef4c)
     maxRange.lineStyle(3, 0x000000, 1)
-    maxRange.drawCircle(0, 0, unit.range)
+    maxRange.drawCircle(circleRadius, circleRadius, unit.range)
     maxRange.endFill()
     maxRange.alpha = 0.2
-    container.addChild(maxRange)
+    container.addChild(maxRange) // add to overall container, not to unit
 
     board.app.stage.addChild(container)
 
 
     autorun(() => {
-      disable(unit, background, disableBackground)
+      disable(unit, background, disableBackground, maxRange)
     })
 
     autorun(() => {
@@ -75,6 +78,10 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
       displayRange(unit, maxRange)
     })
 
+    autorun(() => {
+      ghostUnit(unit, unitContainer)
+    })
+
     return { container, gunContainer }
   }
 
@@ -82,8 +89,10 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
 
 function displayRange(unit, maxRange) {
   if (!unit.placed || unit.selected) {
+    console.log("displaying range");
     maxRange.visible = true
   } else {
+    console.log("hiding range");
     maxRange.visible = false
   }
 }
@@ -93,6 +102,14 @@ function rotateToTarget(unit, unitElement) {
   if (unit.target) {
     const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
     unitElement.rotation = angle
+  }
+}
+
+function ghostUnit(unit, unitCoreElement) {
+  if (unit.disabled) {
+    unitCoreElement.alpha = 0.3
+  } else {
+    unitCoreElement.alpha = 1
   }
 }
 

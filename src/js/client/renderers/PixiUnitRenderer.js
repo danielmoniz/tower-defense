@@ -42,10 +42,6 @@ export default class PixiUnitRenderer {
       renderDisplay(unit, container)
     })
 
-    autorun(() => {
-      renderDisable(unit, container)
-    })
-
     return container
   }
 
@@ -68,12 +64,4 @@ function renderPosition(unit, unitElement) {
 function renderDisplay(unit, unitElement) {
   unitElement.visible = unit.display
   // unitElement.style.display = unit.display ? 'initial' : 'none'
-}
-
-function renderDisable(unit, unitElement) {
-  if (unit.disabled) {
-    unitElement.alpha = 0.3
-  } else {
-    unitElement.alpha = 1
-  }
 }
