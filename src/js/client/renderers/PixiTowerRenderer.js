@@ -61,7 +61,7 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
     maxRange.drawCircle(circleRadius, circleRadius, unit.range)
     maxRange.endFill()
     maxRange.alpha = 0.2
-    container.addChild(maxRange) // add to overall container, not to unit
+    container.addChildAt(maxRange, 0) // add to overall container, not to unit
 
     board.app.stage.addChild(container)
 
@@ -89,10 +89,8 @@ export default class PixiTowerRenderer extends PixiUnitRenderer {
 
 function displayRange(unit, maxRange) {
   if (!unit.placed || unit.selected) {
-    console.log("displaying range");
     maxRange.visible = true
   } else {
-    console.log("hiding range");
     maxRange.visible = false
   }
 }

@@ -181,12 +181,18 @@ export default class Game {
   }
 
   deselectPlacingTower() {
-    this.placingTower.hide()
-    this.placingTower = false
+    if (this.placingTower) {
+      this.placingTower.hide()
+      this.placingTower = false
+    }
   }
 
   deselectAll() {
     this.deselectPlacingTower()
+    if (this.selectedEntity) {
+      this.selectedEntity.deselect()
+      delete this.selectEntity
+    }
   }
 
   selectEntity(entity) {
