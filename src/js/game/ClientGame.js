@@ -2,7 +2,9 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import Game from './Game'
-import GameRenderer from '../client/GameRenderer'
+import GameRenderer from '../client/renderers/GameRenderer'
+import Unit from '../units/Unit'
+import Cannon from '../units/Cannon'
 
 class ClientGame extends Game {
 
@@ -15,10 +17,30 @@ class ClientGame extends Game {
     this.renderer = new GameRenderer(this)
   }
 
+  renderEnemies(enemies) {
+    enemies.forEach((enemy) => this.renderer.renderEntity(enemy))
+  }
+
+  gameLogic() {
+    super.gameLogic()
+    this.renderer.tick()
+  }
+
   spawnWave() {
     const newEnemies = super.spawnWave()
-    this.render(newEnemies)
+    this.renderEnemies(newEnemies)
     return newEnemies
+  }
+
+  /*
+   * Selects a new (disabled/inactive) cannon to be placed on the map.
+   */
+  selectNewTower(towerType) {
+    if (!this.inProgress) { return }
+    const TowerType = this.UNIT_TYPES[towerType]
+    this.placingTower = new TowerType(this)
+    this.renderer.renderTower(this.placingTower)
+    return this.placingTower
   }
 
   sendPause() {
@@ -29,11 +51,61 @@ class ClientGame extends Game {
     this.play()
   }
 
-  sendPlaceTower() {
-    return this.placeTower()
+  sendPlaceTower(tower) {
+    return this.placeTower(tower)
+  }
+
+  /*
+   * Place a tower as normal, but render it as well.
+   */
+  placeTower(tower) {
+    tower = super.placeTower(tower)
+    if (!tower) { return }
+    this.renderer.renderTower(tower)
+    return tower
   }
 
   spawnWaveEarly() {}
+
+  /*
+   * Add and render enemies to the game given data describing those enemies.
+   */
+  addEnemies(enemies) {
+    enemies.forEach((enemyData) => {
+      if (enemyData.currentHitPoints <= 0) { return }
+      // @TODO Allow for other unit types\
+      const EnemyType = this.UNIT_TYPES['Tank']
+      let enemy = new EnemyType(this, enemyData.name)
+      this.buildEntityFromData(enemy, enemyData)
+
+      // @TODO? if enemy has no health, maybe have to kill enemy
+      this.renderer.renderEnemy(enemy)
+      this.enemies.push(enemy)
+      const enemyTarget = this.getEnemyGoal(enemy)
+      enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+    })
+  }
+
+  /*
+   * Add and render towers to the game given data describing those enemies.
+   */
+  addTowers(towers) {
+    towers.forEach((towerData) => {
+      const TowerType = this.UNIT_TYPES[towerData.type]
+      let tower = new TowerType(this, towerData.name)
+      this.buildEntityFromData(tower, towerData)
+
+      this.renderer.renderTower(tower)
+      // @TODO Refactor setting of cooldown ticksPassed
+      tower.setCooldowns()
+      tower.selectTarget() // makes towers pick a (new) target, making it look more continuous
+      tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
+      tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
+      tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
+      this.towers.push(tower)
+    })
+  }
+
 }
 
 export default ClientGame

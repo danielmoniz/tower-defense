@@ -3,7 +3,6 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import Unit from './Unit'
 import { GAME_REFRESH_RATE } from '../appConstants'
-import getUnitRenderTools from '../client/UnitRenderer'
 
 class Enemy extends Unit {
   // defaults (observables)
@@ -69,17 +68,6 @@ class Enemy extends Unit {
     this.completed = true
     this.destroy()
   }
-}
-
-/*
- * Creates a new unit of the given class provided (eg. Cannon, Tank, etc.).
- * Also triggers their initial rendering loop.
- */
-Enemy.create = function(UnitClass, game, options) {
-  // const unit = observable(new UnitClass(game, options))
-  const unit = new UnitClass(game, options)
-  unit.startRender()
-  return unit
 }
 
 export default Enemy

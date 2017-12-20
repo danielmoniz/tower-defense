@@ -2,7 +2,6 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../appConstants'
-import getUnitRenderTools from '../client/UnitRenderer'
 
 let ID = 1
 
@@ -15,8 +14,11 @@ class Unit {
   @observable display = true
   @observable disabled = false // setting to true disables and greys the unit
   @observable removed = false // setting to true allows for units to be removed from the game
+  @observable derender = false
   @observable maxHitPoints = 50
   @observable currentHitPoints
+  @observable selected = false
+  @observable burning = false
 
   constructor(game, options) {
     options = options || {}
@@ -39,10 +41,6 @@ class Unit {
         this[key] = options[key]
       }
     }
-
-    // ensure unit.render() is not treated as data
-    const renderTools = getUnitRenderTools(this)
-    Object.defineProperty(this, 'render', { value: renderTools, writable: true })
   }
 
   @computed get xFloor() {
@@ -63,17 +61,7 @@ class Unit {
 
   @action destroy() {
     this.remove()
-    if (this.game.runningOnServer) { // @TODO Find way to remove runningOnServer
-      return
-    }
-    this.render.destroy()
-  }
-
-  startRender() {
-    if (this.game.runningOnServer) { // @TODO Find way to remove runningOnServer
-      return
-    }
-    this.render.startRender()
+    this.derender = true
   }
 
   @action hide() {
@@ -94,6 +82,14 @@ class Unit {
 
   @action remove() {
     this.removed = true
+  }
+
+  @action select() {
+    this.selected = true
+  }
+
+  @action deselect() {
+    this.selected = false
   }
 
   /*
@@ -124,6 +120,14 @@ class Unit {
     this.destroy()
   }
 
+  @action ignite() {
+    this.burning = true
+  }
+
+  @action extinguish() {
+    this.burning = false
+  }
+
   isAlive() {
     return this.currentHitPoints > 0
   }
@@ -136,17 +140,6 @@ class Unit {
     return Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2))
   }
 
-}
-
-/*
- * Creates a new unit of the given class provided (eg. Cannon, Tank, etc.).
- * Also triggers their initial rendering loop.
- */
-Unit.create = function(UnitClass, game, options) {
-  // const unit = observable(new UnitClass(game, options))
-  const unit = new UnitClass(game, options)
-  unit.startRender()
-  return unit
 }
 
 export default Unit

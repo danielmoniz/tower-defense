@@ -11,8 +11,8 @@ export default class Map {
     this.randomizeWeights(0.3)
     this.calculatePathLengths()
 
-    console.log(this.weights);
-    console.log(this.pathLengths);
+    // console.log(this.weights);
+    // console.log(this.pathLengths);
   }
 
   randomizeWeights(wallProbability = 0.1) {

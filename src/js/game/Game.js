@@ -6,6 +6,8 @@ import Cooldown from '../Cooldown'
 import Performance from '../Performance'
 import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
+import Flamethrower from '../units/Flamethrower'
+import MachineGun from '../units/MachineGun'
 import Tank from '../units/Tank'
 
 import Map from '../map/Map'
@@ -26,6 +28,8 @@ export default class Game {
   @observable lives = 20
   @observable inProgress = false
 
+  @observable selectedEntity
+
   @observable control = {
     run: false,
     speedMultiplier: 1,
@@ -38,7 +42,7 @@ export default class Game {
     this.actions = actions
     this.emitter = emitter
 
-    this.UNIT_TYPES = { Tank, Cannon }
+    this.UNIT_TYPES = { Tank, Cannon, Flamethrower, MachineGun }
 
     this.map = new Map(this)
 
@@ -105,10 +109,6 @@ export default class Game {
     return --this.lives
   }
 
-  render(entities) {
-    entities.forEach((entity) => entity.startRender())
-  }
-
   commandUnits(units) {
     for (let i = units.length - 1; i >= 0; i--) {
       let unit = units[i]
@@ -164,15 +164,6 @@ export default class Game {
     enemy.jumpTo(this.width, numEnemy * enemyDistance)
   }
 
-  /*
-   * Selects a new (disabled/inactive) cannon to be placed on the map.
-   */
-  selectNewCannon() {
-    if (!this.inProgress) { return }
-    this.placingTower = Unit.create(Cannon, this)
-    return this.placingTower
-  }
-
   canAfford(unit) {
     return this.credits.current >= unit.purchaseCost
   }
@@ -190,12 +181,32 @@ export default class Game {
   }
 
   deselectPlacingTower() {
-    this.placingTower.hide()
-    this.placingTower = false
+    if (this.placingTower) {
+      this.placingTower.hide()
+      this.placingTower = false
+    }
   }
 
   deselectAll() {
     this.deselectPlacingTower()
+    this.deselectEntity()
+    if (this.selectedEntity) {
+      this.selectedEntity.deselect()
+      delete this.selectEntity
+    }
+  }
+
+  deselectEntity() {
+    if (this.selectedEntity) {
+      this.selectedEntity.deselect()
+      delete this.selectEntity
+    }
+  }
+
+  selectEntity(entity) {
+    this.deselectEntity()
+    entity.select()
+    this.selectedEntity = entity
   }
 
   placeTower(tower) {
@@ -203,15 +214,15 @@ export default class Game {
     const placingTower = tower || this.placingTower
     if (!placingTower) { return }
 
-    // @TODO Handle placing other tower types
-    const finalTower = Unit.create(Cannon, this)
+    const TowerType = this.UNIT_TYPES[placingTower.type]
+    const finalTower = new TowerType(this)
+    // const finalTower = new Flamethrower(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
     if (finalTower && this.buyTower(finalTower)) {
       finalTower.place()
-      this.towers.push(finalTower)
-      finalTower.enable()
       finalTower.show()
+      this.towers.push(finalTower)
       return finalTower
     }
   }
@@ -247,41 +258,11 @@ export default class Game {
 
   // GAME UPDATE METHODS ---------------------
 
-  addEnemies(enemies) {
-    enemies.forEach((enemyData) => {
-      if (enemyData.currentHitPoints <= 0) { return }
-      // @TODO Allow for other unit types\
-      const EnemyType = this.UNIT_TYPES['Tank']
-      let enemy = new EnemyType(this, enemyData.name)
-      this.buildEntityFromData(enemy, enemyData)
-
-      // @TODO? if enemy has no health, maybe have to kill enemy
-      enemy.startRender()
-      this.enemies.push(enemy)
-      const enemyTarget = this.getEnemyGoal(enemy)
-      enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
-    })
-  }
-
   clearTowers() {
     this.towers.forEach((tower) => {
       tower.destroy()
     })
     this.towers = []
-  }
-
-  addTowers(towers) {
-    towers.forEach((towerData) => {
-      // @TODO Allow for other tower types
-      const TowerType = this.UNIT_TYPES['Cannon']
-      let tower = new TowerType(this, towerData.name)
-      this.buildEntityFromData(tower, towerData)
-
-      tower.startRender()
-      tower.selectTarget() // unnecessary, but can be smoother
-      tower.cooldown.setTicksPassed(towerData.cooldown.ticksPassed)
-      this.towers.push(tower)
-    })
   }
 
   buildEntityFromData(entity, data) {
@@ -299,6 +280,7 @@ export default class Game {
 
     this.clearTowers()
     this.addTowers(data.towers)
+
     this.credits.current = data.credits
     this.wave.setNumber(data.waveNumber)
     this.inProgress = data.inProgress

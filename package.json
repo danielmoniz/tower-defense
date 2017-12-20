@@ -64,6 +64,8 @@
     "lodash.assign": "^4.2.0",
     "mobx": "^3.3.1",
     "morgan": "~1.9.0",
+    "pixi-particles": "^2.1.9",
+    "pixi.js": "^4.6.2",
     "requirejs": "^2.3.5",
     "requirejs-text": "^2.0.15",
     "serve-favicon": "~2.4.5",

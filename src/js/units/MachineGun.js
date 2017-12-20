@@ -5,20 +5,20 @@ import { GRID_SIZE, GAME_REFRESH_RATE } from '../appConstants'
 import Tower from './Tower'
 import Cooldown from '../Cooldown'
 
-export default class Cannon extends Tower {
+export default class MachineGun extends Tower {
 
   constructor(game, options) {
     super(game, options)
 
-    this.type = 'Cannon'
-    this.name = 'Cannon'
+    this.type = 'MachineGun'
+    this.name = 'MachineGun'
 
-    this.attackPower = 11
+    this.attackPower = 7
     this.range = 300
-    this.purchaseCost = 25
-    this.firingTime = 0
-    this.clipSize = 1
-    this.reloadTime = 1000
+    this.purchaseCost = 60
+    this.firingTime = 130
+    this.clipSize = 25
+    this.reloadTime = 3000
     this.killProfitMultiplier = 1
 
     this.width = GRID_SIZE * 3

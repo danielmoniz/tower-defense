@@ -34,7 +34,7 @@ class ClientMultiGame extends ClientGame {
   }
 
   sendPlaceTower() {
-    const placedTower = super.sendPlaceTower()
+    const placedTower = this.placeTower()
     if (!placedTower) { return }
     this.emitter.placeTower(placedTower)
   }
