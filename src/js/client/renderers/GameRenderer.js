@@ -4,7 +4,7 @@ import { autorun } from 'mobx'
 import BoardRenderer from './BoardRenderer'
 import GameEvents from './GameEvents'
 import UnitRenderer from './UnitRenderer'
-import EnemyRenderer from './EnemyRenderer'
+import EnemyRenderer from './enemies/EnemyRenderer'
 import TowerRenderer from './towers/TowerRenderer'
 import { CannonRenderer, FlamethrowerRenderer } from './towers'
 

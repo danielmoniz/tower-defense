@@ -1,7 +1,7 @@
 
 import { autorun } from 'mobx'
 
-import UnitRenderer from './UnitRenderer'
+import UnitRenderer from '../UnitRenderer'
 
 export default class EnemyRenderer extends UnitRenderer {
 
