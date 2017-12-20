@@ -189,6 +189,14 @@ export default class Game {
 
   deselectAll() {
     this.deselectPlacingTower()
+    this.deselectEntity()
+    if (this.selectedEntity) {
+      this.selectedEntity.deselect()
+      delete this.selectEntity
+    }
+  }
+
+  deselectEntity() {
     if (this.selectedEntity) {
       this.selectedEntity.deselect()
       delete this.selectEntity
@@ -196,9 +204,7 @@ export default class Game {
   }
 
   selectEntity(entity) {
-    if (this.selectedEntity) {
-      this.selectedEntity.deselect()
-    }
+    this.deselectEntity()
     entity.select()
     this.selectedEntity = entity
   }
