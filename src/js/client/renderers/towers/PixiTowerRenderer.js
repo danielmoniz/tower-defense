@@ -1,8 +1,8 @@
 
 import { autorun } from 'mobx'
 
-import { GAME_REFRESH_RATE } from '../../appConstants'
-import PixiUnitRenderer from './PixiUnitRenderer'
+import { GAME_REFRESH_RATE } from '../../../appConstants'
+import PixiUnitRenderer from '../PixiUnitRenderer'
 
 export default class PixiTowerRenderer extends PixiUnitRenderer {
 

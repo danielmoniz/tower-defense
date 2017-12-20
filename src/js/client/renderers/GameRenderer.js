@@ -5,7 +5,7 @@ import BoardRenderer from './BoardRenderer'
 import GameEvents from './GameEvents'
 import PixiUnitRenderer from './PixiUnitRenderer'
 import PixiEnemyRenderer from './PixiEnemyRenderer'
-import PixiTowerRenderer from './PixiTowerRenderer'
+import PixiTowerRenderer from './towers/PixiTowerRenderer'
 import { PixiCannonRenderer, PixiFlamethrowerRenderer } from './towers'
 
 
