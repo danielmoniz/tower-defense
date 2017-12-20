@@ -3,7 +3,7 @@ import { autorun } from 'mobx'
 
 import { GRID_SIZE } from '../../appConstants'
 
-export default class PixiUnitRenderer {
+export default class UnitRenderer {
 
   constructor(board, gameActions, registerEmitterCallback) {
     this.board = board

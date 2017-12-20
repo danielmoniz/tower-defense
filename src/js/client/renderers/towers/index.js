@@ -1,6 +1,6 @@
 
-import PixiCannonRenderer from './PixiCannonRenderer'
-import PixiFlamethrowerRenderer from './PixiFlamethrowerRenderer'
+import CannonRenderer from './CannonRenderer'
+import FlamethrowerRenderer from './FlamethrowerRenderer'
 
 
-export { PixiCannonRenderer, PixiFlamethrowerRenderer }
+export { CannonRenderer, FlamethrowerRenderer }

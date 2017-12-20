@@ -2,9 +2,9 @@
 import { autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../../../appConstants'
-import PixiUnitRenderer from '../PixiUnitRenderer'
+import UnitRenderer from '../UnitRenderer'
 
-export default class PixiTowerRenderer extends PixiUnitRenderer {
+export default class TowerRenderer extends UnitRenderer {
 
   startRender(unit, board) {
     const container = super.startRender(unit, board)

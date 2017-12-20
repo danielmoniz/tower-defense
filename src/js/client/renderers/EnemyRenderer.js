@@ -1,9 +1,9 @@
 
 import { autorun } from 'mobx'
 
-import PixiUnitRenderer from './PixiUnitRenderer'
+import UnitRenderer from './UnitRenderer'
 
-export default class PixiEnemyRenderer extends PixiUnitRenderer {
+export default class EnemyRenderer extends UnitRenderer {
 
   startRender(unit, board) {
     const container = super.startRender(unit, board)

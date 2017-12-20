@@ -2,9 +2,9 @@
 import { autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../../../appConstants'
-import PixiTowerRenderer from './PixiTowerRenderer'
+import TowerRenderer from './TowerRenderer'
 
-export default class PixiFlamethrowerRenderer extends PixiTowerRenderer {
+export default class FlamethrowerRenderer extends TowerRenderer {
 
   startRender(unit, board) {
     const { container, gunContainer } = super.startRender(unit, board)

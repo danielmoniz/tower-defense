@@ -3,10 +3,10 @@ import { autorun } from 'mobx'
 
 import BoardRenderer from './BoardRenderer'
 import GameEvents from './GameEvents'
-import PixiUnitRenderer from './PixiUnitRenderer'
-import PixiEnemyRenderer from './PixiEnemyRenderer'
-import PixiTowerRenderer from './towers/PixiTowerRenderer'
-import { PixiCannonRenderer, PixiFlamethrowerRenderer } from './towers'
+import UnitRenderer from './UnitRenderer'
+import EnemyRenderer from './EnemyRenderer'
+import TowerRenderer from './towers/TowerRenderer'
+import { CannonRenderer, FlamethrowerRenderer } from './towers'
 
 
 export default class GameRenderer {
@@ -20,16 +20,16 @@ export default class GameRenderer {
     this.events = new GameEvents()
 
     // @TODO This system is clearly horrendous. Find a way to do this dynamically.
-    this.pixiUnitRenderer = new PixiUnitRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.pixiTowerRenderer = new PixiTowerRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.pixiEnemyRenderer = new PixiEnemyRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.pixiCannonRenderer = new PixiCannonRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.pixiFlamethrowerRenderer = new PixiFlamethrowerRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.unitRenderer = new UnitRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.towerRenderer = new TowerRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.enemyRenderer = new EnemyRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.cannonRenderer = new CannonRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, this.registerEmitter.bind(this))
 
     this.towerRenderers = {
-      Tower: this.pixiTowerRenderer, // default?
-      Cannon: this.pixiCannonRenderer,
-      Flamethrower: this.pixiFlamethrowerRenderer
+      Tower: this.towerRenderer, // default?
+      Cannon: this.cannonRenderer,
+      Flamethrower: this.flamethrowerRenderer
     }
 
     this.emitterCallbacks = []
@@ -71,11 +71,11 @@ export default class GameRenderer {
   }
 
   renderEntity(entity) {
-    this.pixiUnitRenderer.render(entity)
+    this.unitRenderer.render(entity)
   }
 
   renderEnemy(enemy) {
-    this.pixiEnemyRenderer.render(enemy)
+    this.enemyRenderer.render(enemy)
   }
 
   renderTower(tower) {
