@@ -50,6 +50,18 @@ export default class Game {
     this.wave = new WaveSpawner(this.createEnemy.bind(this))
   }
 
+  /*
+   * Allows for quick lookups of enemies by ID.
+   * Mostly for server communication/updates.
+   */
+  @computed get enemiesById() {
+    const output = {}
+    this.enemies.forEach((enemy) => {
+      output[enemy.id] = enemy
+    })
+    return output
+  }
+
   newGame() {
     this.start()
   }
@@ -271,22 +283,6 @@ export default class Game {
       entity.setAttr(datum, data[datum])
     })
     return entity
-  }
-
-  @action updateAll(data) {
-    console.log('Updating all');
-    this.clearEnemies()
-    this.addEnemies(data.enemies)
-
-    this.clearTowers()
-    this.addTowers(data.towers)
-
-    this.credits.current = data.credits
-    this.wave.setNumber(data.waveNumber)
-    this.inProgress = data.inProgress
-    if (this.inProgress) {
-      this.play()
-    }
   }
 
 }

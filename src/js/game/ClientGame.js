@@ -67,23 +67,58 @@ class ClientGame extends Game {
 
   spawnWaveEarly() {}
 
+
+  @action updateAll(data) {
+    console.log('Updating all');
+    this.clearEnemies()
+    this.addEnemies(data.enemies)
+    // Below is an attempt to update existing enemies instead of rebuilding them
+    // data.enemies.forEach((enemy) => {
+    //   if (enemy.id in this.enemiesById) {
+    //     this.buildEntityFromData(this.enemiesById[enemy.id], enemy)
+    //   } else {
+    //     this.addEnemy(enemy)
+    //   }
+    // })
+    // @TODO Handle case where the game has extra enemies the server did not?
+    // --> May not need to because enemies are spawned via waves (not player actions)
+
+    this.clearTowers()
+    this.addTowers(data.towers)
+
+    this.credits.current = data.credits
+    this.wave.setNumber(data.waveNumber)
+    this.inProgress = data.inProgress
+    // this.control = data.control
+    // if (this.inProgress && this.control.run) {
+    if (this.inProgress) {
+      this.play()
+    // } else {
+    //   this.pause()
+    }
+  }
+
   /*
    * Add and render enemies to the game given data describing those enemies.
    */
   addEnemies(enemies) {
     enemies.forEach((enemyData) => {
-      if (enemyData.currentHitPoints <= 0) { return }
-      // @TODO Allow for other unit types\
-      const EnemyType = this.UNIT_TYPES['Tank']
-      let enemy = new EnemyType(this, enemyData.name)
-      this.buildEntityFromData(enemy, enemyData)
-
-      // @TODO? if enemy has no health, maybe have to kill enemy
-      this.renderer.renderEnemy(enemy)
-      this.enemies.push(enemy)
-      const enemyTarget = this.getEnemyGoal(enemy)
-      enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+      this.addEnemy(enemyData)
     })
+  }
+
+  addEnemy(enemyData) {
+    if (enemyData.currentHitPoints <= 0) { return }
+    // @TODO Allow for other unit types\
+    const EnemyType = this.UNIT_TYPES['Tank']
+    let enemy = new EnemyType(this, enemyData.name)
+    this.buildEntityFromData(enemy, enemyData)
+
+    // @TODO? if enemy has no health, maybe have to kill enemy
+    this.renderer.renderEnemy(enemy)
+    this.enemies.push(enemy)
+    const enemyTarget = this.getEnemyGoal(enemy)
+    enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
   }
 
   /*
