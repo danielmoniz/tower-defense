@@ -104,6 +104,7 @@ class GameServer {
       waveNumber: game.wave.number,
       gameSpeedMultiplier: performance,
       inProgress: game.inProgress,
+      control: game.control,
     }
   }
 

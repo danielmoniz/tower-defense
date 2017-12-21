@@ -89,12 +89,11 @@ class ClientGame extends Game {
     this.credits.current = data.credits
     this.wave.setNumber(data.waveNumber)
     this.inProgress = data.inProgress
-    // this.control = data.control
-    // if (this.inProgress && this.control.run) {
-    if (this.inProgress) {
+    this.control = data.control
+    if (this.inProgress && this.control.run) {
       this.play()
-    // } else {
-    //   this.pause()
+    } else {
+      this.pause()
     }
   }
 
