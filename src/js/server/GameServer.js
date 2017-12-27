@@ -169,6 +169,7 @@ class GameServer {
     if (this.getUsers(gameNumber).length === 0) {
       // Trigger 30 second timeout - destroy game after that
       this.rooms[gameNumber].timeout = setTimeout(() => {
+        if (!gameManager || !gameManager.game) { return }
         console.log("Clearing room " + gameNumber);
         gameManager.game.endGame()
         gameManager.destroyGame()
