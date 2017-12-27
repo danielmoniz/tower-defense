@@ -89,10 +89,10 @@ class GameServer {
   /*
    * Update a the game for a single player (usually a newly entered player).
    */
-  syncPlayer(socket) {
+  syncNewPlayer(socket) {
     const gameManager = this.getGameManager(socket.roomId)
     if (gameManager.gameInProgress()) {
-      socket.emit('update all', this.getGameData(socket.gameManager.game))
+      socket.emit('join existing game', this.getGameData(socket.gameManager.game))
     }
   }
 
@@ -133,7 +133,7 @@ class GameServer {
     socket.gameManager = gameManager
 
     this.addUserToGame(socket.id, gameNumber)
-    this.syncPlayer(socket)
+    this.syncNewPlayer(socket)
   }
 
   createNewRoom(gameManager) {
