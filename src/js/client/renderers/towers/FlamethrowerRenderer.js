@@ -7,13 +7,11 @@ import TowerRenderer from './TowerRenderer'
 export default class FlamethrowerRenderer extends TowerRenderer {
 
   startRender(unit, board) {
-    const { container, gunContainer } = super.startRender(unit, board)
+    const { container, gunLength, gunHeight } = super.startRender(unit, board)
 
-    const gunHeight = 8
-    const gunLength = unit.width * 0.6
-    const circleRadius = unit.width / 2
-
-    let flameEmitter = this.getFlameEmitter(gunContainer, gunLength)
+    let flameEmitter = this.getFlameEmitter(container, unit, 0, 0)
+    flameEmitter.updateOwnerPos(unit.width / 2, unit.height / 2)
+    flameEmitter.updateSpawnPos(gunLength, gunHeight / 2)
 
     this.registerEmitterCallback(() => {
       flameEmitter.update(0.005) // higher numbers mean more/faster fire
@@ -27,7 +25,18 @@ export default class FlamethrowerRenderer extends TowerRenderer {
       }
     })
 
+    autorun(() => {
+      this.rotateFlames(unit, flameEmitter)
+    })
+
     return container
+  }
+
+  rotateFlames(unit, flameEmitter) {
+    if (unit.target) {
+      const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
+      flameEmitter.rotate(toDegrees(angle))
+    }
   }
 
   startFlames(emitter) {
@@ -40,7 +49,7 @@ export default class FlamethrowerRenderer extends TowerRenderer {
     // this.board.app.renderer.plugins.sprite.sprites.length = 0
   }
 
-  getFlameEmitter(container, xPosition = 0, yPosition = 0) {
+  getFlameEmitter(container, unit) {
     return new PIXI.particles.Emitter(
       container,
       [PIXI.Texture.fromImage('/images/Fire.png')],
@@ -78,8 +87,8 @@ export default class FlamethrowerRenderer extends TowerRenderer {
 				"emitterLifetime": 0,
 				"maxParticles": 1000,
 				"pos": {
-					"x": xPosition,
-					"y": yPosition,
+					"x": 0,
+					"y": 0,
 				},
 				"addAtBack": false,
 				"spawnType": "circle",
@@ -92,4 +101,8 @@ export default class FlamethrowerRenderer extends TowerRenderer {
     )
   }
 
+}
+
+function toDegrees(angle) {
+  return angle * (180 / Math.PI);
 }
