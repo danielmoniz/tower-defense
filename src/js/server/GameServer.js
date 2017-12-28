@@ -73,7 +73,11 @@ class GameServer {
 
   getSlowestGameSpeed(roomId) {
     const performanceData = this.rooms[roomId].performance
-    const slowestGameSpeed = Object.values(performanceData).reduce((memo, speed) => {
+    const speeds = Object.values(performanceData)
+    // handle case when room is empty
+    if (speeds.length === 0) { return 1 }
+
+    const slowestGameSpeed = speeds.reduce((memo, speed) => {
       return Math.max(memo, speed)
     })
     this.printGameSpeeds(roomId, performanceData, slowestGameSpeed);
