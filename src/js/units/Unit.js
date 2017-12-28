@@ -136,8 +136,14 @@ class Unit {
     return Math.atan2(y - this.y, x - this.x)
   }
 
-  getDistanceToPoint(x, y) {
-    return Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2))
+  getCentre() {
+    return { x: this.x + this.width / 2, y: this.y + this.height / 2}
+  }
+
+  getDistanceToPoint(point) {
+    const xDistance = Math.abs(this.getCentre().x - point.x) - (this.width / 2)
+    const yDistance = Math.abs(this.getCentre().y - point.y) - (this.height / 2)
+    return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
   }
 
 }

@@ -116,7 +116,7 @@ export default class Tower extends Unit {
   }
 
   unitInRange(unit) {
-    return this.distanceToTarget(unit) <= this.range
+    return this.distanceToUnit(unit) < this.range
   }
 
   findNearestEnemyInRange() {
@@ -124,15 +124,16 @@ export default class Tower extends Unit {
     let nearest, minDistance
 
     this.game.enemies.forEach((enemy) => {
-      if (enemy.isAlive() && this.unitInRange(enemy) && (nearest === undefined || this.distanceToTarget(enemy) < minDistance)) {
+      const enemyDistance = this.distanceToUnit(enemy)
+      if (enemy.isAlive() && this.unitInRange(enemy) && (nearest === undefined || enemyDistance < minDistance)) {
         nearest = enemy
-        minDistance = this.distanceToTarget(enemy)
+        minDistance = enemyDistance
       }
     })
     return nearest
   }
 
-  distanceToTarget(target) {
-    return this.getDistanceToPoint(target.x, target.y)
+  distanceToUnit(target) {
+    return target.getDistanceToPoint(this.getCentre())
   }
 }
