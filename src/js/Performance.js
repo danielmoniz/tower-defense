@@ -54,6 +54,9 @@ class Performance {
       this.ticks.splice(0, 1)
       this.marks.splice(0, 1)
     }
+
+    // console.log(this.marks);
+    // console.log('Latest mark:', this.marks[this.marks.length - 1]);
   }
 
   getAverage() {
@@ -76,12 +79,16 @@ class Performance {
   }
 
   pause() {
-    this.pauseTime = Date.now()
+    // avoid resetting pauseTime if already paused
+    if (this.pauseTime !== undefined) { return }
+    this.pauseTime = new Date()
   }
 
   resume() {
+    // avoid resuming performance if not currently paused
     if (this.pauseTime === undefined) { return }
-    this.totalPausedTime += Date.now() - this.pauseTime
+    const elapsedTime = new Date() - this.pauseTime
+    this.totalPausedTime += elapsedTime
     delete this.pauseTime
   }
 }

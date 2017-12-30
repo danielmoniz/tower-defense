@@ -261,12 +261,6 @@ export default class Game {
     }
   }
 
-  @action adjustGameSpeed(multiplier) {
-    // console.log('Setting game speed to:', multiplier);
-    this.control.speedMultiplier = multiplier
-  }
-
-
 
   // GAME UPDATE METHODS ---------------------
 
@@ -287,6 +281,12 @@ export default class Game {
 
   // WEB FUNCTIONS --------------------------
   // These functions are web related - they are shared between ClientMultiGame and ServerGame.
+
+  @action adjustGameSpeed(multiplier) {
+    // console.log('Setting game speed to:', multiplier);
+    this.control.speedMultiplier = multiplier
+    // this.performance.setTickLength(multiplier * GAME_REFRESH_RATE)
+  }
 
   setUpSendPerformance() {
     this.performanceCooldown = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
