@@ -157,13 +157,15 @@ class GameServer {
     console.log(`Room ${gameNumber} users: ${this.getUsers(gameNumber)}`);
   }
 
-  removeUserFromGame(id, gameNumber) {
-    if (gameNumber === undefined) { return } // must be in solo game
-    console.log(`removing user from game (room ${gameNumber})`);
-    const index = this.getUsers(gameNumber).indexOf(id)
+  removeUserFromGame(id, roomId) {
+    if (roomId === undefined) { return } // must be in solo game
+    console.log(`removing user from game (room ${roomId})`);
+    const index = this.getUsers(roomId).indexOf(id)
     if (index === -1) { return }
-    this.getUsers(gameNumber).splice(index, 1)
-    console.log(`Room ${gameNumber} users: ${this.getUsers(gameNumber)}`);
+    this.getUsers(roomId).splice(index, 1)
+    console.log(`Room ${roomId} users: ${this.getUsers(roomId)}`);
+
+    delete this.rooms[roomId].performance[id]
   }
 
   clearRoomIfEmpty(gameNumber) {
