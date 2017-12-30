@@ -34,12 +34,6 @@ class ServerGame extends Game {
     )
   }
 
-  // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
-  checkPerformance() {
-    this.performance.next()
-    this.performanceCooldown.tick()
-  }
-
   gameLogic() {
     super.gameLogic()
     this.checkPerformance()

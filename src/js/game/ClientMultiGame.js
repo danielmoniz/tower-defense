@@ -60,12 +60,6 @@ class ClientMultiGame extends ClientGame {
     this.emitter.sendPerformance(this.performance.getSpeedSuggestion())
   }
 
-  // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
-  checkPerformance() {
-    this.performance.next()
-    this.performanceCooldown.tick()
-  }
-
   gameLogic() {
     super.gameLogic()
     this.checkPerformance()

@@ -138,13 +138,6 @@ export default class Game {
     }
   }
 
-  setUpSendPerformance() {
-    this.performanceCooldown = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
-      callback: this.sendPerformance.bind(this),
-      autoActivate: true,
-    })
-  }
-
   updateWave() {
     this.wave.updateWaveTimer()
     if (this.wave.ready()) {
@@ -291,5 +284,23 @@ export default class Game {
     })
     return entity
   }
+
+  // WEB FUNCTIONS --------------------------
+  // These functions are web related - they are shared between ClientMultiGame and ServerGame.
+
+  setUpSendPerformance() {
+    this.performanceCooldown = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
+      callback: this.sendPerformance.bind(this),
+      autoActivate: true,
+    })
+  }
+
+  // CALCULATE SERVER SPEED - can use to slow down game to keep it better synced
+  checkPerformance() {
+    this.performance.next()
+    this.performanceCooldown.tick()
+  }
+
+  // ----------------------------------------
 
 }
