@@ -17,11 +17,7 @@ class ServerGame extends Game {
 
     // for calculating performance
     this.performance = new Performance(200, GAME_REFRESH_RATE)
-
-    this.performanceCooldown = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
-      callback: this.sendPerformance.bind(this),
-      autoActivate: true,
-    })
+    this.setUpSendPerformance()
   }
 
   spawnWave() {

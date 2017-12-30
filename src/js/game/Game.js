@@ -138,6 +138,13 @@ export default class Game {
     }
   }
 
+  setUpSendPerformance() {
+    this.performanceCooldown = Cooldown.createTimeBased(1000, GAME_REFRESH_RATE, {
+      callback: this.sendPerformance.bind(this),
+      autoActivate: true,
+    })
+  }
+
   updateWave() {
     this.wave.updateWaveTimer()
     if (this.wave.ready()) {
