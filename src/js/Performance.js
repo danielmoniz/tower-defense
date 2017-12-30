@@ -100,6 +100,10 @@ class Performance {
   pause() {
     // avoid resetting pauseTime if already paused
     if (this.pauseTime !== undefined) { return }
+
+    this.next()
+    this.marks[this.marks.length] = this.getAverage(this.marks) // override latest mark
+
     this.pauseTime = new Date()
   }
 
