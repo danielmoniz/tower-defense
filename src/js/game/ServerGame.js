@@ -39,6 +39,16 @@ class ServerGame extends Game {
     this.checkPerformance()
   }
 
+  pause() {
+    super.pause()
+    this.pausePerformance()
+  }
+
+  play() {
+    super.play()
+    this.resumePerformance()
+  }
+
 }
 
 export default ServerGame

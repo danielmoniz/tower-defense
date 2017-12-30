@@ -301,6 +301,14 @@ export default class Game {
     this.performanceCooldown.tick()
   }
 
+  pausePerformance() {
+    this.performance.pause()
+  }
+
+  resumePerformance() {
+    this.performance.resume()
+  }
+
   // ----------------------------------------
 
 }

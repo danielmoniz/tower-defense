@@ -20,14 +20,22 @@ class ClientMultiGame extends ClientGame {
     super.sendPause()
     if (!this.inProgress) { return }
     this.emitter.pause()
-    this.performance.pause()
+  }
+
+  pause() {
+    super.pause()
+    this.pausePerformance()
   }
 
   sendPlay() {
     super.sendPlay()
     if (!this.inProgress) { return }
     this.emitter.play()
-    this.performance.resume()
+  }
+
+  play() {
+    super.play()
+    this.resumePerformance()
   }
 
   sendPlaceTower() {
