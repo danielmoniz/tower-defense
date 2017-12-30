@@ -4,6 +4,8 @@ import Cooldown from './Cooldown'
 class Performance {
 
   maxTimePoints = 5
+  pauseTime = undefined
+  totalPausedTime = 0
 
   // @TODO Allow for passing in current adjusted speed.
   // This should allow for the game to speed back up if performing well.
@@ -17,6 +19,8 @@ class Performance {
 
   // @TODO Refactor this function into smaller pieces.
   next() {
+    if (this.pauseTime) { return }
+
     const now = Date.now()
     this.cooldown.tick()
     this.ticks = this.ticks.map((numTicks) => {
@@ -26,7 +30,10 @@ class Performance {
     if (!this.cooldown.ready()) { return }
 
     this.cooldown.activate()
-    this.times.push(now)
+
+    // calculate time, but subtract the total paused time.
+    const adjustedTime = now - this.totalPausedTime
+    this.times.push(adjustedTime)
     this.ticks.push(0)
 
     if (this.times.length <= 1) { return }
@@ -66,6 +73,16 @@ class Performance {
 
   ready() {
     return this.cooldown.ready()
+  }
+
+  pause() {
+    this.pauseTime = Date.now()
+  }
+
+  resume() {
+    if (this.pauseTime === undefined) { return }
+    this.totalPausedTime += Date.now() - this.pauseTime
+    delete this.pauseTime
   }
 }
 
