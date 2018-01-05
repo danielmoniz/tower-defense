@@ -30,38 +30,32 @@ export default class UnitRenderer {
       this.actions.selectEntity(unit)
     })
 
-    autorun(() => {
-      destroy(unit, container)
-    })
-
-    autorun(() => {
-      renderPosition(unit, container)
-    })
-
-    autorun(() => {
-      renderDisplay(unit, container)
-    })
+    unit.render = render.bind(null, unit, container)
+    unit.derender = derender.bind(null, container)
 
     return container
   }
 
 }
 
-function destroy(unit, unitElement) {
-  if (unit.derender) {
-    unitElement.destroy()
+function render(unit, unitElement) {
+  if (unit.removeMe) {
+    return unitElement.destroy()
   }
+
+  if (unit.display !== unitElement.visible) {
+    unitElement.visible = unit.display // update unit visibility
+  }
+  if (!unit.display) { return } // do no rendering if unit is not visible
+
+  renderPosition(unit, unitElement)
+}
+
+function derender(unitElement) {
+  unitElement.destroy()
 }
 
 function renderPosition(unit, unitElement) {
-  // window.requestAnimationFrame(() => { // not working, not sure why
-    // console.log('animation happening');
-    unitElement.x = unit.xFloor + unit.width / 2
-    unitElement.y = unit.yFloor + unit.height / 2
-  // })
-}
-
-function renderDisplay(unit, unitElement) {
-  unitElement.visible = unit.display
-  // unitElement.style.display = unit.display ? 'initial' : 'none'
+  unitElement.x = unit.xFloor + unit.width / 2
+  unitElement.y = unit.yFloor + unit.height / 2
 }

@@ -29,6 +29,7 @@ export default class Tower extends Unit {
   constructor(game, options) {
     super(game, options)
 
+    this.type = 'Tower'
     this.disabled = true // towers start unplaced and disabled
     this.display = false // towers start invisible due to being unplaced
   }

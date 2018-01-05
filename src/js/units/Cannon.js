@@ -10,7 +10,6 @@ export default class Cannon extends Tower {
   constructor(game, options) {
     super(game, options)
 
-    this.type = 'Cannon'
     this.name = 'Cannon'
 
     this.attackPower = 11

@@ -14,22 +14,15 @@ class ClientGame extends Game {
   }
 
   setupUI() {
-    this.renderer = new GameRenderer(this)
+    this.renderer = new GameRenderer(this, {
+      getEnemies: this.getEnemies.bind(this),
+      getUnits: this.getUnits.bind(this),
+    })
   }
 
-  renderEnemies(enemies) {
-    enemies.forEach((enemy) => this.renderer.renderEntity(enemy))
-  }
-
-  gameLogic() {
-    super.gameLogic()
+  start() {
+    super.start()
     this.renderer.tick()
-  }
-
-  spawnWave() {
-    const newEnemies = super.spawnWave()
-    this.renderEnemies(newEnemies)
-    return newEnemies
   }
 
   /*
@@ -39,7 +32,7 @@ class ClientGame extends Game {
     if (!this.inProgress) { return }
     const TowerType = this.UNIT_TYPES[towerType]
     this.placingTower = new TowerType(this)
-    this.renderer.renderTower(this.placingTower)
+    this.renderer.queueRender(this.placingTower)
     return this.placingTower
   }
 
@@ -60,8 +53,7 @@ class ClientGame extends Game {
    */
   placeTower(tower) {
     tower = super.placeTower(tower)
-    if (!tower) { return }
-    this.renderer.renderTower(tower)
+    this.renderer.queueRender(tower)
     return tower
   }
 
@@ -106,6 +98,35 @@ class ClientGame extends Game {
     })
   }
 
+  deselectPlacingTower() {
+    if (this.placingTower) {
+      this.renderer.destroyEntity(this.placingTower)
+      this.placingTower = false
+    }
+  }
+
+  deselectAll() {
+    this.deselectPlacingTower()
+    this.deselectEntity()
+    if (this.selectedEntity) {
+      this.selectedEntity.deselect()
+      delete this.selectEntity
+    }
+  }
+
+  deselectEntity() {
+    if (this.selectedEntity) {
+      this.selectedEntity.deselect()
+      delete this.selectEntity
+    }
+  }
+
+  selectEntity(entity) {
+    this.deselectEntity()
+    entity.select()
+    this.selectedEntity = entity
+  }
+
   addEnemy(enemyData) {
     if (enemyData.currentHitPoints <= 0) { return }
     // @TODO Allow for other unit types\
@@ -113,11 +134,12 @@ class ClientGame extends Game {
     let enemy = new EnemyType(this, enemyData.name)
     this.buildEntityFromData(enemy, enemyData)
 
-    // @TODO? if enemy has no health, maybe have to kill enemy
-    this.renderer.renderEnemy(enemy)
     this.enemies.push(enemy)
     const enemyTarget = this.getEnemyGoal(enemy)
     enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+
+    this.renderer.queueRender(enemy)
+    return enemy
   }
 
   /*
@@ -125,11 +147,10 @@ class ClientGame extends Game {
    */
   addTowers(towers) {
     towers.forEach((towerData) => {
-      const TowerType = this.UNIT_TYPES[towerData.type]
+      const TowerType = this.UNIT_TYPES[towerData.name]
       let tower = new TowerType(this, towerData.name)
       this.buildEntityFromData(tower, towerData)
 
-      this.renderer.renderTower(tower)
       // @TODO Refactor setting of cooldown ticksPassed
       tower.setCooldowns()
       tower.selectTarget() // makes towers pick a (new) target, making it look more continuous
@@ -137,6 +158,7 @@ class ClientGame extends Game {
       tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
       tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
       this.towers.push(tower)
+      this.renderer.queueRender(tower)
     })
   }
 

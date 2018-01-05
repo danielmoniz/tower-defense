@@ -33,3 +33,6 @@ build/*
 
 # Mac nonsense
 .DS_Store
+
+# Private
+firebase-key.js*

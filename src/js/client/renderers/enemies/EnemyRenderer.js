@@ -8,31 +8,35 @@ export default class EnemyRenderer extends UnitRenderer {
   startRender(unit, board) {
     const container = super.startRender(unit, board)
 
-    const healthBarHeight = 6
-    const unitColour = 0x66CCFF
-    const outlineColour = 0xFF3300
-
     const unitBase = new PIXI.Sprite(PIXI.utils.TextureCache["tank"])
     unitBase.width = unit.width
     unitBase.height = unit.height
     container.addChild(unitBase)
 
-    const healthBar = new PIXI.Graphics()
-    healthBar.beginFill(0x40ef4c)
-    healthBar.lineStyle(1, 0x000000, 1)
-    healthBar.drawRect(0, unit.height - healthBarHeight, unit.width, healthBarHeight)
-    healthBar.endFill()
+    this.createHealthBar(unit, container)
+    return container
+  }
+
+  createHealthBar(unit, container) {
+    const healthBarHeight = 6    // because the image is 6 pixels high
+    const healthBarBackground = new PIXI.Sprite(PIXI.utils.TextureCache["healthBarBackground"])
+    healthBarBackground.position.y = unit.height - healthBarHeight - 2
+    container.addChild(healthBarBackground)
+
+    const healthBar = new PIXI.Sprite(PIXI.utils.TextureCache["healthBar"])
+    healthBar.position.y = unit.height - healthBarHeight - 1
+    healthBar.position.x = 1
     container.addChild(healthBar)
 
     autorun(() => {
-      renderHitPointsBar(unit, healthBar)
+      renderHitPointsBar(unit, healthBar, healthBarBackground)
     })
-
-    return container
   }
 
 }
 
-function renderHitPointsBar(unit, healthBar) {
-  healthBar.width = unit.width * (unit.currentHitPoints / unit.maxHitPoints)
+function renderHitPointsBar(unit, healthBar, healthBarBackground) {
+  const backgroundWidth = unit.width * (unit.currentHitPoints / unit.maxHitPoints)
+  healthBar.width = backgroundWidth - 2
+  healthBarBackground.width = backgroundWidth
 }

@@ -37,6 +37,7 @@ function setUpListeners(game, emitter) {
   socket.on('join existing game', (gameData) => {
     game.start()
     game.updateAll(gameData)
+    console.log('Joined existing game');
   })
 
   socket.on('spawn wave', (newEnemies) => {

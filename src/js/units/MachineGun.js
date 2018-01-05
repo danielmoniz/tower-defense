@@ -10,7 +10,6 @@ export default class MachineGun extends Tower {
   constructor(game, options) {
     super(game, options)
 
-    this.type = 'MachineGun'
     this.name = 'MachineGun'
 
     this.attackPower = 7
