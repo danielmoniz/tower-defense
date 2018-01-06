@@ -62,28 +62,43 @@ export default class GameRenderer {
 
   tick() {
     window.requestAnimationFrame(() => {
-      if (!this.assetsLoaded()) {
+      if (!this.assetsLoaded()) { // only start rendering once assets are loaded
         return this.tick();
       }
 
-      for (let i = this.renderStack.length - 1; i >= 0; i--) {
-        const entity = this.renderStack[i]
-        if (entity.render === undefined) {
-          this.renderEntity(entity)
-        }
-        if (entity.removeMe) {
-          entity.derender()
-          this.renderStack.splice(i, 1)
-          continue
-        }
-        entity.render()
-      }
-
-      this.emitterCallbacks.forEach((emitter) => {
-        emitter()
-      })
+      this.renderEntities(this.renderStack)
+      this.emit(this.emitterCallbacks)
 
       this.tick()
+    })
+  }
+
+  /*
+   * Given an array of entities, renders them last to first.
+   * Removes and derenders any entities if required.
+   * Initializes their render methods if not yet initialized.
+   */
+  renderEntities(entities) {
+    for (let i = entities.length - 1; i >= 0; i--) {
+      const entity = entities[i]
+      if (entity.render === undefined) {
+        this.renderEntity(entity)
+      }
+      if (entity.removeMe) {
+        entity.derender()
+        entities.splice(i, 1)
+        continue
+      }
+      entity.render()
+    }
+  }
+
+  /*
+   * Iterates over a list of emitter callbacks and calls them.
+   */
+  emit(emitterCallbacks) {
+    emitterCallbacks.forEach((emitter) => {
+      emitter()
     })
   }
 
