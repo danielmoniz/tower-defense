@@ -12,7 +12,6 @@ export default class Flamethrower extends Tower {
   constructor(game, options) {
     super(game, options)
 
-    this.type = 'Flamethrower'
     this.name = 'Flamethrower'
 
     this.attackPower = 1

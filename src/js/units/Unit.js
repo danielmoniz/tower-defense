@@ -11,10 +11,10 @@ class Unit {
   @observable y = 0
   @observable id
   @observable name
+  @observable type
   @observable display = true
   @observable disabled = false // setting to true disables and greys the unit
-  @observable removed = false // setting to true allows for units to be removed from the game
-  @observable derender = false
+  @observable removeMe = false // setting to true allows for units to be removed from the game
   @observable maxHitPoints = 50
   @observable currentHitPoints
   @observable selected = false
@@ -24,6 +24,7 @@ class Unit {
     options = options || {}
     this.id = ID
     ID += 1
+    this.type = 'Unit' // should be overwritten
 
     // add a reference to game which avoids circular referencing
     Object.defineProperty(this, 'game', { value: game, writable: true})
@@ -61,7 +62,6 @@ class Unit {
 
   @action destroy() {
     this.remove()
-    this.derender = true
   }
 
   @action hide() {
@@ -81,7 +81,7 @@ class Unit {
   }
 
   @action remove() {
-    this.removed = true
+    this.removeMe = true
   }
 
   @action select() {

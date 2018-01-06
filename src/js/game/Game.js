@@ -124,11 +124,11 @@ export default class Game {
   commandUnits(units) {
     for (let i = units.length - 1; i >= 0; i--) {
       let unit = units[i]
-      if (unit.completed) { // assume it also has `removed = true`
+      if (unit.completed) { // assume it also has `removeMe = true`
         const livesLeft = this.loseLife()
         console.log(`Unit reached goal! Remaining lives: ${livesLeft}`);
       }
-      if (unit.removed) {
+      if (unit.removeMe) {
         units.splice(i, 1)
         continue
       }
@@ -148,7 +148,6 @@ export default class Game {
   spawnWave() {
     const newEnemies = this.wave.spawn()
     this.placeWaveEnemies(newEnemies)
-
     this.enemies = this.enemies.concat(newEnemies)
 
     // for fun! To see how many enemies there are.
@@ -192,41 +191,12 @@ export default class Game {
     this.credits.current += amount
   }
 
-  deselectPlacingTower() {
-    if (this.placingTower) {
-      this.placingTower.hide()
-      this.placingTower = false
-    }
-  }
-
-  deselectAll() {
-    this.deselectPlacingTower()
-    this.deselectEntity()
-    if (this.selectedEntity) {
-      this.selectedEntity.deselect()
-      delete this.selectEntity
-    }
-  }
-
-  deselectEntity() {
-    if (this.selectedEntity) {
-      this.selectedEntity.deselect()
-      delete this.selectEntity
-    }
-  }
-
-  selectEntity(entity) {
-    this.deselectEntity()
-    entity.select()
-    this.selectedEntity = entity
-  }
-
   placeTower(tower) {
     if (!this.inProgress) { return }
     const placingTower = tower || this.placingTower
     if (!placingTower) { return }
 
-    const TowerType = this.UNIT_TYPES[placingTower.type]
+    const TowerType = this.UNIT_TYPES[placingTower.name]
     const finalTower = new TowerType(this)
     // const finalTower = new Flamethrower(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
@@ -259,6 +229,18 @@ export default class Game {
       x: -enemy.width,
       y: this.height / 2,
     }
+  }
+
+  getEnemies() {
+    return this.enemies
+  }
+
+  getUnits() {
+    const units = this.enemies.concat(this.towers)
+    if (this.placingTower) {
+      units.push(this.placingTower)
+    }
+    return units
   }
 
 

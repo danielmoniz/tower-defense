@@ -13,6 +13,7 @@ class Enemy extends Unit {
   constructor(game, options) {
     super(game, options)
     this.movementId = undefined
+    this.type = 'Enemy'
   }
 
   /*

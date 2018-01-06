@@ -10,12 +10,13 @@ import { CannonRenderer, FlamethrowerRenderer } from './towers'
 
 
 export default class GameRenderer {
-  constructor(game) {
+  constructor(game, gameHelpers) {
     // @TODO Game should have an object of actions - shouldn't be done here!
     const actions = {
       selectEntity: game.selectEntity.bind(game),
     }
 
+    this.gameHelpers = gameHelpers
     this.board = new BoardRenderer()
     this.events = new GameEvents()
 
@@ -33,6 +34,7 @@ export default class GameRenderer {
     }
 
     this.emitterCallbacks = []
+    this.renderStack = []
 
     this.createGameBoard(game)
 
@@ -43,8 +45,59 @@ export default class GameRenderer {
     this.board.setupGameBox(game)
   }
 
+  queueRender(entity) {
+    if (!entity) { return false }
+    this.renderStack.push(entity)
+  }
+
+  queueRenderList(entities) {
+    entities.forEach((entity) => {
+      this.renderStack.push(entity)
+    })
+  }
+
+  assetsLoaded() {
+    return this.board.assetsReady
+  }
+
   tick() {
-    this.emitterCallbacks.forEach((emitter) => {
+    window.requestAnimationFrame(() => {
+      if (!this.assetsLoaded()) { // only start rendering once assets are loaded
+        return this.tick();
+      }
+
+      this.renderEntities(this.renderStack)
+      this.emit(this.emitterCallbacks)
+
+      this.tick()
+    })
+  }
+
+  /*
+   * Given an array of entities, renders them last to first.
+   * Removes and derenders any entities if required.
+   * Initializes their render methods if not yet initialized.
+   */
+  renderEntities(entities) {
+    for (let i = entities.length - 1; i >= 0; i--) {
+      const entity = entities[i]
+      if (entity.render === undefined) {
+        this.renderEntity(entity)
+      }
+      if (entity.removeMe) {
+        entity.derender()
+        entities.splice(i, 1)
+        continue
+      }
+      entity.render()
+    }
+  }
+
+  /*
+   * Iterates over a list of emitter callbacks and calls them.
+   */
+  emit(emitterCallbacks) {
+    emitterCallbacks.forEach((emitter) => {
       emitter()
     })
   }
@@ -58,9 +111,17 @@ export default class GameRenderer {
   }
 
   destroyGame() {
-    // destroy board
-    // destroy events
-    // destroy units
+    // @TODO destroy board
+    // @TODO destroy events
+    // @TODO destroy towers
+    this.destroyEnemies()
+  }
+
+  destroyEnemies() {
+    const units = this.gameHelpers.getEnemies()
+    units.forEach((unit) => {
+      this.destroyEntity(unit)
+    })
   }
 
   getValidTower(towerType) {
@@ -71,7 +132,12 @@ export default class GameRenderer {
   }
 
   renderEntity(entity) {
-    this.unitRenderer.render(entity)
+    if (entity.type === 'Tower') {
+      return this.renderTower(entity)
+    } else if (entity.type === 'Enemy') {
+      return this.renderEnemy(entity)
+    }
+    return this.unitRenderer.render(entity)
   }
 
   renderEnemy(enemy) {
@@ -79,9 +145,14 @@ export default class GameRenderer {
   }
 
   renderTower(tower) {
-    const towerType = this.getValidTower(tower.type)
+    const towerType = this.getValidTower(tower.name)
     const pixiRenderer = this.towerRenderers[towerType]
     pixiRenderer.render(tower)
+  }
+
+  destroyEntity(entity) {
+    entity.destroy()
+    entity.render()
   }
 
 }
