@@ -1,5 +1,11 @@
 # tower-defense
 
+This is an online co-operative Tower Defense game.
+
+The [blog is up][blog]!
+
+## Setup
+
 Initially, set it up by running:
 
     npm install
@@ -30,3 +36,5 @@ If your server (run with `npm run start-watch`) will not exit, run:
 And use the `kill` command to kill any node processes. Eg.
 
     kill 82335
+
+[blog]: https://danielmoniz.github.io/tower-defense/
