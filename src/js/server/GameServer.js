@@ -102,8 +102,8 @@ class GameServer {
 
   getGameData(game, performance=1) {
     return {
-      enemies: game.enemies,
-      towers: game.towers,
+      enemies: game.enemies.all,
+      towers: game.towers.all,
       credits: game.credits.current,
       waveNumber: game.wave.number,
       gameSpeedMultiplier: performance,

@@ -1,6 +1,7 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
+import UnitManager from '../UnitManager'
 import WaveSpawner from '../WaveSpawner'
 import Cooldown from '../Cooldown'
 import Performance from '../Performance'
@@ -17,8 +18,7 @@ import { setCorrectingInterval } from '../utility/time'
 
 export default class Game {
   @observable placingTower = false
-  @observable enemies = []
-  @observable towers = []
+
   @observable gameCanvas = undefined
   @observable gameCanvasContext = undefined
   @observable credits = {
@@ -42,24 +42,16 @@ export default class Game {
     this.actions = actions
     this.emitter = emitter
 
+
     this.UNIT_TYPES = { Tank, Cannon, Flamethrower, MachineGun }
+
+    this.enemies = new UnitManager()
+    this.towers = new UnitManager()
 
     this.map = new Map(this)
 
     // to be overwritten by a subclass if another wave spawner is needed
     this.wave = new WaveSpawner(this.createEnemy.bind(this))
-  }
-
-  /*
-   * Allows for quick lookups of enemies by ID.
-   * Mostly for server communication/updates.
-   */
-  @computed get enemiesById() {
-    const output = {}
-    this.enemies.forEach((enemy) => {
-      output[enemy.id] = enemy
-    })
-    return output
   }
 
   newGame() {
@@ -109,6 +101,7 @@ export default class Game {
    */
   gameLogic() {
     this.updateWave()
+    // @TODO Pass the enemies or towers unit manager
     this.commandUnits(this.enemies)
     this.commandUnits(this.towers)
     if (this.lives <= 0) {
@@ -121,15 +114,20 @@ export default class Game {
     return --this.lives
   }
 
-  commandUnits(units) {
-    for (let i = units.length - 1; i >= 0; i--) {
-      let unit = units[i]
+  /*
+   * Causes units act. Removes them when needed.
+   * Detects when a unit has completed its objective and subtracts a life.
+   * Accepts a UnitManager object to command & manipulate various unit types.
+   */
+  commandUnits(unitManager) {
+    for (let i = unitManager.all.length - 1; i >= 0; i--) {
+      let unit = unitManager.all[i]
       if (unit.completed) { // assume it also has `removeMe = true`
         const livesLeft = this.loseLife()
         console.log(`Unit reached goal! Remaining lives: ${livesLeft}`);
       }
       if (unit.removeMe) {
-        units.splice(i, 1)
+        unitManager.remove(i)
         continue
       }
       if (!unit.disabled && unit.act) {
@@ -148,12 +146,12 @@ export default class Game {
   spawnWave() {
     const newEnemies = this.wave.spawn()
     this.placeWaveEnemies(newEnemies)
-    this.enemies = this.enemies.concat(newEnemies)
+    this.enemies.concat(newEnemies)
 
     // for fun! To see how many enemies there are.
     // Note that enemies are not yet removed from the array upon death.
     console.log("Wave size:", newEnemies.length);
-    console.log("Total enemies:", this.enemies.length);
+    console.log("Total enemies:", this.enemies.all.length);
     return newEnemies
   }
 
@@ -198,28 +196,20 @@ export default class Game {
 
     const TowerType = this.UNIT_TYPES[placingTower.name]
     const finalTower = new TowerType(this)
-    // const finalTower = new Flamethrower(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
     if (finalTower && this.buyTower(finalTower)) {
       finalTower.place()
       finalTower.show()
-      this.towers.push(finalTower)
+      this.towers.add(finalTower)
       return finalTower
     }
   }
 
-  clearEnemies() {
-    this.enemies.forEach((enemy) => {
-      enemy.destroy()
-    })
-    this.enemies = []
-  }
-
   endGame() {
     this.pause()
-    this.clearTowers()
-    this.clearEnemies()
+    this.towers.clear()
+    this.enemies.clear()
     this.waveTimer = null
     this.inProgress = false
   }
@@ -232,11 +222,11 @@ export default class Game {
   }
 
   getEnemies() {
-    return this.enemies
+    return this.enemies.all
   }
 
   getUnits() {
-    const units = this.enemies.concat(this.towers)
+    const units = this.enemies.all.concat(this.towers.all)
     if (this.placingTower) {
       units.push(this.placingTower)
     }
@@ -245,13 +235,6 @@ export default class Game {
 
 
   // GAME UPDATE METHODS ---------------------
-
-  clearTowers() {
-    this.towers.forEach((tower) => {
-      tower.destroy()
-    })
-    this.towers = []
-  }
 
   buildEntityFromData(entity, data) {
     Object.keys(data).forEach((datum) => {

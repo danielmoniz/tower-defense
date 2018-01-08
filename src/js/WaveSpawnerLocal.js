@@ -47,19 +47,8 @@ class WaveSpawnerLocal extends WaveSpawner {
    */
   getNewEnemies() {
     const currentWave = this.getCurrentWave(this.waveList, this.number)
-    const enemiesInWave = this.getNumberOfEnemies(currentWave)
+    // const enemiesInWave = this.getNumberOfEnemies(currentWave)
     return this.getEnemiesFromWaveData(currentWave)
-  }
-
-  /*
-   * Determines how many enemies should be in a particular wave.
-   */
-  getNumberOfEnemies(currentWave) {
-    let numEnemies = 0
-    for (let numberOfEnemies of Object.values(currentWave)) {
-      numEnemies += numberOfEnemies
-    }
-    return numEnemies
   }
 
   /*
@@ -109,6 +98,18 @@ class WaveSpawnerLocal extends WaveSpawner {
     }
 
     return spawnArray
+  }
+
+  /*
+   * DEPRECATED. No longer used anywhere. Not sure its intended purpose.
+   * Determines how many enemies should be in a particular wave.
+   */
+  getNumberOfEnemies(currentWave) {
+    let numEnemies = 0
+    for (let numberOfEnemies of Object.values(currentWave)) {
+      numEnemies += numberOfEnemies
+    }
+    return numEnemies
   }
 }
 

@@ -62,7 +62,7 @@ class ClientGame extends Game {
 
   @action updateAll(data) {
     console.log('Updating all');
-    this.clearEnemies()
+    this.enemies.clear()
     this.addEnemies(data.enemies)
     // Below is an attempt to update existing enemies instead of rebuilding them
     // data.enemies.forEach((enemy) => {
@@ -75,7 +75,7 @@ class ClientGame extends Game {
     // @TODO Handle case where the game has extra enemies the server did not?
     // --> May not need to because enemies are spawned via waves (not player actions)
 
-    this.clearTowers()
+    this.towers.clear()
     this.addTowers(data.towers)
 
     this.credits.current = data.credits
@@ -134,7 +134,7 @@ class ClientGame extends Game {
     let enemy = new EnemyType(this, enemyData.name)
     this.buildEntityFromData(enemy, enemyData)
 
-    this.enemies.push(enemy)
+    this.enemies.add(enemy)
     const enemyTarget = this.getEnemyGoal(enemy)
     enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
 
@@ -157,7 +157,7 @@ class ClientGame extends Game {
       tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
       tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
       tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
-      this.towers.push(tower)
+      this.towers.add(tower)
       this.renderer.queueRender(tower)
     })
   }

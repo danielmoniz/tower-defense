@@ -124,7 +124,7 @@ export default class Tower extends Unit {
     // @TODO Target down enemies with less health?
     let nearest, minDistance
 
-    this.game.enemies.forEach((enemy) => {
+    this.game.enemies.all.forEach((enemy) => {
       const enemyDistance = this.distanceToUnit(enemy)
       if (enemy.isAlive() && this.unitInRange(enemy) && (nearest === undefined || enemyDistance < minDistance)) {
         nearest = enemy

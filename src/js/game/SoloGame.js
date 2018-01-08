@@ -15,6 +15,12 @@ class SoloGame extends ClientGame {
     if (!this.inProgress) { return }
     this.spawnWave()
   }
+
+  spawnWave() {
+    const newEnemies = super.spawnWave()
+    this.renderer.queueRenderList(newEnemies)
+    return newEnemies
+  }
 }
 
 export default SoloGame
