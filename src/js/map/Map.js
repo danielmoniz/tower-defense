@@ -53,6 +53,58 @@ export default class Map {
     return degrees * Math.PI / 180
   }
 
+  getDirection(x, y) {
+    const gridLocation = this.calculateGridLocation({ x, y })
+    x = gridLocation.x
+    y = gridLocation.y
+    // y = Math.floor(y)
+    // console.log(x, y);
+    const north = this.pathLengths[x] && this.pathLengths[x][y - 1] || -1
+    const south = this.pathLengths[x] && this.pathLengths[x][y + 1] || -1
+    const east = this.pathLengths[x + 1] && this.pathLengths[x + 1][y] || -1
+    const west = this.pathLengths[x - 1] && this.pathLengths[x - 1][y] || -1
+    // console.log(north, south, east, west);
+    let directions = [
+      {direction: 'north', value: north, angle: this.degreesToRadians(90), location: { x: x, y: y - 1 }},
+      {direction: 'south', value: south, angle: this.degreesToRadians(270), location: { x: x, y: y + 1 }},
+      {direction: 'east', value: east, angle: this.degreesToRadians(0), location: { x: x + 1, y: y }},
+      {direction: 'west', value: west, angle: this.degreesToRadians(180), location: { x: x - 1, y: y }},
+    ]
+    const directionValues = directions.map((directionInfo) => {
+      return directionInfo.value
+    }).filter((value) => {
+      return value >= 0
+    })
+
+    // Return false if there is nowhere to go
+      // ^^^ Shouldn't happen if we prevent towers from being placed anywhere!
+      // however, terrain might still cause issues
+    if (directionValues.length === 0) {
+      const oneTileLeft = this.calculateGridLocation({ x: gridLocation.x - 1, y: gridLocation.y })
+      console.log("No directions - sending left");
+      return oneTileLeft
+      // return this.calculateGridLocation({ x: x - 1, y: y })
+      // return {x: Math.floor(x - 1), y: Math.floor(y) }
+    }
+    // console.log(directionValues);
+
+    // @TODO What to do if on final space? ie. value of current value is 0?
+    const smallestValue = Math.min(...directionValues)
+    directions = directions.filter((direction) => {
+      return direction.value === smallestValue
+    })
+    const randomIndex = Math.floor(Math.random() * directions.length)
+
+    // pick random direction out of smallest options (might be multiple)
+    const finalDirection = directions[randomIndex]
+    console.log(finalDirection);
+    return this.calculateGridLocation(finalDirection.location)
+  }
+
+  degreesToRadians(degrees) {
+    return degrees * Math.PI / 180
+  }
+
   randomizeWeights(wallProbability = 0.1) {
     for (let i = 0; i < this.weights.length; i++) {
       for (let j = 0; j < this.weights[i].length; j++) {
@@ -134,6 +186,12 @@ export default class Map {
   calculateGridDimensions() {
     this.tilesWide = Math.floor( this.game.width / GRID_SIZE )
     this.tilesHigh = Math.floor( this.game.height / GRID_SIZE )
+  }
+
+  calculateGridLocation(location) {
+    return { x: Math.floor( location.x / GRID_SIZE ), y: Math.floor( location.y / GRID_SIZE) }
+    // this.tilesWide = Math.floor( this.game.width / GRID_SIZE )
+    // this.tilesHigh = Math.floor( this.game.height / GRID_SIZE )
   }
 
   setupWeights() {
