@@ -35,6 +35,10 @@ class GameManager {
     if (!this.runningOnServer) {
       socketListeners(this.game, this.emitter)
     }
+
+    if (typeof window !== 'undefined') {
+      window.game = this.game
+    }
   }
 
   getGameClass(runningOnServer, isSolo) {
