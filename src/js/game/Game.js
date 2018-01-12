@@ -49,6 +49,8 @@ export default class Game {
     this.towers = new UnitManager()
 
     this.map = new Map(this, GRID_SIZE)
+    this.map.setUpRandomMap()
+    // this.map.compute() // Will have to compute after each change
 
     this.setUpWaveSpawner()
   }

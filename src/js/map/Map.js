@@ -5,12 +5,20 @@ export default class Map {
     this.GRID_SIZE = grid_size
 
     this.calculateGridDimensions()
-    this.setupWeights()
-    this.setupPathLengths()
+    this.setUpWeights()
+    this.setUpPathLengths()
 
+    this.compute()
+  }
+
+  setUpRandomMap() {
     this.randomizeWeights(0.3)
-    this.calculatePathLengths()
+    this.compute()
+  }
 
+  compute() {
+    // @TODO calculate weights based on terrain/towers
+    this.calculatePathLengths()
     // console.log(this.weights);
     console.log(this.pathLengths);
   }
@@ -121,7 +129,7 @@ export default class Map {
   calculatePathLengths(endX = this.tilesWide - 1, endY = this.tilesHigh - 1) {
     let start = new Date()
 
-    this.setupPathLengths()
+    this.setUpPathLengths()
 
     if (!this.coordinateIsValid(endX, endY) || !this.weights[endX][endY]) {
       return
@@ -137,7 +145,7 @@ export default class Map {
       this.searchDirections(queue, currentPos)
     }
 
-    console.log(new Date() - start)
+    console.log('Time to calculate path lengths:', new Date() - start)
   }
 
   searchDirections(queue, currentPos) {
@@ -194,7 +202,7 @@ export default class Map {
     // this.tilesHigh = Math.floor( this.game.height / this.GRID_SIZE )
   }
 
-  setupWeights() {
+  setUpWeights() {
     if (this.hasOwnProperty('weights')) {
       return
     }
@@ -202,7 +210,7 @@ export default class Map {
     this.weights = this.newMapArray(1)
   }
 
-  setupPathLengths() {
+  setUpPathLengths() {
     // Commented out to use this temporarily for resetting this.pathLengths
 
     // if (this.hasOwnProperty('pathLengths')) {
