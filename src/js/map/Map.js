@@ -1,8 +1,8 @@
-import { GRID_SIZE } from '../appConstants'
 
 export default class Map {
-  constructor(game) {
+  constructor(game, grid_size) {
     this.game = game
+    this.GRID_SIZE = grid_size
 
     this.calculateGridDimensions()
     this.setupWeights()
@@ -184,14 +184,14 @@ export default class Map {
   }
 
   calculateGridDimensions() {
-    this.tilesWide = Math.floor( this.game.width / GRID_SIZE )
-    this.tilesHigh = Math.floor( this.game.height / GRID_SIZE )
+    this.tilesWide = Math.floor( this.game.width / this.GRID_SIZE )
+    this.tilesHigh = Math.floor( this.game.height / this.GRID_SIZE )
   }
 
   calculateGridLocation(location) {
-    return { x: Math.floor( location.x / GRID_SIZE ), y: Math.floor( location.y / GRID_SIZE) }
-    // this.tilesWide = Math.floor( this.game.width / GRID_SIZE )
-    // this.tilesHigh = Math.floor( this.game.height / GRID_SIZE )
+    return { x: Math.floor( location.x / this.GRID_SIZE ), y: Math.floor( location.y / this.GRID_SIZE) }
+    // this.tilesWide = Math.floor( this.game.width / this.GRID_SIZE )
+    // this.tilesHigh = Math.floor( this.game.height / this.GRID_SIZE )
   }
 
   setupWeights() {

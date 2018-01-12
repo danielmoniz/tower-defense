@@ -12,7 +12,7 @@ import MachineGun from '../units/MachineGun'
 import Tank from '../units/Tank'
 
 import Map from '../map/Map'
-import { GAME_REFRESH_RATE } from '../appConstants'
+import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
 
 
@@ -48,7 +48,7 @@ export default class Game {
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
 
-    this.map = new Map(this)
+    this.map = new Map(this, GRID_SIZE)
 
     this.setUpWaveSpawner()
   }
