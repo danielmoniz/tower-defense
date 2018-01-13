@@ -27,16 +27,17 @@ export default class Pathing {
     console.log(this.pathLengths);
   }
 
+  // @TODO Split into smaller functions!
   getDirection(x, y) {
     const gridLocation = this.calculateGridLocation({ x, y })
     x = gridLocation.x
     y = gridLocation.y
     // y = Math.floor(y)
     // console.log(x, y);
-    const north = this.pathLengths.at(x, y - 1) || -1
-    const south = this.pathLengths.at(x, y + 1) || -1
-    const east = this.pathLengths.at(x + 1, y) || -1
-    const west = this.pathLengths.at(x - 1, y) || -1
+    const north = this.pathLengths.directionAt(x, y - 1)
+    const south = this.pathLengths.directionAt(x, y + 1)
+    const east = this.pathLengths.directionAt(x + 1, y)
+    const west = this.pathLengths.directionAt(x - 1, y)
     // console.log(north, south, east, west);
     let directions = [
       {direction: 'north', value: north, angle: this.degreesToRadians(90), location: { x: x, y: y - 1 }},
