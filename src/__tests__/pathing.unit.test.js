@@ -81,6 +81,45 @@ describe('Pathing', function() {
     // ])
   })
 
+  it('should provide the next target node given a location with valid x and y', () => {
+    this.createGame(2, 5)
+    const pathHelper = new Pathing(this.game, 1)
+    pathHelper.weights.set(0, 1, 0)
+    pathHelper.weights.set(1, 3, 0)
+    pathHelper.compute()
+
+    expect(pathHelper.getDirection(0, 0)).toMatchObject({
+      x: 1,
+      y: 0,
+    })
+    expect(pathHelper.getDirection(1, 0)).toMatchObject({
+      x: 1,
+      y: 1,
+    })
+    expect(pathHelper.getDirection(1, 1)).toMatchObject({
+      x: 1,
+      y: 2,
+    })
+    expect(pathHelper.getDirection(1, 2)).toMatchObject({
+      x: 0,
+      y: 2,
+    })
+    expect(pathHelper.getDirection(0, 2)).toMatchObject({
+      x: 0,
+      y: 3,
+    })
+    expect(pathHelper.getDirection(0, 3)).toMatchObject({
+      x: 0,
+      y: 4,
+    })
+    expect(pathHelper.getDirection(0, 4)).toMatchObject({
+      x: 1,
+      y: 4,
+    })
+  })
+
+  // @TODO should not provide a default direction (west?) if at end
+
   /*
    * Given a path of coordinate arrays, traverses it and asserts that the values increment.
    * Assumes path starts from the end.

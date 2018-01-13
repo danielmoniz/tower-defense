@@ -31,9 +31,8 @@ export default class Grid {
   coordinateIsValid(x, y) {
     if (x < 0 || x >= this.tilesWide || y < 0 || y >= this.tilesHigh) {
       return false
-    } else {
-      return true
     }
+    return true
   }
 
   calculateGridDimensions() {

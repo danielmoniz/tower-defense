@@ -12,6 +12,17 @@ export default class PathsGrid extends Grid {
     this.values = this.newMapArray(null)
   }
 
+  /*
+   * Like at(), but for checking a direction.
+   * Avoids returning null or false and instead returns -1 if invalid.
+   * @TODO Give better name!
+   */
+  directionAt(x, y) {
+    let value = this.at(x, y)
+    if (Number.isInteger(value)) { return value }
+    return -1
+  }
+
   calculate(weights, endX = this.tilesWide - 1, endY = this.tilesHigh - 1) {
     let start = new Date()
 
