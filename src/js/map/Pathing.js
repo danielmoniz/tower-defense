@@ -1,18 +1,21 @@
 
-export default class Map {
+import WeightsGrid from './WeightsGrid'
+
+export default class Pathing {
   constructor(game, grid_size) {
     this.game = game
     this.GRID_SIZE = grid_size
 
     this.calculateGridDimensions()
-    this.setUpWeights()
+    this.weights = new WeightsGrid(this.tilesWide, this.tilesHigh)
+    // this.setUpWeights()
     this.setUpPathLengths()
 
     this.compute()
   }
 
   setUpRandomMap() {
-    this.randomizeWeights(0.3)
+    this.weights.randomize(0.3)
     this.compute()
   }
 
@@ -76,25 +79,12 @@ export default class Map {
     return degrees * Math.PI / 180
   }
 
-  randomizeWeights(wallProbability = 0.1) {
-    for (let i = 0; i < this.weights.length; i++) {
-      for (let j = 0; j < this.weights[i].length; j++) {
-        let random = Math.random()
-        if (random < wallProbability) {
-          this.weights[i][j] = 0
-        } else {
-          this.weights[i][j] = 1
-        }
-      }
-    }
-  }
-
   calculatePathLengths(endX = this.tilesWide - 1, endY = this.tilesHigh - 1) {
     let start = new Date()
 
     this.setUpPathLengths()
 
-    if (!this.coordinateIsValid(endX, endY) || !this.weights[endX][endY]) {
+    if (!this.coordinateIsValid(endX, endY) || !this.weights.at(endX, endY)) {
       return
     }
     this.pathLengths[endX][endY] = 0
@@ -136,7 +126,7 @@ export default class Map {
   }
 
   addToQueue(queue, coordinate, currentPos) {
-    let newWeight = this.weights[coordinate.x][coordinate.y]
+    let newWeight = this.weights.at(coordinate.x, coordinate.y)
     if (newWeight == 0) {
       this.pathLengths[coordinate.x][coordinate.y] = -1
     } else {
@@ -161,16 +151,6 @@ export default class Map {
 
   calculateGridLocation(location) {
     return { x: Math.floor( location.x / this.GRID_SIZE ), y: Math.floor( location.y / this.GRID_SIZE) }
-    // this.tilesWide = Math.floor( this.game.width / this.GRID_SIZE )
-    // this.tilesHigh = Math.floor( this.game.height / this.GRID_SIZE )
-  }
-
-  setUpWeights() {
-    if (this.hasOwnProperty('weights')) {
-      return
-    }
-
-    this.weights = this.newMapArray(1)
   }
 
   setUpPathLengths() {
