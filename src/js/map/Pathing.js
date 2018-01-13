@@ -1,5 +1,6 @@
 
 import WeightsGrid from './WeightsGrid'
+import PathsGrid from './PathsGrid'
 
 export default class Pathing {
   constructor(game, grid_size) {
@@ -9,7 +10,8 @@ export default class Pathing {
     this.calculateGridDimensions()
     this.weights = new WeightsGrid(this.tilesWide, this.tilesHigh)
     // this.setUpWeights()
-    this.setUpPathLengths()
+    this.pathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
+    // this.setUpPathLengths()
 
     this.compute()
   }
@@ -21,7 +23,8 @@ export default class Pathing {
 
   compute(endX, endY) {
     // @TODO calculate weights based on terrain/towers
-    this.setUpPathLengths()
+    // this.setUpPathLengths()
+    this.pathLengths.reset()
     this.calculatePathLengths(endX, endY)
     // console.log(this.weights);
     console.log(this.pathLengths);
@@ -33,10 +36,10 @@ export default class Pathing {
     y = gridLocation.y
     // y = Math.floor(y)
     // console.log(x, y);
-    const north = this.pathLengths[x] && this.pathLengths[x][y - 1] || -1
-    const south = this.pathLengths[x] && this.pathLengths[x][y + 1] || -1
-    const east = this.pathLengths[x + 1] && this.pathLengths[x + 1][y] || -1
-    const west = this.pathLengths[x - 1] && this.pathLengths[x - 1][y] || -1
+    const north = this.pathLengths.at(x, y - 1) || -1
+    const south = this.pathLengths.at(x, y + 1) || -1
+    const east = this.pathLengths.at(x + 1, y) || -1
+    const west = this.pathLengths.at(x - 1, y) || -1
     // console.log(north, south, east, west);
     let directions = [
       {direction: 'north', value: north, angle: this.degreesToRadians(90), location: { x: x, y: y - 1 }},
@@ -82,12 +85,13 @@ export default class Pathing {
   calculatePathLengths(endX = this.tilesWide - 1, endY = this.tilesHigh - 1) {
     let start = new Date()
 
-    this.setUpPathLengths()
+    // this.setUpPathLengths()
+    this.pathLengths.reset()
 
     if (!this.coordinateIsValid(endX, endY) || !this.weights.at(endX, endY)) {
       return
     }
-    this.pathLengths[endX][endY] = 0
+    this.pathLengths.set(endX, endY, 0)
     let queue = []
     let currentPos = { x: endX, y: endY }
     let lastPos = {}
@@ -107,20 +111,16 @@ export default class Pathing {
     let west = { x: currentPos.x - 1, y: currentPos.y }
     let east = { x: currentPos.x + 1, y: currentPos.y }
 
-    if (this.coordinateIsValid(north.x, north.y) &&
-        this.pathLengths[north.x][north.y] == null) { // north
+    if (this.pathLengths.at(north.x, north.y) == null) {
       this.addToQueue(queue, north, currentPos)
     }
-    if (this.coordinateIsValid(south.x, south.y) &&
-        this.pathLengths[south.x][south.y] == null) { // south
+    if (this.pathLengths.at(south.x, south.y) == null) {
       this.addToQueue(queue, south, currentPos)
     }
-    if (this.coordinateIsValid(west.x, west.y) &&
-        this.pathLengths[west.x][west.y] == null) { // west
+    if (this.pathLengths.at(west.x, west.y) == null) {
       this.addToQueue(queue, west, currentPos)
     }
-    if (this.coordinateIsValid(east.x, east.y) &&
-        this.pathLengths[east.x][east.y] == null) { // east
+    if (this.pathLengths.at(east.x, east.y) == null) {
       this.addToQueue(queue, east, currentPos)
     }
   }
@@ -128,11 +128,11 @@ export default class Pathing {
   addToQueue(queue, coordinate, currentPos) {
     let newWeight = this.weights.at(coordinate.x, coordinate.y)
     if (newWeight == 0) {
-      this.pathLengths[coordinate.x][coordinate.y] = -1
+      this.pathLengths.set(coordinate.x, coordinate.y, -1)
     } else {
-      let newLength = this.pathLengths[currentPos.x][currentPos.y] + newWeight
+      let newLength = this.pathLengths.at(currentPos.x, currentPos.y) + newWeight
       queue.push(coordinate)
-      this.pathLengths[coordinate.x][coordinate.y] = newLength
+      this.pathLengths.set(coordinate.x, coordinate.y, newLength)
     }
   }
 
@@ -151,23 +151,5 @@ export default class Pathing {
 
   calculateGridLocation(location) {
     return { x: Math.floor( location.x / this.GRID_SIZE ), y: Math.floor( location.y / this.GRID_SIZE) }
-  }
-
-  setUpPathLengths() {
-    // Commented out to use this temporarily for resetting this.pathLengths
-
-    // if (this.hasOwnProperty('pathLengths')) {
-    //   return
-    // }
-
-    this.pathLengths = this.newMapArray(null)
-  }
-
-  newMapArray(initialValue = 0) {
-    let mapArray = new Array(this.tilesWide)
-    for (let i = 0; i < mapArray.length; i++) {
-      mapArray[i] = new Array(this.tilesHigh).fill(initialValue)
-    }
-    return mapArray
   }
 }
