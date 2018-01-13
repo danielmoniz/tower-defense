@@ -13,6 +13,14 @@ Initially, set it up by running:
     cd client
     gulp build
 
+Run the tests with:
+
+    npm test
+
+Or, for continuous testing:
+
+    npm run test:watch
+
 Then run:
 
     npm run start-debug
