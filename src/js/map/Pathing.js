@@ -9,9 +9,7 @@ export default class Pathing {
 
     this.calculateGridDimensions()
     this.weights = new WeightsGrid(this.tilesWide, this.tilesHigh)
-    // this.setUpWeights()
     this.pathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
-    // this.setUpPathLengths()
 
     this.compute()
   }
@@ -23,9 +21,8 @@ export default class Pathing {
 
   compute(endX, endY) {
     // @TODO calculate weights based on terrain/towers
-    // this.setUpPathLengths()
     this.pathLengths.reset()
-    this.calculatePathLengths(endX, endY)
+    this.pathLengths.calculate(this.weights, endX, endY)
     // console.log(this.weights);
     console.log(this.pathLengths);
   }
@@ -80,68 +77,6 @@ export default class Pathing {
 
   degreesToRadians(degrees) {
     return degrees * Math.PI / 180
-  }
-
-  calculatePathLengths(endX = this.tilesWide - 1, endY = this.tilesHigh - 1) {
-    let start = new Date()
-
-    // this.setUpPathLengths()
-    this.pathLengths.reset()
-
-    if (!this.coordinateIsValid(endX, endY) || !this.weights.at(endX, endY)) {
-      return
-    }
-    this.pathLengths.set(endX, endY, 0)
-    let queue = []
-    let currentPos = { x: endX, y: endY }
-    let lastPos = {}
-    this.searchDirections(queue, currentPos)
-
-    while (queue.length != 0) {
-      currentPos = queue.shift()
-      this.searchDirections(queue, currentPos)
-    }
-
-    console.log('Time to calculate path lengths:', new Date() - start)
-  }
-
-  searchDirections(queue, currentPos) {
-    let north = { x: currentPos.x, y: currentPos.y - 1 }
-    let south = { x: currentPos.x, y: currentPos.y + 1 }
-    let west = { x: currentPos.x - 1, y: currentPos.y }
-    let east = { x: currentPos.x + 1, y: currentPos.y }
-
-    if (this.pathLengths.at(north.x, north.y) == null) {
-      this.addToQueue(queue, north, currentPos)
-    }
-    if (this.pathLengths.at(south.x, south.y) == null) {
-      this.addToQueue(queue, south, currentPos)
-    }
-    if (this.pathLengths.at(west.x, west.y) == null) {
-      this.addToQueue(queue, west, currentPos)
-    }
-    if (this.pathLengths.at(east.x, east.y) == null) {
-      this.addToQueue(queue, east, currentPos)
-    }
-  }
-
-  addToQueue(queue, coordinate, currentPos) {
-    let newWeight = this.weights.at(coordinate.x, coordinate.y)
-    if (newWeight == 0) {
-      this.pathLengths.set(coordinate.x, coordinate.y, -1)
-    } else {
-      let newLength = this.pathLengths.at(currentPos.x, currentPos.y) + newWeight
-      queue.push(coordinate)
-      this.pathLengths.set(coordinate.x, coordinate.y, newLength)
-    }
-  }
-
-  coordinateIsValid(x, y) {
-    if (x < 0 || x >= this.tilesWide || y < 0 || y >= this.tilesHigh) {
-      return false
-    } else {
-      return true
-    }
   }
 
   calculateGridDimensions() {
