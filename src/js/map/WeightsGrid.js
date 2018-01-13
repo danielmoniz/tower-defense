@@ -4,7 +4,7 @@ import Grid from './Grid'
 export default class WeightsGrid extends Grid {
   constructor(tilesWide, tilesHigh) {
     // this.grid = new Grid(tilesWide, tilesHigh)
-    super(tilesWide, tilesHigh)
+    super(tilesWide, tilesHigh, 1)
   }
 
   randomize(wallProbability = 0.1) {
