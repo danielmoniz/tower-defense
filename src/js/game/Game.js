@@ -11,7 +11,7 @@ import Flamethrower from '../units/Flamethrower'
 import MachineGun from '../units/MachineGun'
 import Tank from '../units/Tank'
 
-import Map from '../map/Map'
+import Pathing from '../map/Pathing'
 import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
 
@@ -48,8 +48,10 @@ export default class Game {
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
 
-    this.map = new Map(this, GRID_SIZE)
-    this.map.setUpRandomMap()
+    this.pathHelper = new Pathing(this, GRID_SIZE)
+    this.pathHelper.setUpRandomMap()
+    // this.map = new Map(this, GRID_SIZE)
+    // this.map.setUpRandomMap()
     // this.map.compute() // Will have to compute after each change
 
     this.setUpWaveSpawner()
@@ -139,7 +141,7 @@ export default class Game {
       if (!unit.disabled && unit.act) {
         // @TODO Get terrain type and pass it to unit (for speed/cover purposes)
         // @TODO Get direction unit should move (if an enemy) and pass it to unit
-        const nextTargetLocation = this.map.getDirection(unit.x, unit.y)
+        const nextTargetLocation = this.pathHelper.getDirection(unit.x, unit.y)
         unit.act(nextTargetLocation)
       }
     }
