@@ -24,44 +24,6 @@ export default class Map {
     console.log(this.pathLengths);
   }
 
-  getDirectionFromNode(x, y) {
-    const north = this.pathLengths[x][y + 1] || -1
-    const south = this.pathLengths[x][y - 1] || -1
-    const east = this.pathLengths[x + 1] && this.pathLengths[x + 1][y] || -1
-    const west = this.pathLengths[x - 1] && this.pathLengths[x - 1][y] || -1
-    let directions = [
-      {direction: 'north', value: north, angle: this.degreesToRadians(90)},
-      {direction: 'south', value: south, angle: this.degreesToRadians(270)},
-      {direction: 'east', value: east, angle: this.degreesToRadians(0)},
-      {direction: 'west', value: west, angle: this.degreesToRadians(180)},
-    ]
-    const directionValues = directions.map((directionInfo) => {
-      return directionInfo.value
-    }).filter((value) => {
-      return value >= 0
-    })
-    // Return false if there is nowhere to go
-      // ^^^ Shouldn't happen if we prevent towers from being placed anywhere!
-      // however, terrain might still cause issues
-    if (directionValues.length === 0) { return false }
-
-    // @TODO What to do if on final space? ie. value of current value is 0?
-    const smallestValue = Math.min(...directionValues)
-    directions = directions.filter((direction) => {
-      return direction.value === smallestValue
-    })
-    console.log(directions);
-
-    // pick random direction out of smallest options (might be multiple)
-    const finalDirection = directions[Math.floor(Math.random() * directions.length)]
-    console.log(finalDirection);
-    return finalDirection.angle
-  }
-
-  degreesToRadians(degrees) {
-    return degrees * Math.PI / 180
-  }
-
   getDirection(x, y) {
     const gridLocation = this.calculateGridLocation({ x, y })
     x = gridLocation.x
