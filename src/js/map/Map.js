@@ -16,9 +16,10 @@ export default class Map {
     this.compute()
   }
 
-  compute() {
+  compute(endX, endY) {
     // @TODO calculate weights based on terrain/towers
-    this.calculatePathLengths()
+    this.setUpPathLengths()
+    this.calculatePathLengths(endX, endY)
     // console.log(this.weights);
     console.log(this.pathLengths);
   }
