@@ -118,6 +118,27 @@ describe('Pathing', function() {
     })
   })
 
+  it('should provide the next target node given a location with non-integer coordinates', () => {
+    this.createGame(2, 5)
+    const pathHelper = new Pathing(this.game, 1)
+    pathHelper.weights.set(0, 1, 0)
+    pathHelper.weights.set(1, 3, 0)
+    pathHelper.compute()
+
+    expect(pathHelper.getDirection(0.4, 0)).toMatchObject({
+      x: 1,
+      y: 0,
+    })
+    expect(pathHelper.getDirection(1, 0.9)).toMatchObject({
+      x: 1,
+      y: 1,
+    })
+    expect(pathHelper.getDirection(1.7, 1.3)).toMatchObject({
+      x: 1,
+      y: 2,
+    })
+  })
+
   // @TODO should not provide a default direction (west?) if at end
 
   /*
