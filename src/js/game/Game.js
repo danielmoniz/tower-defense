@@ -48,7 +48,7 @@ export default class Game {
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
 
-    this.pathHelper = new Pathing(this, GRID_SIZE)
+    this.pathHelper = new Pathing(this, GRID_SIZE, this.getEndGoal())
     this.pathHelper.setUpRandomMap()
     // this.map = new Map(this, GRID_SIZE)
     // this.map.setUpRandomMap()
@@ -226,8 +226,16 @@ export default class Game {
   }
 
   getEnemyGoal(enemy) {
+    return this.getEndGoal()
+    // return {
+    //   x: -enemy.width,
+    //   y: this.height / 2,
+    // }
+  }
+
+  getEndGoal() {
     return {
-      x: -enemy.width,
+      x: 0,
       y: this.height / 2,
     }
   }

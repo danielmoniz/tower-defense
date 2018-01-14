@@ -3,15 +3,30 @@ import WeightsGrid from './WeightsGrid'
 import PathsGrid from './PathsGrid'
 
 export default class Pathing {
-  constructor(game, grid_size) {
+  constructor(game, grid_size, endGoal) {
     this.game = game
     this.GRID_SIZE = grid_size
-
     this.calculateGridDimensions()
+
+    this.endGoal = this.setEndGoal(endGoal)
+    this.objectives = [endGoal]
+
+
     this.weights = new WeightsGrid(this.tilesWide, this.tilesHigh)
     this.pathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
 
+
     this.compute()
+  }
+
+  setEndGoal(endGoal) {
+    if (endGoal !== undefined) {
+      return this.calculateGridLocation(endGoal)
+    }
+    return {
+      x: this.tilesWide - 1,
+      y: this.tilesHigh - 1,
+    }
   }
 
   setUpRandomMap() {
@@ -20,10 +35,12 @@ export default class Pathing {
     this.compute()
   }
 
-  compute(endX, endY) {
+  compute(endX = this.endGoal.x, endY = this.endGoal.y) {
     // @TODO calculate weights based on terrain/towers
     this.pathLengths.reset()
     // console.log(this.pathLengths);
+    console.log(endX, endY);
+    console.log(this.endGoal);
     this.pathLengths.calculate(this.weights, endX, endY)
     // console.log(this.weights);
     console.log(this.pathLengths);
