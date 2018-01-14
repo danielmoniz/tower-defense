@@ -140,7 +140,6 @@ export default class Game {
       }
       if (!unit.disabled && unit.act) {
         // @TODO Get terrain type and pass it to unit (for speed/cover purposes)
-        // @TODO Get direction unit should move (if an enemy) and pass it to unit
         const nextTargetLocation = this.pathHelper.getDirection(unit.x, unit.y)
         unit.act(nextTargetLocation)
       }
