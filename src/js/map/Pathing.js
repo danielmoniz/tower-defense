@@ -70,10 +70,13 @@ export default class Pathing {
     directions = directions.filter((direction) => {
       return direction.value === smallestValue
     })
-    const randomIndex = Math.floor(Math.random() * directions.length)
+    // const randomIndex = Math.floor(Math.random() * directions.length)
+    // const randomIndex = 0
+    const randomIndex = directions.length - 1
 
     // pick random direction out of smallest options (might be multiple)
     const finalDirection = directions[randomIndex]
+
     // console.log(finalDirection);
     return this.convertToRealLocation(finalDirection.location)
   }
