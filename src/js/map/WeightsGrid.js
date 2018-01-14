@@ -22,9 +22,10 @@ export default class WeightsGrid extends Grid {
 
   testTerrainWall() {
     const x = Math.floor(this.tilesWide / 2)
+    const startY = Math.floor(this.tilesHigh * (1 / 4))
     const endY = Math.floor(this.tilesHigh * (3 / 4))
 
-    for (let y = 0; y < endY; y++) {
+    for (let y = startY; y < endY; y++) {
       this.set(x, y, 0)
     }
   }

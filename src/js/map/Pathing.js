@@ -49,13 +49,12 @@ export default class Pathing {
   // @TODO Split into smaller functions!
   getDirection(realX, realY) {
     const gridLocation = this.calculateGridLocation({ x: realX, y: realY })
-    const { x, y} = gridLocation
+    const { x, y } = gridLocation
 
     // @TODO What to do if on final space? ie. value of current value is 0?
     const currentValue = this.pathLengths.directionAt(x, y)
     if (currentValue === 0) {
       return this.endGoal
-      return { x: realX, y: realY }
     }
 
     const north = this.pathLengths.directionAt(x, y - 1)
@@ -98,7 +97,8 @@ export default class Pathing {
     // pick random direction out of smallest options (might be multiple)
     const finalDirection = directions[randomIndex]
 
-    // console.log(finalDirection);
+    // console.log(this.convertToRealLocation(finalDirection.location));
+    // console.log('---');
     return this.convertToRealLocation(finalDirection.location)
   }
 

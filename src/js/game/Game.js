@@ -233,9 +233,10 @@ export default class Game {
   }
 
   getEndGoal() {
+    const halfHeight = this.height / 2
     return {
       x: 0,
-      y: this.height / 2,
+      y: halfHeight - (halfHeight % GRID_SIZE),
     }
   }
 
