@@ -177,6 +177,17 @@ describe('Pathing', function() {
     })
   })
 
+  it('should stop suggesting new locations when at target location', () => {
+    this.createGame(2, 2)
+    const pathHelper = new Pathing(this.game, 1)
+    pathHelper.compute()
+
+    expect(pathHelper.getDirection(1, 1)).toMatchObject({
+      x: 1,
+      y: 1,
+    })
+  })
+
   // @TODO should not provide a default direction (west?) if at end
 
   /*

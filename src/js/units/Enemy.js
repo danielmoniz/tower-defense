@@ -43,7 +43,8 @@ class Enemy extends Unit {
   }
 
   hasReachedGoal(finalX, finalY) {
-    return this.x === finalX && this.y === finalY
+    // use approximation to stop enemy from bouncing around target
+    return Math.abs(this.x - finalX) < 10 && Math.abs(this.y - finalY) < 10
   }
 
   /*

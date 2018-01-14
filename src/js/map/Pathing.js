@@ -47,12 +47,17 @@ export default class Pathing {
   }
 
   // @TODO Split into smaller functions!
-  getDirection(x, y) {
-    const gridLocation = this.calculateGridLocation({ x, y })
-    x = gridLocation.x
-    y = gridLocation.y
-    // y = Math.floor(y)
-    // console.log(x, y);
+  getDirection(realX, realY) {
+    const gridLocation = this.calculateGridLocation({ x: realX, y: realY })
+    const { x, y} = gridLocation
+
+    // @TODO What to do if on final space? ie. value of current value is 0?
+    const currentValue = this.pathLengths.directionAt(x, y)
+    if (currentValue === 0) {
+      return this.endGoal
+      return { x: realX, y: realY }
+    }
+
     const north = this.pathLengths.directionAt(x, y - 1)
     const south = this.pathLengths.directionAt(x, y + 1)
     const east = this.pathLengths.directionAt(x + 1, y)
@@ -82,7 +87,6 @@ export default class Pathing {
     }
     // console.log(directionValues);
 
-    // @TODO What to do if on final space? ie. value of current value is 0?
     const smallestValue = Math.min(...directionValues)
     directions = directions.filter((direction) => {
       return direction.value === smallestValue
