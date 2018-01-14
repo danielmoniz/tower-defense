@@ -139,6 +139,44 @@ describe('Pathing', function() {
     })
   })
 
+  it('should provide the next target node given a location given a larger grid size', () => {
+    const tileSize = 10
+    this.createGame(2 * tileSize, 5 * tileSize)
+    const pathHelper = new Pathing(this.game, tileSize)
+    pathHelper.weights.set(0, 1, 0)
+    pathHelper.weights.set(1, 3, 0)
+    pathHelper.compute()
+
+    expect(pathHelper.getDirection(0, 0)).toMatchObject({
+      x: 1 * tileSize,
+      y: 0,
+    })
+    expect(pathHelper.getDirection(1 * tileSize, 0)).toMatchObject({
+      x: 1 * tileSize,
+      y: 1 * tileSize,
+    })
+    expect(pathHelper.getDirection(1 * tileSize, 1 * tileSize)).toMatchObject({
+      x: 1 * tileSize,
+      y: 2 * tileSize,
+    })
+    expect(pathHelper.getDirection(1 * tileSize, 2 * tileSize)).toMatchObject({
+      x: 0,
+      y: 2 * tileSize,
+    })
+    expect(pathHelper.getDirection(0, 2 * tileSize)).toMatchObject({
+      x: 0,
+      y: 3 * tileSize,
+    })
+    expect(pathHelper.getDirection(0, 3 * tileSize)).toMatchObject({
+      x: 0,
+      y: 4 * tileSize,
+    })
+    expect(pathHelper.getDirection(0, 4 * tileSize)).toMatchObject({
+      x: 1 * tileSize,
+      y: 4 * tileSize,
+    })
+  })
+
   // @TODO should not provide a default direction (west?) if at end
 
   /*

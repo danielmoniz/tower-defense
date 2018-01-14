@@ -19,4 +19,13 @@ export default class WeightsGrid extends Grid {
       }
     }
   }
+
+  testTerrainWall() {
+    const x = Math.floor(this.tilesWide / 2)
+    const endY = Math.floor(this.tilesHigh * (3 / 4))
+
+    for (let y = 0; y < endY; y++) {
+      this.set(x, y, 0)
+    }
+  }
 }

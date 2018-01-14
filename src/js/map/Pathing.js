@@ -15,13 +15,15 @@ export default class Pathing {
   }
 
   setUpRandomMap() {
-    this.weights.randomize(0.3)
+    // this.weights.randomize(0.3)
+    this.weights.testTerrainWall()
     this.compute()
   }
 
   compute(endX, endY) {
     // @TODO calculate weights based on terrain/towers
     this.pathLengths.reset()
+    // console.log(this.pathLengths);
     this.pathLengths.calculate(this.weights, endX, endY)
     // console.log(this.weights);
     console.log(this.pathLengths);
@@ -72,8 +74,8 @@ export default class Pathing {
 
     // pick random direction out of smallest options (might be multiple)
     const finalDirection = directions[randomIndex]
-    console.log(finalDirection);
-    return this.calculateGridLocation(finalDirection.location)
+    // console.log(finalDirection);
+    return this.convertToRealLocation(finalDirection.location)
   }
 
   degreesToRadians(degrees) {
@@ -86,6 +88,16 @@ export default class Pathing {
   }
 
   calculateGridLocation(location) {
-    return { x: Math.floor( location.x / this.GRID_SIZE ), y: Math.floor( location.y / this.GRID_SIZE) }
+    return {
+      x: Math.floor(location.x / this.GRID_SIZE),
+      y: Math.floor(location.y / this.GRID_SIZE),
+    }
+  }
+
+  convertToRealLocation(gridLocation) {
+    return {
+      x: Math.floor(gridLocation.x * this.GRID_SIZE),
+      y: Math.floor(gridLocation.y * this.GRID_SIZE),
+    }
   }
 }
