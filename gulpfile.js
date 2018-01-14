@@ -34,18 +34,18 @@ function getB(customOpts) {
   return b
 }
 
-gulp.task('build:client', () => {
+gulp.task('build:client', function() {
   var b = getB(clientOpts)
   var bundledCode = bundle(b, clientDest);
   bundledCode.pipe(exit())
 });
 
-gulp.task('watch:client', () => {
+gulp.task('watch:client', function() {
   var b = getB(clientOpts)
   bundle(b, clientDest)
 });
 
-gulp.task('build:server', () => {
+gulp.task('build:server', function() {
   return gulp.src("src/js/**/*.js")
     .pipe(sourcemaps.init())
     .pipe(babel())
@@ -53,7 +53,7 @@ gulp.task('build:server', () => {
     .pipe(gulp.dest('build'))
 });
 
-gulp.task('watch:server', () => {
+gulp.task('watch:server', function() {
   return watch("./src/js/**/*.js", { ignoreInitial: false })
     .pipe(sourcemaps.init())
     .pipe(babel())
