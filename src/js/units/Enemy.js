@@ -68,8 +68,9 @@ class Enemy extends Unit {
     const xMovement = distance * Math.cos(angle)
     const yMovement = distance * Math.sin(angle)
 
-    this.x += Math.floor(xMovement)
-    this.y += Math.floor(yMovement)
+    // round current position coordinate to two decimals
+    this.x = Math.round((this.x + xMovement) * 100) / 100
+    this.y = Math.round((this.y + yMovement) * 100) / 100
   }
 
   @action complete() {
