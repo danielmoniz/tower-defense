@@ -212,6 +212,10 @@ export default class Game {
       finalTower.place()
       finalTower.show()
       this.towers.add(finalTower)
+      this.pathHelper.addObstacle({
+        x: finalTower.x,
+        y: finalTower.y,
+      }, finalTower.width, finalTower.height)
       return finalTower
     }
   }

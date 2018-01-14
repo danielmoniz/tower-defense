@@ -19,6 +19,21 @@ export default class Pathing {
     this.compute()
   }
 
+  addObstacle(location, width, height) {
+    const gridLocation = this.calculateGridLocation(location)
+    const gridWidth = this.convertToGridValue(width)
+    const gridHeight = this.convertToGridValue(height)
+
+    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
+      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
+        console.log(x, y);
+        this.weights.set(x, y, 0)
+      }
+    }
+
+    this.compute()
+  }
+
   setEndGoal(endGoal) {
     if (endGoal !== undefined) {
       return this.calculateGridLocation(endGoal)
@@ -39,8 +54,6 @@ export default class Pathing {
     // @TODO calculate weights based on terrain/towers
     this.pathLengths.reset()
     // console.log(this.pathLengths);
-    console.log(endX, endY);
-    console.log(this.endGoal);
     this.pathLengths.calculate(this.weights, endX, endY)
     // console.log(this.weights);
     console.log(this.pathLengths);
@@ -107,21 +120,29 @@ export default class Pathing {
   }
 
   calculateGridDimensions() {
-    this.tilesWide = Math.floor( this.game.width / this.GRID_SIZE )
-    this.tilesHigh = Math.floor( this.game.height / this.GRID_SIZE )
+    this.tilesWide = this.convertToGridValue(this.game.width)
+    this.tilesHigh = this.convertToGridValue(this.game.height)
   }
 
   calculateGridLocation(location) {
     return {
-      x: Math.floor(location.x / this.GRID_SIZE),
-      y: Math.floor(location.y / this.GRID_SIZE),
+      x: this.convertToGridValue(location.x),
+      y: this.convertToGridValue(location.y),
     }
   }
 
   convertToRealLocation(gridLocation) {
     return {
-      x: Math.floor(gridLocation.x * this.GRID_SIZE),
-      y: Math.floor(gridLocation.y * this.GRID_SIZE),
+      x: this.convertToRealValue(gridLocation.x),
+      y: this.convertToRealValue(gridLocation.y),
     }
+  }
+
+  convertToGridValue(value) {
+    return Math.floor(value / this.GRID_SIZE)
+  }
+
+  convertToRealValue(value) {
+    return Math.floor(value * this.GRID_SIZE)
   }
 }
