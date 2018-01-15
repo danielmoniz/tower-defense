@@ -52,7 +52,6 @@ export default class Game {
     // this.pathHelper.setUpRandomMap()
     // this.map = new Map(this, GRID_SIZE)
     // this.map.setUpRandomMap()
-    // this.map.compute() // Will have to compute after each change
 
     this.setUpWaveSpawner()
   }
@@ -208,14 +207,20 @@ export default class Game {
     const finalTower = new TowerType(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
-    if (finalTower && this.buyTower(finalTower)) {
-      finalTower.place()
-      finalTower.show()
-      this.towers.add(finalTower)
-      this.pathHelper.addObstacle({
+    if (finalTower && this.canAfford(finalTower)) {
+      const placed = this.pathHelper.addObstacle({
         x: finalTower.x,
         y: finalTower.y,
       }, finalTower.width, finalTower.height)
+      if (!placed) {
+        // @TODO Add message that says tower cannot be placed to block enemies
+        return false
+      }
+
+      this.buyTower(finalTower)
+      finalTower.place()
+      finalTower.show()
+      this.towers.add(finalTower)
       return finalTower
     }
   }

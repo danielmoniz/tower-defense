@@ -29,4 +29,8 @@ export default class WeightsGrid extends Grid {
       this.set(x, y, 0)
     }
   }
+
+  addObstacle(gridLocation, gridWidth, gridHeight) {
+    super.addObstacle(gridLocation, gridWidth, gridHeight, 0)
+  }
 }
