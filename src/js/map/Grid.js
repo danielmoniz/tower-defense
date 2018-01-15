@@ -36,6 +36,13 @@ export default class Grid {
   }
 
   /*
+   * Completely replace the values in a grid.
+   */
+  setValues(newValues) {
+    this.values = newValues
+  }
+
+  /*
    * Returns true if the coordinate is valid (ie. fits on the map.
    * Returns false otherwise.
    */

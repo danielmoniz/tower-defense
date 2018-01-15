@@ -24,14 +24,11 @@ export default class Pathing {
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
 
-    // @TODO This check for whether the obstacle is allowed should be in a separate method.
-    const allowed = this.isObstacleValid(gridLocation, gridWidth, gridHeight)
+    const { allowed, newWeights, newPathLengths } = this.isObstacleValid(gridLocation, gridWidth, gridHeight)
     if (!allowed) { return false }
-    //
-    // console.log('----------------');
 
-    this.weights.addObstacle(gridLocation, gridWidth, gridHeight)
-    this.compute()
+    this.weights.setValues(newWeights.copyValues())
+    this.pathLengths.setValues(newPathLengths.copyValues())
     return true
   }
 
@@ -45,7 +42,11 @@ export default class Pathing {
     const testPathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
     testPathLengths.calculate(testWeights, this.endGoal.x, this.endGoal.y)
 
-    return testPathLengths.isMapValid()
+    return {
+      allowed: testPathLengths.isMapValid(),
+      newWeights: testWeights,
+      newPathLengths: testPathLengths,
+    }
   }
 
   setEndGoal(endGoal) {
