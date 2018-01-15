@@ -50,8 +50,6 @@ export default class Game {
 
     this.pathHelper = new Pathing(this, GRID_SIZE, this.getEndGoal())
     // this.pathHelper.setUpRandomMap()
-    // this.map = new Map(this, GRID_SIZE)
-    // this.map.setUpRandomMap()
 
     this.setUpWaveSpawner()
   }

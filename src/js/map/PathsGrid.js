@@ -23,19 +23,23 @@ export default class PathsGrid extends Grid {
     return -1
   }
 
-  addObstacle(gridLocation, gridWidth, gridHeight) {
-    super.addObstacle(gridLocation, gridWidth, gridHeight, -1)
-    console.log(this.values, gridLocation, gridWidth);
-  }
-
   calculate(weights, endX = this.tilesWide - 1, endY = this.tilesHigh - 1) {
     let start = new Date()
 
     // this.setUpPathLengths()
     this.reset()
 
+    // @TODO Add -1 on each obstacle (0s on weights map)
+    for (let x in weights.values) {
+      for (let y in weights.values[x]) {
+        if (weights.at(x, y) === 0) {
+          this.set(x, y, -1)
+        }
+      }
+    }
+
     if (!this.coordinateIsValid(endX, endY) || !weights.at(endX, endY)) {
-      return
+      return false
     }
     this.set(endX, endY, 0)
     let queue = []
