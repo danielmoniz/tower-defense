@@ -24,18 +24,22 @@ export default class Pathing {
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
 
-    // const testWeights = new WeightsGrid(this.tilesWide, this.tilesHigh)
-    // testWeights.values = this.weights.values.slice() // copy existing weights
-    // testWeights.addObstacle(gridLocation, gridWidth, gridHeight)
-    // const testPathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
-    // testPathLengths.calculate(testWeights, this.endX, this.endY)
-    // testPathLengths.addObstacle(gridLocation, gridWidth, gridHeight)
-    // const allowed = testPathLengths.isMapValid()
-    // if (!allowed) { console.log("Not allowed!"); return false }
+    // @TODO This check for whether the obstacle is allowed should be in a separate method.
+    const testWeights = new WeightsGrid(this.tilesWide, this.tilesHigh)
+    testWeights.values = this.weights.copyValues() // copy existing weights
+    testWeights.addObstacle(gridLocation, gridWidth, gridHeight)
+    // console.log(this.weights.at(0, 0));
+    // return true
+    const testPathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
+    testPathLengths.calculate(testWeights, this.endGoal.x, this.endGoal.y)
+
+    const allowed = testPathLengths.isMapValid()
+    if (!allowed) { console.log("Not allowed!"); console.log(testWeights); console.log(testPathLengths); return false }
     //
     // console.log('----------------');
 
     this.weights.addObstacle(gridLocation, gridWidth, gridHeight)
+    console.log('JUST ADDED OBSTACLE');
     this.compute()
     return true
   }
@@ -103,7 +107,7 @@ export default class Pathing {
       // however, terrain might still cause issues
     if (directionValues.length === 0) {
       const oneTileLeft = this.calculateGridLocation({ x: gridLocation.x - 1, y: gridLocation.y })
-      console.log("No directions - sending left");
+      // console.log("No directions - sending left. Unit at:", gridLocation.x, gridLocation.y);
       return oneTileLeft
       // return this.calculateGridLocation({ x: x - 1, y: y })
       // return {x: Math.floor(x - 1), y: Math.floor(y) }

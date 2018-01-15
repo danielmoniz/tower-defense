@@ -7,6 +7,9 @@ export default class Grid {
     this.values = this.newMapArray(initialValue)
   }
 
+  /*
+   * Builds a new map (2D array) of initial values.
+   */
   newMapArray(initialValue = 0) {
     let mapArray = new Array(this.tilesWide)
     for (let i = 0; i < mapArray.length; i++) {
@@ -18,16 +21,24 @@ export default class Grid {
   /*
    * Returns a falsy value if not a coordinate.
    * Returns the value at that location if valid.
+   * WARNING: If the value at that location is zero, this is still falsy!
    */
   at(x, y) {
     return this.coordinateIsValid(x, y) && this.values[x][y]
   }
 
+  /*
+   * Sets the value at a location.
+   */
   set(x, y, newValue) {
     if (!this.coordinateIsValid(x, y)) { return false }
     this.values[x][y] = newValue
   }
 
+  /*
+   * Returns true if the coordinate is valid (ie. fits on the map.
+   * Returns false otherwise.
+   */
   coordinateIsValid(x, y) {
     if (x < 0 || x >= this.tilesWide || y < 0 || y >= this.tilesHigh) {
       return false
@@ -35,29 +46,12 @@ export default class Grid {
     return true
   }
 
-  calculateGridDimensions() {
-    this.tilesWide = Math.floor( this.game.width / this.GRID_SIZE )
-    this.tilesHigh = Math.floor( this.game.height / this.GRID_SIZE )
-  }
-
-  calculateGridLocation(location) {
-    return { x: Math.floor( location.x / this.GRID_SIZE ), y: Math.floor( location.y / this.GRID_SIZE) }
-  }
-
-  addObstacle(gridLocation, gridWidth, gridHeight, obstacleValue) {
-    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
-      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        console.log(x, y);
-        this.set(x, y, obstacleValue)
-      }
-    }
+  /*
+   * Returns a deep copy of every value in the grid.
+   */
+  copyValues() {
+    return this.values.map((column) => {
+      return column.slice()
+    })
   }
 }
-
-// export function newMapArray(tilesWide, tilesHigh, initialValue = 0) {
-//   let mapArray = new Array(tilesWide)
-//   for (let i = 0; i < mapArray.length; i++) {
-//     mapArray[i] = new Array(tilesHigh).fill(initialValue)
-//   }
-//   return mapArray
-// }
