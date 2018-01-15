@@ -23,6 +23,11 @@ export default class PathsGrid extends Grid {
     return -1
   }
 
+  addObstacle(gridLocation, gridWidth, gridHeight) {
+    super.addObstacle(gridLocation, gridWidth, gridHeight, -1)
+    console.log(this.values, gridLocation, gridWidth);
+  }
+
   calculate(weights, endX = this.tilesWide - 1, endY = this.tilesHigh - 1) {
     let start = new Date()
 
@@ -46,6 +51,21 @@ export default class PathsGrid extends Grid {
     }
 
     console.log('Time to calculate path lengths:', new Date() - start)
+    return this.isMapValid() // need to know if map is blocked
+  }
+
+  // return false if the map is blocked off, ie. some tiles were never explored
+  isMapValid() {
+    for (let x = 0; x < this.values.length; x++) {
+      for (let y = 0; y < this.values[x].length; y++) {
+        // console.log(this.at(x, y));
+        if (this.at(x, y) === null) {
+          console.log("Found a null! (at", x, y, ")");
+          return false
+        }
+      }
+    }
+    return true
   }
 
   searchDirections(queue, currentPos) {

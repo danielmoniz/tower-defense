@@ -24,14 +24,20 @@ export default class Pathing {
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
 
-    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
-      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        console.log(x, y);
-        this.weights.set(x, y, 0)
-      }
-    }
+    // const testWeights = new WeightsGrid(this.tilesWide, this.tilesHigh)
+    // testWeights.values = this.weights.values.slice() // copy existing weights
+    // testWeights.addObstacle(gridLocation, gridWidth, gridHeight)
+    // const testPathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
+    // testPathLengths.calculate(testWeights, this.endX, this.endY)
+    // testPathLengths.addObstacle(gridLocation, gridWidth, gridHeight)
+    // const allowed = testPathLengths.isMapValid()
+    // if (!allowed) { console.log("Not allowed!"); return false }
+    //
+    // console.log('----------------');
 
+    this.weights.addObstacle(gridLocation, gridWidth, gridHeight)
     this.compute()
+    return true
   }
 
   setEndGoal(endGoal) {
@@ -50,13 +56,18 @@ export default class Pathing {
     this.compute()
   }
 
-  compute(endX = this.endGoal.x, endY = this.endGoal.y) {
-    // @TODO calculate weights based on terrain/towers
-    this.pathLengths.reset()
-    // console.log(this.pathLengths);
-    this.pathLengths.calculate(this.weights, endX, endY)
+  compute(options = {
+    endX: this.endGoal.x,
+    endY: this.endGoal.y,
+    weights: this.weights,
+    pathLengths: this.pathLengths,
+  }) {
+    // @TODO calculate weights based on terrain
+    options.pathLengths.reset()
+    // console.log(options.pathLengths);
+    options.pathLengths.calculate(options.weights, options.endX, options.endY)
     // console.log(this.weights);
-    console.log(this.pathLengths);
+    console.log(options.pathLengths);
   }
 
   // @TODO Split into smaller functions!

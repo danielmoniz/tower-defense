@@ -43,6 +43,15 @@ export default class Grid {
   calculateGridLocation(location) {
     return { x: Math.floor( location.x / this.GRID_SIZE ), y: Math.floor( location.y / this.GRID_SIZE) }
   }
+
+  addObstacle(gridLocation, gridWidth, gridHeight, obstacleValue) {
+    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
+      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
+        console.log(x, y);
+        this.set(x, y, obstacleValue)
+      }
+    }
+  }
 }
 
 // export function newMapArray(tilesWide, tilesHigh, initialValue = 0) {
