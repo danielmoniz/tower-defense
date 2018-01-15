@@ -212,6 +212,7 @@ export default class Game {
       }, finalTower.width, finalTower.height)
       if (!placed) {
         // @TODO Add message that says tower cannot be placed to block enemies
+        console.log("Tower placement not allowed! You cannot block the goal.");
         return false
       }
 
