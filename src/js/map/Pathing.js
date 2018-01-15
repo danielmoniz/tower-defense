@@ -25,23 +25,27 @@ export default class Pathing {
     const gridHeight = this.convertToGridValue(height)
 
     // @TODO This check for whether the obstacle is allowed should be in a separate method.
-    const testWeights = new WeightsGrid(this.tilesWide, this.tilesHigh)
-    testWeights.values = this.weights.copyValues() // copy existing weights
-    testWeights.addObstacle(gridLocation, gridWidth, gridHeight)
-    // console.log(this.weights.at(0, 0));
-    // return true
-    const testPathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
-    testPathLengths.calculate(testWeights, this.endGoal.x, this.endGoal.y)
-
-    const allowed = testPathLengths.isMapValid()
-    if (!allowed) { console.log("Not allowed!"); console.log(testWeights); console.log(testPathLengths); return false }
+    const allowed = this.isObstacleValid(gridLocation, gridWidth, gridHeight)
+    if (!allowed) { return false }
     //
     // console.log('----------------');
 
     this.weights.addObstacle(gridLocation, gridWidth, gridHeight)
-    console.log('JUST ADDED OBSTACLE');
     this.compute()
     return true
+  }
+
+  /*
+   * Returns whether or not an obstacle would be blocking the pathfinding.
+   */
+  isObstacleValid(gridLocation, gridWidth, gridHeight) {
+    const testWeights = new WeightsGrid(this.tilesWide, this.tilesHigh)
+    testWeights.values = this.weights.copyValues() // copy existing weights
+    testWeights.addObstacle(gridLocation, gridWidth, gridHeight)
+    const testPathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
+    testPathLengths.calculate(testWeights, this.endGoal.x, this.endGoal.y)
+
+    return testPathLengths.isMapValid()
   }
 
   setEndGoal(endGoal) {
@@ -66,12 +70,8 @@ export default class Pathing {
     weights: this.weights,
     pathLengths: this.pathLengths,
   }) {
-    // @TODO calculate weights based on terrain
     options.pathLengths.reset()
-    // console.log(options.pathLengths);
     options.pathLengths.calculate(options.weights, options.endX, options.endY)
-    // console.log(this.weights);
-    console.log(options.pathLengths);
   }
 
   // @TODO Split into smaller functions!

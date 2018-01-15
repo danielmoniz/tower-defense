@@ -62,9 +62,7 @@ export default class PathsGrid extends Grid {
   isMapValid() {
     for (let x = 0; x < this.values.length; x++) {
       for (let y = 0; y < this.values[x].length; y++) {
-        // console.log(this.at(x, y));
         if (this.at(x, y) === null) {
-          console.log("Found a null! (at", x, y, ")");
           return false
         }
       }
