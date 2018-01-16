@@ -19,12 +19,18 @@ export default class Pathing {
     this.compute()
   }
 
+  /*
+   * Attempts to add an obstacle to the map. This involves updating both
+   * the weights and pathLengths grids.
+   * If the obstacle is not valid, will not update anything.
+   * Returns true or false based on success.
+   */
   addObstacle(location, width, height) {
     const gridLocation = this.calculateGridLocation(location)
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
 
-    const { allowed, newWeights, newPathLengths } = this.isObstacleValid(gridLocation, gridWidth, gridHeight)
+    const { allowed, newWeights, newPathLengths } = this.checkObstacleValidity(gridLocation, gridWidth, gridHeight)
     if (!allowed) { return false }
 
     this.weights.setValues(newWeights.copyValues())
@@ -33,9 +39,10 @@ export default class Pathing {
   }
 
   /*
-   * Returns whether or not an obstacle would be blocking the pathfinding.
+   * Determines whether or not an obstacle would be blocking the pathfinding.
+   * Returns an object of information about the obstacle placement.
    */
-  isObstacleValid(gridLocation, gridWidth, gridHeight) {
+  checkObstacleValidity(gridLocation, gridWidth, gridHeight) {
     const testWeights = new WeightsGrid(this.tilesWide, this.tilesHigh)
     testWeights.values = this.weights.copyValues() // copy existing weights
     testWeights.addObstacle(gridLocation, gridWidth, gridHeight)
