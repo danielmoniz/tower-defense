@@ -66,111 +66,114 @@ describe('Pathing', function() {
     ])
   })
 
-  it('should provide the next target node given a location with valid x and y', () => {
-    const game = createGame(2, 5)
-    const pathHelper = new Pathing(game, 1)
-    pathHelper.weights.set(0, 1, 0)
-    pathHelper.weights.set(1, 3, 0)
-    pathHelper.compute()
+  describe('getDirection', function() {
+    it('should provide the next target node given a location with valid x and y', () => {
+      const game = createGame(2, 5)
+      const pathHelper = new Pathing(game, 1)
+      pathHelper.weights.set(0, 1, 0)
+      pathHelper.weights.set(1, 3, 0)
+      pathHelper.compute()
 
-    expect(pathHelper.getDirection(0, 0)).toMatchObject({
-      x: 1,
-      y: 0,
+      expect(pathHelper.getDirection(0, 0)).toMatchObject({
+        x: 1,
+        y: 0,
+      })
+      expect(pathHelper.getDirection(1, 0)).toMatchObject({
+        x: 1,
+        y: 1,
+      })
+      expect(pathHelper.getDirection(1, 1)).toMatchObject({
+        x: 1,
+        y: 2,
+      })
+      expect(pathHelper.getDirection(1, 2)).toMatchObject({
+        x: 0,
+        y: 2,
+      })
+      expect(pathHelper.getDirection(0, 2)).toMatchObject({
+        x: 0,
+        y: 3,
+      })
+      expect(pathHelper.getDirection(0, 3)).toMatchObject({
+        x: 0,
+        y: 4,
+      })
+      expect(pathHelper.getDirection(0, 4)).toMatchObject({
+        x: 1,
+        y: 4,
+      })
     })
-    expect(pathHelper.getDirection(1, 0)).toMatchObject({
-      x: 1,
-      y: 1,
-    })
-    expect(pathHelper.getDirection(1, 1)).toMatchObject({
-      x: 1,
-      y: 2,
-    })
-    expect(pathHelper.getDirection(1, 2)).toMatchObject({
-      x: 0,
-      y: 2,
-    })
-    expect(pathHelper.getDirection(0, 2)).toMatchObject({
-      x: 0,
-      y: 3,
-    })
-    expect(pathHelper.getDirection(0, 3)).toMatchObject({
-      x: 0,
-      y: 4,
-    })
-    expect(pathHelper.getDirection(0, 4)).toMatchObject({
-      x: 1,
-      y: 4,
-    })
-  })
 
-  it('should provide the next target node given a location with non-integer coordinates', () => {
-    const game = createGame(2, 5)
-    const pathHelper = new Pathing(game, 1)
-    pathHelper.weights.set(0, 1, 0)
-    pathHelper.weights.set(1, 3, 0)
-    pathHelper.compute()
+    it('should provide the next target node given a location with non-integer coordinates', () => {
+      const game = createGame(2, 5)
+      const pathHelper = new Pathing(game, 1)
+      pathHelper.weights.set(0, 1, 0)
+      pathHelper.weights.set(1, 3, 0)
+      pathHelper.compute()
 
-    expect(pathHelper.getDirection(0.4, 0)).toMatchObject({
-      x: 1,
-      y: 0,
+      expect(pathHelper.getDirection(0.4, 0)).toMatchObject({
+        x: 1,
+        y: 0,
+      })
+      expect(pathHelper.getDirection(1, 0.9)).toMatchObject({
+        x: 1,
+        y: 1,
+      })
+      expect(pathHelper.getDirection(1.7, 1.3)).toMatchObject({
+        x: 1,
+        y: 2,
+      })
     })
-    expect(pathHelper.getDirection(1, 0.9)).toMatchObject({
-      x: 1,
-      y: 1,
-    })
-    expect(pathHelper.getDirection(1.7, 1.3)).toMatchObject({
-      x: 1,
-      y: 2,
-    })
-  })
 
-  it('should provide the next target node given a location given a larger grid size', () => {
-    const tileSize = 10
-    const game = createGame(2 * tileSize, 5 * tileSize)
-    const pathHelper = new Pathing(game, tileSize)
-    pathHelper.weights.set(0, 1, 0)
-    pathHelper.weights.set(1, 3, 0)
-    pathHelper.compute()
+    it('should provide the next target node given a location given a larger grid size', () => {
+      const tileSize = 10
+      const game = createGame(2 * tileSize, 5 * tileSize)
+      const pathHelper = new Pathing(game, tileSize)
+      pathHelper.weights.set(0, 1, 0)
+      pathHelper.weights.set(1, 3, 0)
+      pathHelper.compute()
 
-    expect(pathHelper.getDirection(0, 0)).toMatchObject({
-      x: 1 * tileSize,
-      y: 0,
+      expect(pathHelper.getDirection(0, 0)).toMatchObject({
+        x: 1 * tileSize,
+        y: 0,
+      })
+      expect(pathHelper.getDirection(1 * tileSize, 0)).toMatchObject({
+        x: 1 * tileSize,
+        y: 1 * tileSize,
+      })
+      expect(pathHelper.getDirection(1 * tileSize, 1 * tileSize)).toMatchObject({
+        x: 1 * tileSize,
+        y: 2 * tileSize,
+      })
+      expect(pathHelper.getDirection(1 * tileSize, 2 * tileSize)).toMatchObject({
+        x: 0,
+        y: 2 * tileSize,
+      })
+      expect(pathHelper.getDirection(0, 2 * tileSize)).toMatchObject({
+        x: 0,
+        y: 3 * tileSize,
+      })
+      expect(pathHelper.getDirection(0, 3 * tileSize)).toMatchObject({
+        x: 0,
+        y: 4 * tileSize,
+      })
+      expect(pathHelper.getDirection(0, 4 * tileSize)).toMatchObject({
+        x: 1 * tileSize,
+        y: 4 * tileSize,
+      })
     })
-    expect(pathHelper.getDirection(1 * tileSize, 0)).toMatchObject({
-      x: 1 * tileSize,
-      y: 1 * tileSize,
-    })
-    expect(pathHelper.getDirection(1 * tileSize, 1 * tileSize)).toMatchObject({
-      x: 1 * tileSize,
-      y: 2 * tileSize,
-    })
-    expect(pathHelper.getDirection(1 * tileSize, 2 * tileSize)).toMatchObject({
-      x: 0,
-      y: 2 * tileSize,
-    })
-    expect(pathHelper.getDirection(0, 2 * tileSize)).toMatchObject({
-      x: 0,
-      y: 3 * tileSize,
-    })
-    expect(pathHelper.getDirection(0, 3 * tileSize)).toMatchObject({
-      x: 0,
-      y: 4 * tileSize,
-    })
-    expect(pathHelper.getDirection(0, 4 * tileSize)).toMatchObject({
-      x: 1 * tileSize,
-      y: 4 * tileSize,
-    })
-  })
 
-  it('should stop suggesting new locations when at target location', () => {
-    const game = createGame(2, 2)
-    const pathHelper = new Pathing(game, 1)
-    pathHelper.compute()
+    it('should suggest current location when at target location', () => {
+      const game = createGame(2, 2)
+      const pathHelper = new Pathing(game, 1)
+      pathHelper.compute()
 
-    expect(pathHelper.getDirection(1, 1)).toMatchObject({
-      x: 1,
-      y: 1,
+      expect(pathHelper.getDirection(1, 1)).toMatchObject({
+        x: 1,
+        y: 1,
+      })
     })
+
   })
 
   describe('addObstacle', function() {
