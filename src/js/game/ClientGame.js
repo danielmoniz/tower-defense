@@ -28,7 +28,7 @@ class ClientGame extends Game {
   /*
    * Selects a new (disabled/inactive) cannon to be placed on the map.
    */
-  selectNewTower(towerType) {
+  @action selectNewTower(towerType) {
     if (!this.inProgress) { return }
     const TowerType = this.UNIT_TYPES[towerType]
     this.placingTower = new TowerType(this)
@@ -98,7 +98,7 @@ class ClientGame extends Game {
     })
   }
 
-  deselectPlacingTower() {
+  @action deselectPlacingTower() {
     if (this.placingTower) {
       this.renderer.destroyEntity(this.placingTower)
       this.placingTower = false
