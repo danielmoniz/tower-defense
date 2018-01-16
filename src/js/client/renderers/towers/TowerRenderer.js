@@ -53,7 +53,7 @@ export default class TowerRenderer extends UnitRenderer {
       ghostUnit(unit, unitContainer)
     })
 
-    return { container, gunLength, gunHeight }
+    return container
   }
 
   getContainer(unit, board) {
