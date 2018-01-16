@@ -99,7 +99,7 @@ class ClientGame extends Game {
     })
   }
 
-  deselectPlacingTower() {
+  @action deselectPlacingTower() {
     if (this.placingTower) {
       this.renderer.destroyEntity(this.placingTower)
       this.placingTower = false
