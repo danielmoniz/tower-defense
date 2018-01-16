@@ -234,10 +234,6 @@ export default class Game {
 
   getEnemyGoal(enemy) {
     return this.getEndGoal()
-    // return {
-    //   x: -enemy.width,
-    //   y: this.height / 2,
-    // }
   }
 
   getEndGoal() {

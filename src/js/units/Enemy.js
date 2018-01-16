@@ -30,7 +30,6 @@ class Enemy extends Unit {
    */
   @action setMoveTarget(finalX, finalY) {
     this.act = (nextLocation) => {
-      // console.log(nextLocation);
       this.moveXAndY(nextLocation.x, nextLocation.y)
       const reachedGoal = this.hasReachedGoal(finalX, finalY)
       if (reachedGoal) {
