@@ -30,16 +30,16 @@ export default class MachineGunRenderer extends TowerRenderer {
       lineStyle: { width: 3, color: 0x000000, alpha: 1, },
     }
 
-    const { container, unitContainer } = super.getContainer(unit, board)
-    const { disableBackground, background } = super.setBackground(unit, unitContainer, backgroundOptions)
-    super.setTowerBase(unitContainer, circleRadius, towerBaseOptions)
-    const gunContainer = super.setGun(unit, unitContainer, gunHeight, gunLength, gunOptions)
-    const maxRange = super.setMaxRange(unit, container, circleRadius, maxRangeOptions)
+    const { container, unitContainer } = this.getContainer(unit, board)
+    const { disableBackground, background } = this.setBackground(unit, unitContainer, backgroundOptions)
+    this.setTowerBase(unitContainer, circleRadius, towerBaseOptions)
+    const gunContainer = this.setGun(unit, unitContainer, gunHeight, gunLength, gunOptions)
+    const maxRange = this.setMaxRange(unit, container, circleRadius, maxRangeOptions)
     board.app.stage.addChild(container)
 
-    super.setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange)
+    this.setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange)
 
     return container
   }
-  
+
 }
