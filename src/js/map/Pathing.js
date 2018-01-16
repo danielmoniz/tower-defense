@@ -30,6 +30,10 @@ export default class Pathing {
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
 
+    if (!this.isAreaFree(gridLocation, gridWidth, gridHeight)) {
+      return false
+    }
+
     const { allowed, newWeights, newPathLengths } = this.checkObstacleValidity(gridLocation, gridWidth, gridHeight)
     if (!allowed) { return false }
 
@@ -54,6 +58,10 @@ export default class Pathing {
       newWeights: testWeights,
       newPathLengths: testPathLengths,
     }
+  }
+
+  isAreaFree(...locationArgs) {
+    return this.weights.isAreaFree(...locationArgs)
   }
 
   setEndGoal(endGoal) {
