@@ -60,8 +60,11 @@ export default class Pathing {
     }
   }
 
-  isAreaFree(...locationArgs) {
-    return this.weights.isAreaFree(...locationArgs)
+  isAreaFree(location, width, height) {
+    const gridLocation = this.calculateGridLocation(location)
+    const gridWidth = this.convertToGridValue(width)
+    const gridHeight = this.convertToGridValue(height)
+    return this.weights.isAreaFree(gridLocation, gridWidth, gridHeight)
   }
 
   setEndGoal(endGoal) {
