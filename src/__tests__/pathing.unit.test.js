@@ -288,6 +288,28 @@ describe('Pathing', function() {
     })
   })
 
+  describe('isAreaFree', function() {
+
+    it('should return true if an area does not overlap an existing obstacle', () => {
+      const game = createGame(10, 10)
+      const pathHelper = new Pathing(game, 1)
+
+      pathHelper.addObstacle({ x: 0, y: 0 }, 3, 2)
+      const areaFree = pathHelper.isAreaFree({ x: 3, y: 0 }, 2, 2)
+      expect(areaFree).toBe(true)
+    })
+
+    it('should return false if an area overlaps an existing obstacle', () => {
+      const game = createGame(10, 10)
+      const pathHelper = new Pathing(game, 1)
+
+      pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
+      const areaFree = pathHelper.isAreaFree({ x: 2, y: 2 }, 2, 2)
+      expect(areaFree).toBe(false)
+    })
+
+  })
+
   // @TODO should not provide a default direction (west?) if at end
 })
 
