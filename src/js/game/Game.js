@@ -110,7 +110,7 @@ export default class Game {
     }
   }
 
-  loseLife() {
+  @action loseLife() {
     return --this.lives
   }
 
