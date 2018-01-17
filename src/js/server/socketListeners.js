@@ -11,7 +11,6 @@ export default function socketListeners(socket, emitter, serverFunctions) {
   socket.on('spawn wave early', () => {
     if (socket.gameManager && socket.gameManager.game) {
       const newEnemies = socket.gameManager.game.spawnWave()
-      emitter.spawnWave(socket.roomId, newEnemies)
     }
   })
 
