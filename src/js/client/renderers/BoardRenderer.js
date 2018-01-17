@@ -83,17 +83,22 @@ export default class BoardRenderer {
   }
 
   renderMap(game) {
+    this.addExit(game)
+    this.addEntrance()
+  }
+
+  addExit(game) {
     let exitContainer = new PIXI.Container()
     exitContainer.position = game.getEndGoal()
 
     exitContainer.interactive = true
     exitContainer.buttonMode = true
 
-    const background = new PIXI.Graphics()
-    background.beginFill(0xCCCCCC)
-    background.drawRect(0, 0, GRID_SIZE, GRID_SIZE);
-    background.endFill();
-    exitContainer.addChild(background)
+    const exitBackground = new PIXI.Graphics()
+    exitBackground.beginFill(0xCCCCCC)
+    exitBackground.drawRect(0, 0, GRID_SIZE, GRID_SIZE);
+    exitBackground.endFill();
+    exitContainer.addChild(exitBackground)
 
     const exitImage = new PIXI.Sprite(PIXI.utils.TextureCache["exit"])
     exitImage.width = GRID_SIZE
@@ -101,6 +106,14 @@ export default class BoardRenderer {
     exitContainer.addChild(exitImage)
 
     this.app.stage.addChild(exitContainer)
+  }
+
+  addEntrance() {
+    const rightBackground = new PIXI.Graphics()
+    rightBackground.beginFill(0xCCCCCC)
+    rightBackground.drawRect(game.width - GRID_SIZE, 0, GRID_SIZE, game.height);
+    rightBackground.endFill();
+    this.app.stage.addChild(rightBackground)
   }
 
 }
