@@ -6,7 +6,7 @@ import GameEvents from './GameEvents'
 import UnitRenderer from './UnitRenderer'
 import EnemyRenderer from './enemies/EnemyRenderer'
 import TowerRenderer from './towers/TowerRenderer'
-import { CannonRenderer, FlamethrowerRenderer, MachineGunRenderer } from './towers'
+import { CannonRenderer, FlamethrowerRenderer } from './towers'
 
 
 export default class GameRenderer {
@@ -26,13 +26,11 @@ export default class GameRenderer {
     this.enemyRenderer = new EnemyRenderer(this.board, actions, this.registerEmitter.bind(this))
     this.cannonRenderer = new CannonRenderer(this.board, actions, this.registerEmitter.bind(this))
     this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.machineGunRenderer = new MachineGunRenderer(this.board, actions, this.registerEmitter.bind(this))
 
     this.towerRenderers = {
       Tower: this.towerRenderer, // default?
       Cannon: this.cannonRenderer,
-      Flamethrower: this.flamethrowerRenderer,
-      MachineGun: this.machineGunRenderer,
+      Flamethrower: this.flamethrowerRenderer
     }
 
     this.emitterCallbacks = []
