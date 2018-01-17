@@ -26,13 +26,13 @@ export default class Pathing {
    * Returns true or false based on success.
    */
   addObstacle(location, width, height) {
+    if (!this.isAreaFree(location, width, height)) {
+      return false
+    }
+
     const gridLocation = this.calculateGridLocation(location)
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
-
-    if (!this.isAreaFree(gridLocation, gridWidth, gridHeight)) {
-      return false
-    }
 
     const { allowed, newWeights, newPathLengths } = this.checkObstacleValidity(gridLocation, gridWidth, gridHeight)
     if (!allowed) { return false }
@@ -64,6 +64,7 @@ export default class Pathing {
     const gridLocation = this.calculateGridLocation(location)
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
+
     return this.weights.isAreaFree(gridLocation, gridWidth, gridHeight)
   }
 
