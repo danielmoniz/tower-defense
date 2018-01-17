@@ -8,6 +8,9 @@ class SoloGame extends ClientGame {
 
   constructor(emitter, actions) {
     super(emitter, actions)
+  }
+
+  setUpWaveSpawner() {
     this.wave = new WaveSpawnerLocal(this.createEnemy.bind(this))
   }
 

@@ -70,7 +70,7 @@ export default class BoardRenderer {
   setupWaveDisplay(game) {
     const waveDisplay = document.querySelector(".currentWave")
     autorun(() => {
-      waveDisplay.innerHTML = Math.floor(game.wave.number)
+      waveDisplay.innerHTML = game.wave.number
     })
   }
 

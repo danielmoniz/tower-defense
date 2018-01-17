@@ -50,7 +50,11 @@ export default class Game {
 
     this.map = new Map(this)
 
-    // to be overwritten by a subclass if another wave spawner is needed
+    this.setUpWaveSpawner()
+  }
+
+  // to be overwritten by a subclass if another wave spawner is needed
+  setUpWaveSpawner() {
     this.wave = new WaveSpawner(this.createEnemy.bind(this))
   }
 
