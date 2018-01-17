@@ -30,6 +30,10 @@ export default class Pathing {
       return false
     }
 
+    if (this.obstacleOverlapsEntrance(location, width, height)) {
+      return false
+    }
+
     const gridLocation = this.calculateGridLocation(location)
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
@@ -58,6 +62,17 @@ export default class Pathing {
       newWeights: testWeights,
       newPathLengths: testPathLengths,
     }
+  }
+
+  obstacleOverlapsEntrance(location, width, height) {
+    const entranceZone = this.game.getEntranceZone()
+
+    if (location.x < entranceZone.x + entranceZone.width && location.x + width > entranceZone.x
+      && location.y < entranceZone.y + entranceZone.height && location.y + height > entranceZone.y) {
+        console.log("Cannot place tower over the entrance!");
+        return true
+    }
+    return false
   }
 
   isAreaFree(location, width, height) {
