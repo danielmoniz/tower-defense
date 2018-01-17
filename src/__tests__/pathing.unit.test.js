@@ -335,6 +335,14 @@ function createGame(width, height) {
   return {
     width: width,
     height: height,
+    getEntranceZone: () => {
+      return {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      }
+    },
   }
 }
 
