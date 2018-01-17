@@ -130,7 +130,7 @@ export default class BoardRenderer {
 
   renderMap(game) {
     this.addExit(game)
-    this.addEntrance()
+    this.addEntrance(game)
   }
 
   addExit(game) {
@@ -154,10 +154,11 @@ export default class BoardRenderer {
     this.app.stage.addChild(exitContainer)
   }
 
-  addEntrance() {
+  addEntrance(game) {
+    const deadZone = game.getEntranceZone()
     const rightBackground = new PIXI.Graphics()
     rightBackground.beginFill(0xCCCCCC)
-    rightBackground.drawRect(game.width - GRID_SIZE, 0, GRID_SIZE, game.height);
+    rightBackground.drawRect(deadZone.x, deadZone.y, deadZone.width, deadZone.height);
     rightBackground.endFill();
     this.app.stage.addChild(rightBackground)
   }

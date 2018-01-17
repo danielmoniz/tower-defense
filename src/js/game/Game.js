@@ -176,8 +176,9 @@ export default class Game {
   }
 
   placeEnemy(enemy, enemiesInWave, numEnemy) {
-    const enemyDistance = Math.floor(this.height / enemiesInWave)
-    enemy.jumpTo(this.width, numEnemy * enemyDistance)
+    const entrance = this.getEntranceZone()
+    const enemyDistance = Math.floor(entrance.height / enemiesInWave)
+    enemy.jumpTo(entrance.x + entrance.width, entrance.y + numEnemy * enemyDistance)
   }
 
   canAfford(unit) {
@@ -241,6 +242,18 @@ export default class Game {
     return {
       x: 0,
       y: halfHeight - (halfHeight % GRID_SIZE),
+    }
+  }
+
+  /*
+   * Return a rectangular area where towers cannot be built.
+   */
+  getEntranceZone() {
+    return {
+      x: this.width - GRID_SIZE,
+      y: 0,
+      width: GRID_SIZE,
+      height: this.height,
     }
   }
 
