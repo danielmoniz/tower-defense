@@ -24,7 +24,7 @@ export default class BoardRenderer {
     this.app.renderer.view.style.border = '2px solid black'
 
     this.loadUnitAssets()
-    this.setupCredits(game)
+    this.setupGameStateDisplay(game)
   }
 
   loadUnitAssets() {
@@ -47,10 +47,30 @@ export default class BoardRenderer {
     })
   }
 
-  setupCredits(game) {
+  setupGameStateDisplay(game) {
+    this.setupCreditsDisplay(game)
+    this.setupLivesDisplay(game)
+    this.setupWaveDisplay(game)
+  }
+
+  setupCreditsDisplay(game) {
     const creditsDisplay = document.querySelector(".remainingCredits")
     autorun(() => {
       creditsDisplay.innerHTML = Math.floor(game.credits.current)
+    })
+  }
+
+  setupLivesDisplay(game) {
+    const livesDisplay = document.querySelector(".remainingLives")
+    autorun(() => {
+      livesDisplay.innerHTML = Math.floor(game.lives)
+    })
+  }
+
+  setupWaveDisplay(game) {
+    const waveDisplay = document.querySelector(".currentWave")
+    autorun(() => {
+      waveDisplay.innerHTML = game.wave.number
     })
   }
 
