@@ -76,26 +76,56 @@ export default class PathsGrid extends Grid {
     let west = { x: currentPos.x - 1, y: currentPos.y }
     let east = { x: currentPos.x + 1, y: currentPos.y }
 
+    // let northEast = { x: currentPos.x + 1, y: currentPos.y - 1, angle: true }
+    // let northWest = { x: currentPos.x - 1, y: currentPos.y - 1, angle: true }
+    // let southEast = { x: currentPos.x + 1, y: currentPos.y + 1, angle: true }
+    // let southWest = { x: currentPos.x - 1, y: currentPos.y + 1, angle: true }
+
     const directions = []
+
+    const angles = {
+      north: false,
+      south: false,
+      east: false,
+      west: false,
+    }
 
     if (this.at(north.x, north.y) == null) {
       directions.push(north)
+      angles.north = true
     }
     if (this.at(south.x, south.y) == null) {
       directions.push(south)
+      angles.south = true
     }
     if (this.at(west.x, west.y) == null) {
       directions.push(west)
+      angles.west = true
     }
     if (this.at(east.x, east.y) == null) {
       directions.push(east)
+      angles.east = true
     }
+
+    // if (angles.north && angles.east && this.at(northEast.x, northEast.y) == null) {
+    //   directions.push(northEast)
+    // }
+    // if (angles.north && angles.west && this.at(northWest.x, northWest.y) == null) {
+    //   directions.push(northWest)
+    // }
+    // if (angles.south && angles.west && this.at(southWest.x, southWest.y) == null) {
+    //   directions.push(southWest)
+    // }
+
+    // console.log(directions.length);
 
     return directions
   }
 
   addToQueue(queue, coordinate, currentPos, weights) {
     let newWeight = weights.at(coordinate.x, coordinate.y)
+    // if (coordinate.angle) { console.log('bigger weight due to angle!'); newWeight *= Math.sqrt(2) }
+
     if (newWeight == 0) {
       this.set(coordinate.x, coordinate.y, -1)
     } else {
