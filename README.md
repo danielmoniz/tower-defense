@@ -4,7 +4,11 @@ This is an online co-operative Tower Defense game.
 
 The [blog is up][blog]!
 
+[![Build Status](https://travis-ci.org/danielmoniz/tower-defense.svg?branch=path)](https://travis-ci.org/danielmoniz/tower-defense)
+
+
 ## Setup
+
 
 Initially, set it up by running:
 
