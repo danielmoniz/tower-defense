@@ -56,21 +56,21 @@ export default class BoardRenderer {
   setupCreditsDisplay(game) {
     const creditsDisplay = document.querySelector(".remainingCredits")
     autorun(() => {
-      creditsDisplay.innerHTML = Math.floor(game.credits.current)
+      creditsDisplay.innerHTML = "Credits: $" + Math.floor(game.credits.current)
     })
   }
 
   setupLivesDisplay(game) {
     const livesDisplay = document.querySelector(".remainingLives")
     autorun(() => {
-      livesDisplay.innerHTML = Math.floor(game.lives)
+      livesDisplay.innerHTML = "Lives: " + Math.floor(game.lives)
     })
   }
 
   setupWaveDisplay(game) {
     const waveDisplay = document.querySelector(".currentWave")
     autorun(() => {
-      waveDisplay.innerHTML = game.wave.number
+      waveDisplay.innerHTML = "Wave: " + game.wave.number
     })
   }
 

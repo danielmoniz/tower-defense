@@ -9,17 +9,17 @@ a {
 
 .remainingCredits {
   display: inline-block;
-  width: 100px;
+  width: 120px;
 }
 
 .remainingLives {
   display: inline-block;
-  width: 100px;
+  width: 120px;
 }
 
 .currentWave {
   display: inline-block;
-  width: 100px;
+  width: 120px;
 }
 
 .disabled {
