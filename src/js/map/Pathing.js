@@ -175,6 +175,9 @@ export default class Pathing {
     // console.log(this.convertToRealLocation(finalDirection.location));
     // console.log('---');
     // console.log(finalDirection.direction, gridLocation, finalDirection.location);
+
+    // Shift the suggested location either down or right
+    // This is because tiles are measured from their top left corner
     if (finalDirection.south) {
       finalDirection.location.y += 1
     }
