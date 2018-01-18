@@ -67,7 +67,7 @@ describe('Pathing', function() {
   })
 
   describe('getDirection', function() {
-    it('should provide the next target node given a location with valid x and y', () => {
+    it.skip('should provide the next target node given a location with valid x and y', () => {
       const game = createGame(2, 5)
       const pathHelper = new Pathing(game, 1)
       pathHelper.weights.set(0, 1, 0)
@@ -104,7 +104,7 @@ describe('Pathing', function() {
       })
     })
 
-    it('should provide the next target node given a location with non-integer coordinates', () => {
+    it.skip('should provide the next target node given a location with non-integer coordinates', () => {
       const game = createGame(2, 5)
       const pathHelper = new Pathing(game, 1)
       pathHelper.weights.set(0, 1, 0)
@@ -125,7 +125,7 @@ describe('Pathing', function() {
       })
     })
 
-    it('should provide the next target node given a location given a larger grid size', () => {
+    it.skip('should provide the next target node given a location given a larger grid size', () => {
       const tileSize = 10
       const game = createGame(2 * tileSize, 5 * tileSize)
       const pathHelper = new Pathing(game, tileSize)
