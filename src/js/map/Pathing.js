@@ -107,6 +107,7 @@ export default class Pathing {
   }) {
     options.pathLengths.reset()
     options.pathLengths.calculate(options.weights, options.endX, options.endY)
+    // console.log(this.pathLengths.values);
   }
 
   // @TODO Split into smaller functions!
@@ -124,12 +125,23 @@ export default class Pathing {
     const south = this.pathLengths.directionAt(x, y + 1)
     const east = this.pathLengths.directionAt(x + 1, y)
     const west = this.pathLengths.directionAt(x - 1, y)
-    // console.log(north, south, east, west);
+
+
+    // @TODO Angular pathfinding needs reworking (in PathsGrid and here)
+    const northEast = this.pathLengths.directionAt(x + 1, y - 1)
+    const northWest = this.pathLengths.directionAt(x - 1, y - 1)
+    const southEast = this.pathLengths.directionAt(x + 1, y + 1)
+    const southWest = this.pathLengths.directionAt(x - 1, y + 1)
+
     let directions = [
       {direction: 'north', value: north, angle: this.degreesToRadians(90), location: { x: x, y: y - 1 }},
       {direction: 'south', value: south, angle: this.degreesToRadians(270), location: { x: x, y: y + 1 }},
       {direction: 'east', value: east, angle: this.degreesToRadians(0), location: { x: x + 1, y: y }},
       {direction: 'west', value: west, angle: this.degreesToRadians(180), location: { x: x - 1, y: y }},
+      {direction: 'northEast', value: northEast, angle: this.degreesToRadians(45), location: { x: x + 1, y: y - 1 }, east: true},
+      {direction: 'northWest', value: northWest, angle: this.degreesToRadians(135), location: { x: x - 1, y: y - 1 }},
+      {direction: 'southEast', value: southEast, angle: this.degreesToRadians(315), location: { x: x + 1, y: y + 1 }, south: true, east: true},
+      {direction: 'southWest', value: southWest, angle: this.degreesToRadians(225), location: { x: x - 1, y: y + 1 }, south: true},
     ]
     const directionValues = directions.map((directionInfo) => {
       return directionInfo.value
@@ -162,6 +174,13 @@ export default class Pathing {
 
     // console.log(this.convertToRealLocation(finalDirection.location));
     // console.log('---');
+    // console.log(finalDirection.direction, gridLocation, finalDirection.location);
+    if (finalDirection.south) {
+      finalDirection.location.y += 1
+    }
+    if (finalDirection.east) {
+      finalDirection.location.x += 1
+    }
     return this.convertToRealLocation(finalDirection.location)
   }
 
@@ -180,6 +199,7 @@ export default class Pathing {
       y: this.convertToGridValue(location.y),
     }
   }
+
 
   convertToRealLocation(gridLocation) {
     return {
