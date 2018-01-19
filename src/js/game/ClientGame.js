@@ -105,19 +105,16 @@ class ClientGame extends Game {
     }
   }
 
-  deselectAll() {
+  @action deselectAll() {
     this.deselectPlacingTower()
     this.deselectEntity()
-    if (this.selectedEntity) {
-      this.selectedEntity.deselect()
-      delete this.selectEntity
-    }
   }
 
-  deselectEntity() {
+  @action deselectEntity() {
     if (this.selectedEntity) {
       this.selectedEntity.deselect()
-      delete this.selectEntity
+      this.selectedEntity = null
+      // delete this.selectEntity
     }
   }
 
