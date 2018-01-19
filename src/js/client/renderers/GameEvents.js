@@ -54,19 +54,23 @@ export default class GameEvents {
       if (game.placingTower) {
         const placingTower = game.placingTower
 
-        const actualX = event.offsetX - placingTower.width / 2.0 + (GRID_SIZE / 2)
-        const actualY = event.offsetY - placingTower.height / 2.0 + (GRID_SIZE / 2)
+        const actualX = event.offsetX// - placingTower.width / 2.0 + (GRID_SIZE / 2)
+        const actualY = event.offsetY// - placingTower.height / 2.0 + (GRID_SIZE / 2)
         let gridX = Math.floor(actualX / GRID_SIZE) * GRID_SIZE
         let gridY = Math.floor(actualY / GRID_SIZE) * GRID_SIZE
 
         // prevent towers being placed over left/top edges
-        gridX = Math.max(gridX, 0)
-        gridY = Math.max(gridY, 0)
+
+        const minTowerX = Math.floor(game.placingTower.width / 2 - (game.placingTower.width / 2) % GRID_SIZE)
+        const minTowerY = Math.floor(game.placingTower.height / 2 - (game.placingTower.height / 2) % GRID_SIZE)
+        gridX = Math.max(gridX, minTowerX)
+        gridY = Math.max(gridY, minTowerY)
 
         // prevent towers overlapping right/bottom edges
-        gridX = Math.min(gridX, game.width - placingTower.width)
-        gridY = Math.min(gridY, game.height - placingTower.height)
+        gridX = Math.min(gridX, game.width - Math.floor(game.placingTower.width / 2 + (game.placingTower.width / 2) % GRID_SIZE))
+        gridY = Math.min(gridY, game.height - Math.floor(game.placingTower.height / 2 - (game.placingTower.height / 2) % GRID_SIZE))
 
+        console.log(gridX, gridY);
         placingTower.jumpTo(gridX, gridY)
       }
     })

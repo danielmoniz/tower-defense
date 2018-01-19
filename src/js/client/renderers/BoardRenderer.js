@@ -11,8 +11,8 @@ export default class BoardRenderer {
 
   setupGameBox(game) {
     this.app = new PIXI.Application({
-      width: game.width,
-      height: game.height,
+      width: game.width + GRID_SIZE,
+      height: game.height + GRID_SIZE,
       antialias: true,
       transparent: false,
       resolution: 1,
@@ -158,7 +158,7 @@ export default class BoardRenderer {
     const deadZone = game.getEntranceZone()
     const rightBackground = new PIXI.Graphics()
     rightBackground.beginFill(0xCCCCCC)
-    rightBackground.drawRect(deadZone.x, deadZone.y, deadZone.width, deadZone.height);
+    rightBackground.drawRect(deadZone.x + GRID_SIZE, deadZone.y, deadZone.width, deadZone.height + GRID_SIZE);
     rightBackground.endFill();
     this.app.stage.addChild(rightBackground)
   }
