@@ -76,7 +76,6 @@ export default class BoardRenderer {
 
   // @TODO Consider using Vue.js for templating here
   displayEnemy(infoPanelData, entity) {
-    console.log('displaying enemy');
     infoPanelData.innerHTML = "Speed: " + entity.speed + "<br />" +
         "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br />" +
         "Value: $" + entity.killValue + "<br />" +
@@ -85,7 +84,6 @@ export default class BoardRenderer {
 
   // @TODO Consider using Vue.js for templating here
   displayTower(infoPanelData, entity) {
-    console.log('displaying tower');
     infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br />" +
         "Damage: " + entity.attackPower + "<br />" +
         "Range: " + entity.range + "<br />" +
