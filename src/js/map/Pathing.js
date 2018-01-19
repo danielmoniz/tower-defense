@@ -30,9 +30,10 @@ export default class Pathing {
       return false
     }
 
-    if (this.obstacleOverlapsEntrance(location, width, height)) {
-      return false
-    }
+    // @TODO Bring this back! Otherwise, tower placement can be hacked.
+    // if (this.obstacleOverlapsEntrance(location, width, height)) {
+    //   return false
+    // }
 
     const gridLocation = this.calculateGridLocation(location)
     const gridWidth = this.convertToGridValue(width)
@@ -43,6 +44,7 @@ export default class Pathing {
 
     this.weights.setValues(newWeights.copyValues())
     this.pathLengths.setValues(newPathLengths.copyValues())
+
     return true
   }
 

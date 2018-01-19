@@ -207,10 +207,8 @@ export default class Game {
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
     if (finalTower && this.canAfford(finalTower)) {
-      const placed = this.pathHelper.addObstacle({
-        x: finalTower.x,
-        y: finalTower.y,
-      }, finalTower.width, finalTower.height)
+      const placed = this.pathHelper.addObstacle(
+        finalTower.getTopLeft(), finalTower.width, finalTower.height)
       if (!placed) {
         // @TODO Add message that says tower cannot be placed to block enemies
         console.log("Tower placement not allowed! You cannot block the goal or place on top of existing towers.");

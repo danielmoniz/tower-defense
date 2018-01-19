@@ -70,7 +70,7 @@ export default class GameEvents {
         gridX = Math.min(gridX, game.width - Math.floor(game.placingTower.width / 2 + (game.placingTower.width / 2) % GRID_SIZE))
         gridY = Math.min(gridY, game.height - Math.floor(game.placingTower.height / 2 - (game.placingTower.height / 2) % GRID_SIZE))
 
-        console.log(gridX, gridY);
+        // console.log(gridX, gridY);
         placingTower.jumpTo(gridX, gridY)
       }
     })
