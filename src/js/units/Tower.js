@@ -137,4 +137,26 @@ export default class Tower extends Unit {
   distanceToUnit(target) {
     return target.getDistanceToPoint(this.getCentre())
   }
+
+  /*
+   * Returns the top-left coordinate of the tower.
+   * Needed because coordinates are based on the centre point.
+   * Note that towers can only be on grid lines.
+   */
+  getTopLeft() {
+    const halfGridWidth = this.width / 2 - ((this.width / 2) % GRID_SIZE)
+    const halfGridHeight = this.height / 2 - ((this.height / 2) % GRID_SIZE)
+    return {
+      x: this.x - halfGridWidth,
+      y: this.y - halfGridHeight,
+    }
+    return {
+      x: Math.floor(this.width / 2 - (this.width / 2) % GRID_SIZE),
+      y: Math.floor(this.height / 2 - (this.height / 2) % GRID_SIZE),
+    }
+    return {
+      x: this.x - Math.floor(this.width / 2),
+      y: this.y - Math.floor(this.height / 2),
+    }
+  }
 }
