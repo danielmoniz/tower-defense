@@ -28,7 +28,7 @@ export default class Game {
   @observable lives = 20
   @observable inProgress = false
 
-  @observable selectedEntity
+  @observable selectedEntity = null
 
   @observable control = {
     run: false,

@@ -114,7 +114,6 @@ class ClientGame extends Game {
     if (this.selectedEntity) {
       this.selectedEntity.deselect()
       this.selectedEntity = null
-      // delete this.selectEntity
     }
   }
 

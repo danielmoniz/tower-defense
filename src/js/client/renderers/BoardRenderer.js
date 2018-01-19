@@ -51,31 +51,48 @@ export default class BoardRenderer {
   setupInfoPanel(game) {
     const infoPanelName = document.getElementById("info-panel-name")
     const infoPanelData = document.getElementById("info-panel-data")
+
     autorun(() => {
-      if (game.selectedEntity == null) {
-        infoPanelName.innerHTML = ""
-        infoPanelData.innerHTML = ""
-        return;
-      }
-
-      const entity = game.selectedEntity
-      infoPanelName.innerHTML = entity.name
-
-      if (entity.type == "Tower") {
-        infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br />" +
-            "Damage: " + entity.attackPower + "<br />" +
-            "Range: " + entity.range + "<br />" +
-            "Clip size: " + entity.clipSize + "<br />" +
-            "Firing time: " + entity.firingTime + "ms" + "<br />" +
-            "Reload time: " + entity.reloadTime + "ms" + "<br />" +
-            "Profit multiplier: "  + entity.killProfitMultiplier
-      } else if (entity.type == "Enemy") {
-        infoPanelData.innerHTML = "Speed: " + entity.speed + "<br />" +
-            "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br />" +
-            "Value: $" + entity.killValue + "<br />" +
-            "Size: " + entity.width + "x" + entity.height
-      }
+      this.updateInfoPanel(game, infoPanelName, infoPanelData)
     })
+  }
+
+  updateInfoPanel(game, infoPanelName, infoPanelData) {
+    if (game.selectedEntity === null) {
+      infoPanelName.innerHTML = ""
+      infoPanelData.innerHTML = ""
+      return;
+    }
+
+    const entity = game.selectedEntity
+    infoPanelName.innerHTML = entity.name
+
+    if (entity.type == "Tower") {
+      this.displayTower(infoPanelData, entity)
+    } else if (entity.type == "Enemy") {
+      this.displayEnemy(infoPanelData, entity)
+    }
+  }
+
+  // @TODO Consider using Vue.js for templating here
+  displayEnemy(infoPanelData, entity) {
+    console.log('displaying enemy');
+    infoPanelData.innerHTML = "Speed: " + entity.speed + "<br />" +
+        "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br />" +
+        "Value: $" + entity.killValue + "<br />" +
+        "Size: " + entity.width + "x" + entity.height
+  }
+
+  // @TODO Consider using Vue.js for templating here
+  displayTower(infoPanelData, entity) {
+    console.log('displaying tower');
+    infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br />" +
+        "Damage: " + entity.attackPower + "<br />" +
+        "Range: " + entity.range + "<br />" +
+        "Clip size: " + entity.clipSize + "<br />" +
+        "Firing time: " + entity.firingTime + "ms" + "<br />" +
+        "Reload time: " + entity.reloadTime + "ms" + "<br />" +
+        "Profit multiplier: "  + entity.killProfitMultiplier
   }
 
   setupGameStateDisplay(game) {
