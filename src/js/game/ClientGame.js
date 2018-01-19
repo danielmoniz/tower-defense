@@ -121,7 +121,7 @@ class ClientGame extends Game {
     }
   }
 
-  selectEntity(entity) {
+  @action selectEntity(entity) {
     this.deselectEntity()
     entity.select()
     this.selectedEntity = entity

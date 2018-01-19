@@ -32,6 +32,16 @@ a {
   border-left-style: none;
 }
 
+.info-panel-header {
+  font: bold 12pt Arial;
+  padding: 5px;
+}
+
+.info-panel-data {
+  font: 10pt Arial;
+  padding: 5px;
+}
+
 .disabled {
   pointer-events: none;
   opacity: 0.3;
