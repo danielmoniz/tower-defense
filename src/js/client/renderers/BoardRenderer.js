@@ -25,6 +25,7 @@ export default class BoardRenderer {
 
     this.loadUnitAssets()
     this.setupGameStateDisplay(game)
+    this.setupInfoPanel(game)
   }
 
   loadUnitAssets() {
@@ -47,6 +48,51 @@ export default class BoardRenderer {
     })
   }
 
+  setupInfoPanel(game) {
+    const infoPanelName = document.getElementById("info-panel-name")
+    const infoPanelData = document.getElementById("info-panel-data")
+
+    autorun(() => {
+      this.updateInfoPanel(game, infoPanelName, infoPanelData)
+    })
+  }
+
+  updateInfoPanel(game, infoPanelName, infoPanelData) {
+    if (game.selectedEntity === null) {
+      infoPanelName.innerHTML = ""
+      infoPanelData.innerHTML = ""
+      return;
+    }
+
+    const entity = game.selectedEntity
+    infoPanelName.innerHTML = entity.name
+
+    if (entity.type == "Tower") {
+      this.displayTower(infoPanelData, entity)
+    } else if (entity.type == "Enemy") {
+      this.displayEnemy(infoPanelData, entity)
+    }
+  }
+
+  // @TODO Consider using Vue.js for templating here
+  displayEnemy(infoPanelData, entity) {
+    infoPanelData.innerHTML = "Speed: " + entity.speed + "<br />" +
+        "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br />" +
+        "Value: $" + entity.killValue + "<br />" +
+        "Size: " + entity.width + "x" + entity.height
+  }
+
+  // @TODO Consider using Vue.js for templating here
+  displayTower(infoPanelData, entity) {
+    infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br />" +
+        "Damage: " + entity.attackPower + "<br />" +
+        "Range: " + entity.range + "<br />" +
+        "Clip size: " + entity.clipSize + "<br />" +
+        "Firing time: " + entity.firingTime + "ms" + "<br />" +
+        "Reload time: " + entity.reloadTime + "ms" + "<br />" +
+        "Profit multiplier: "  + entity.killProfitMultiplier
+  }
+
   setupGameStateDisplay(game) {
     this.setupCreditsDisplay(game)
     this.setupLivesDisplay(game)
@@ -56,21 +102,21 @@ export default class BoardRenderer {
   setupCreditsDisplay(game) {
     const creditsDisplay = document.querySelector(".remainingCredits")
     autorun(() => {
-      creditsDisplay.innerHTML = Math.floor(game.credits.current)
+      creditsDisplay.innerHTML = "Credits: $" + Math.floor(game.credits.current)
     })
   }
 
   setupLivesDisplay(game) {
     const livesDisplay = document.querySelector(".remainingLives")
     autorun(() => {
-      livesDisplay.innerHTML = Math.floor(game.lives)
+      livesDisplay.innerHTML = "Lives: " + Math.floor(game.lives)
     })
   }
 
   setupWaveDisplay(game) {
     const waveDisplay = document.querySelector(".currentWave")
     autorun(() => {
-      waveDisplay.innerHTML = game.wave.number
+      waveDisplay.innerHTML = "Wave: " + game.wave.number
     })
   }
 

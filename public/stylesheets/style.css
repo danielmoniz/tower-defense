@@ -9,17 +9,37 @@ a {
 
 .remainingCredits {
   display: inline-block;
-  width: 100px;
+  width: 120px;
 }
 
 .remainingLives {
   display: inline-block;
-  width: 100px;
+  width: 120px;
 }
 
 .currentWave {
   display: inline-block;
-  width: 100px;
+  width: 120px;
+}
+
+.info-panel {
+  display: inline-block;
+  width: 200px;
+  height: 300px;
+  background-color: #cccccc;
+  vertical-align: top;
+  border: 2px solid black;
+  border-left-style: none;
+}
+
+.info-panel-header {
+  font: bold 12pt Arial;
+  padding: 5px;
+}
+
+.info-panel-data {
+  font: 10pt Arial;
+  padding: 5px;
 }
 
 .disabled {
