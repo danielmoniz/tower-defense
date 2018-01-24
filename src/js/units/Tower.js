@@ -102,13 +102,14 @@ export default class Tower extends Unit {
     this.selectTarget()
     if (!this.target) { return }
 
-    var targetValue = this.target.killValue.credits
+    var targetValue = this.target.killValue
     const killedUnit = this.target.takeDamage(this.attackPower)
     if (killedUnit) {
       // console.log('Killed enemy!');
       // do cool stuff! Add experience? Make money? Mow the lawn?
-      this.game.profit(targetValue * this.killProfitMultiplier)
+      this.game.profit(targetValue.credits * this.killProfitMultiplier)
       this.kills++
+      this.xp += targetValue.xp
       return
     }
     return this.target
