@@ -96,7 +96,8 @@ export default class BoardRenderer {
         "Reload time: " + entity.reloadTime + "ms" + "<br>" +
         "Profit multiplier: "  + entity.killProfitMultiplier + "<br>" +
         "Kills: " + entity.kills + "<br>" +
-        "Experience: " + entity.xp
+        "Experience: " + entity.xp + "<br>" +
+        "Level: " + entity.level
   }
 
   setupGameStateDisplay(game) {

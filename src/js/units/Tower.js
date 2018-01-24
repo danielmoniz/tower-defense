@@ -24,6 +24,7 @@ export default class Tower extends Unit {
   // tower performance data
   @observable kills = 0
   @observable xp = 0
+  @observable level = 1
 
   // default size: 1 tile
   @observable width = GRID_SIZE
@@ -107,9 +108,11 @@ export default class Tower extends Unit {
     if (killedUnit) {
       // console.log('Killed enemy!');
       // do cool stuff! Add experience? Make money? Mow the lawn?
+      // @TODO move these state changes into separate method
       this.game.profit(targetValue.credits * this.killProfitMultiplier)
       this.kills++
       this.xp += targetValue.xp
+      this.level = Math.floor(1 + Math.log(1 + 0.0015 * this.xp) / Math.log(1.15))
       return
     }
     return this.target
