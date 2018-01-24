@@ -82,7 +82,7 @@ export default class BoardRenderer {
   displayEnemy(infoPanelData, entity) {
     infoPanelData.innerHTML = "Speed: " + entity.speed + "<br>" +
         "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br>" +
-        "Value: $" + entity.killValue + "<br>" +
+        "Value: $" + entity.killValue.credits + ", " + entity.killValue.xp + "xp<br>" +
         "Size: " + entity.width + "x" + entity.height
   }
 

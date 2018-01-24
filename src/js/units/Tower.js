@@ -23,7 +23,7 @@ export default class Tower extends Unit {
 
   // tower performance data
   @observable kills = 0
-  @observable experience = 0
+  @observable xp = 0
 
   // default size: 1 tile
   @observable width = GRID_SIZE
@@ -102,7 +102,7 @@ export default class Tower extends Unit {
     this.selectTarget()
     if (!this.target) { return }
 
-    var targetValue = this.target.killValue
+    var targetValue = this.target.killValue.credits
     const killedUnit = this.target.takeDamage(this.attackPower)
     if (killedUnit) {
       // console.log('Killed enemy!');
