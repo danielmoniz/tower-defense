@@ -56,10 +56,6 @@ function derender(unitElement) {
 }
 
 function renderPosition(unit, unitElement) {
-  unitElement.x = unit.xFloor + GRID_SIZE / 2
-  unitElement.y = unit.yFloor + GRID_SIZE / 2
-  // unitElement.x = unit.xFloor + unit.width / 2
-  // unitElement.y = unit.yFloor + unit.height / 2
-  // unitElement.x = unit.xFloor + GRID_SIZE
-  // unitElement.y = unit.yFloor + GRID_SIZE
+  unitElement.x = unit.xFloor
+  unitElement.y = unit.yFloor
 }
