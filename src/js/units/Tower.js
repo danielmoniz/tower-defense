@@ -21,6 +21,9 @@ export default class Tower extends Unit {
   @observable clipSize
   @observable reloadTime
 
+  // tower performance data
+  @observable kills = 0
+  @observable experience = 0
 
   // default size: 1 tile
   @observable width = GRID_SIZE
@@ -105,6 +108,7 @@ export default class Tower extends Unit {
       // console.log('Killed enemy!');
       // do cool stuff! Add experience? Make money? Mow the lawn?
       this.game.profit(targetValue * this.killProfitMultiplier)
+      this.kills++
       return
     }
     return this.target

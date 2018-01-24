@@ -80,21 +80,22 @@ export default class BoardRenderer {
 
   // @TODO Consider using Vue.js for templating here
   displayEnemy(infoPanelData, entity) {
-    infoPanelData.innerHTML = "Speed: " + entity.speed + "<br />" +
-        "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br />" +
-        "Value: $" + entity.killValue + "<br />" +
+    infoPanelData.innerHTML = "Speed: " + entity.speed + "<br>" +
+        "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br>" +
+        "Value: $" + entity.killValue + "<br>" +
         "Size: " + entity.width + "x" + entity.height
   }
 
   // @TODO Consider using Vue.js for templating here
   displayTower(infoPanelData, entity) {
-    infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br />" +
-        "Damage: " + entity.attackPower + "<br />" +
-        "Range: " + entity.range + "<br />" +
-        "Clip size: " + entity.clipSize + "<br />" +
-        "Firing time: " + entity.firingTime + "ms" + "<br />" +
-        "Reload time: " + entity.reloadTime + "ms" + "<br />" +
-        "Profit multiplier: "  + entity.killProfitMultiplier
+    infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br>" +
+        "Damage: " + entity.attackPower + "<br>" +
+        "Range: " + entity.range + "<br>" +
+        "Clip size: " + entity.clipSize + "<br>" +
+        "Firing time: " + entity.firingTime + "ms" + "<br>" +
+        "Reload time: " + entity.reloadTime + "ms" + "<br>" +
+        "Profit multiplier: "  + entity.killProfitMultiplier + "<br>" +
+        "Kills: " + entity.kills
   }
 
   setupGameStateDisplay(game) {
