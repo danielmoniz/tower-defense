@@ -13,7 +13,7 @@ export default class Tank extends Enemy {
         maxHitPoints: 50,
         killValue: {
           credits: 5,
-          xp: 20,
+          xp: 10,
         },
       },
       fast: {
@@ -23,7 +23,7 @@ export default class Tank extends Enemy {
         maxHitPoints: 40,
         killValue: {
           credits: 7,
-          xp: 20,
+          xp: 10,
         },
       },
     }
