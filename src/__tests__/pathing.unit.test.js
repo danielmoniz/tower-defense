@@ -5,8 +5,8 @@ import { GRID_SIZE } from 'appConstants'
 describe('Pathing', function() {
 
   it('should calculate whether a coordinate is valid', () => {
-    const game = createGame(5, 5)
-    const pathHelper = new Pathing(game, 1)
+    const dimensions = getDimensions(5, 5)
+    const pathHelper = new Pathing(dimensions, 1)
     expect(pathHelper.weights.coordinateIsValid(0, 0)).toBe(true)
 
     expect(pathHelper.weights.coordinateIsValid(-1, 0)).toBe(false)
@@ -19,8 +19,8 @@ describe('Pathing', function() {
   })
 
   it('should produce an empty weights grid (all ones) by default', () => {
-    const game = createGame(5, 5)
-    const pathHelper = new Pathing(game, 1)
+    const dimensions = getDimensions(5, 5)
+    const pathHelper = new Pathing(dimensions, 1)
 
     pathHelper.weights.values.forEach((columnOfWeights) => {
       columnOfWeights.forEach((weight) => {
@@ -30,8 +30,8 @@ describe('Pathing', function() {
   })
 
   it('should generate correct path lengths for empty weights map', () => {
-    const game = createGame(5, 5)
-    const pathHelper = new Pathing(game, 1)
+    const dimensions = getDimensions(5, 5)
+    const pathHelper = new Pathing(dimensions, 1)
 
     expect(pathHelper.pathLengths.at(4, 4)).toBe(0) // end point
 
@@ -48,8 +48,8 @@ describe('Pathing', function() {
   })
 
   it('should avoid impassable terrain', () => {
-    const game = createGame(2, 5)
-    const pathHelper = new Pathing(game, 1)
+    const dimensions = getDimensions(2, 5)
+    const pathHelper = new Pathing(dimensions, 1)
     pathHelper.weights.set(0, 1, 0)
     pathHelper.weights.set(1, 3, 0)
     pathHelper.compute()
@@ -68,8 +68,8 @@ describe('Pathing', function() {
 
   describe('getDirection', function() {
     it.skip('should provide the next target node given a location with valid x and y', () => {
-      const game = createGame(2, 5)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(2, 5)
+      const pathHelper = new Pathing(dimensions, 1)
       pathHelper.weights.set(0, 1, 0)
       pathHelper.weights.set(1, 3, 0)
       pathHelper.compute()
@@ -105,8 +105,8 @@ describe('Pathing', function() {
     })
 
     it.skip('should provide the next target node given a location with non-integer coordinates', () => {
-      const game = createGame(2, 5)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(2, 5)
+      const pathHelper = new Pathing(dimensions, 1)
       pathHelper.weights.set(0, 1, 0)
       pathHelper.weights.set(1, 3, 0)
       pathHelper.compute()
@@ -127,8 +127,8 @@ describe('Pathing', function() {
 
     it.skip('should provide the next target node given a location given a larger grid size', () => {
       const tileSize = 10
-      const game = createGame(2 * tileSize, 5 * tileSize)
-      const pathHelper = new Pathing(game, tileSize)
+      const dimensions = getDimensions(2 * tileSize, 5 * tileSize)
+      const pathHelper = new Pathing(dimensions, tileSize)
       pathHelper.weights.set(0, 1, 0)
       pathHelper.weights.set(1, 3, 0)
       pathHelper.compute()
@@ -164,8 +164,8 @@ describe('Pathing', function() {
     })
 
     it('should suggest current location when at target location', () => {
-      const game = createGame(2, 2)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(2, 2)
+      const pathHelper = new Pathing(dimensions, 1)
       pathHelper.compute()
 
       expect(pathHelper.getDirection(1, 1)).toMatchObject({
@@ -179,8 +179,8 @@ describe('Pathing', function() {
   describe('addObstacle', function() {
 
     it('should return true if an obstacle can be added', () => {
-      const game = createGame(10, 10)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 1)
 
       const success = pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
 
@@ -188,8 +188,8 @@ describe('Pathing', function() {
     })
 
     it('should update weights grid with a newly added obstacle', () => {
-      const game = createGame(5, 5)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(5, 5)
+      const pathHelper = new Pathing(dimensions, 1)
 
       pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
 
@@ -207,8 +207,8 @@ describe('Pathing', function() {
     })
 
     it('should update pathLengths grid to account for a new obstacle', () => {
-        const game = createGame(5, 5)
-        const pathHelper = new Pathing(game, 1)
+        const dimensions = getDimensions(5, 5)
+        const pathHelper = new Pathing(dimensions, 1)
 
         pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
 
@@ -231,8 +231,8 @@ describe('Pathing', function() {
     })
 
     it('should update pathLengths as a maze to account for multiple obstacles', () => {
-      const game = createGame(2, 5)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(2, 5)
+      const pathHelper = new Pathing(dimensions, 1)
 
       pathHelper.addObstacle({ x: 0, y: 1}, 1, 1)
       pathHelper.addObstacle({ x: 1, y: 3}, 1, 1)
@@ -250,16 +250,16 @@ describe('Pathing', function() {
     })
 
     it('should return false if a single obstacle blocks the goal', () => {
-      const game = createGame(2, 2)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(2, 2)
+      const pathHelper = new Pathing(dimensions, 1)
 
       const success = pathHelper.addObstacle({x: 1, y: 1}, 1, 1)
       expect(success).toBe(false)
     })
 
     it('should return false if a set of obstacles wall off a tile from the goal', () => {
-      const game = createGame(3, 3)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(3, 3)
+      const pathHelper = new Pathing(dimensions, 1)
 
       pathHelper.addObstacle({x: 0, y: 1}, 1, 1)
       pathHelper.addObstacle({x: 1, y: 1}, 1, 1)
@@ -268,8 +268,8 @@ describe('Pathing', function() {
     })
 
     it('should not update map weights if an obstacle blocks the goal', () => {
-      const game = createGame(2, 2)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(2, 2)
+      const pathHelper = new Pathing(dimensions, 1)
 
       expect(pathHelper.weights.at(1, 1)).toBe(1)
       pathHelper.addObstacle({x: 1, y: 1}, 1, 1)
@@ -277,8 +277,8 @@ describe('Pathing', function() {
     })
 
     it('should not update map pathLengths if an obstacle blocks the goal', () => {
-      const game = createGame(2, 2)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(2, 2)
+      const pathHelper = new Pathing(dimensions, 1)
       pathHelper.compute()
 
       expect(pathHelper.pathLengths.at(0, 0)).toBe(2)
@@ -291,8 +291,8 @@ describe('Pathing', function() {
   describe('isAreaFree', function() {
 
     it('should return true if an area does not overlap an existing obstacle', () => {
-      const game = createGame(10, 10)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 1)
 
       pathHelper.addObstacle({ x: 0, y: 0 }, 3, 2)
       const areaFree = pathHelper.isAreaFree({ x: 3, y: 0 }, 2, 2)
@@ -300,8 +300,8 @@ describe('Pathing', function() {
     })
 
     it('should return false if an area overlaps an existing obstacle', () => {
-      const game = createGame(10, 10)
-      const pathHelper = new Pathing(game, 1)
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 1)
 
       pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
       const areaFree = pathHelper.isAreaFree({ x: 2, y: 2 }, 2, 2)
@@ -309,8 +309,8 @@ describe('Pathing', function() {
     })
 
     it('should return true if an area does not overlap an existing obstacle on a map with larger tiles', () => {
-      const game = createGame(10, 10)
-      const pathHelper = new Pathing(game, 2)
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 2)
 
       pathHelper.addObstacle({ x: 0, y: 0 }, 4, 4)
       const areaFree = pathHelper.isAreaFree({ x: 4, y: 4 }, 4, 4)
@@ -318,8 +318,8 @@ describe('Pathing', function() {
     })
 
     it('should return false if an area overlaps an existing obstacle on a map with larger tiles', () => {
-      const game = createGame(10, 10)
-      const pathHelper = new Pathing(game, 2)
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 2)
 
       pathHelper.addObstacle({ x: 0, y: 0}, 4, 4)
       const areaFree = pathHelper.isAreaFree({ x: 3, y: 3 }, 4, 4)
@@ -331,10 +331,15 @@ describe('Pathing', function() {
   // @TODO should not provide a default direction (west?) if at end
 })
 
-function createGame(width, height) {
+function getDimensions(width, height) {
   return {
-    width: width,
-    height: height,
+    width,
+    height,
+  }
+}
+
+function getHelpers(width, height) {
+  return {
     getEntranceZone: () => {
       return {
         x: 0,
