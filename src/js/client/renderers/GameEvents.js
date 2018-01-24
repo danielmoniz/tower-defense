@@ -73,7 +73,7 @@ export default class GameEvents {
         // @FIXME @TODO This is not secure! Tower placement over the entrance needs to be handled
         // somewhere in Game so that the server can prevent it.
         gridX = Math.min(gridX, game.width - placingTower.width)
-        gridY = Math.min(gridY, game.height - placingTower.height + GRID_SIZE)
+        gridY = Math.min(gridY, game.height - placingTower.height)
 
 
         // shift left x and top y to refer to the centre of the unit again for placement (because placement is based on centre)

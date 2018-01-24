@@ -48,7 +48,9 @@ export default class Game {
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
 
-    this.pathHelper = new Pathing(this, GRID_SIZE, this.getEndGoal())
+    this.pathHelper = new Pathing(this, GRID_SIZE, this.getEndGoal(), {
+      getEntranceZone: this.getEntranceZone.bind(this),
+    })
     // this.pathHelper.setUpRandomMap()
 
     this.setUpWaveSpawner()
@@ -139,6 +141,7 @@ export default class Game {
         // @TODO Get terrain type and pass it to unit (for speed/cover purposes)
         const nextTargetLocation = this.pathHelper.getDirection(unit.x, unit.y)
         unit.act(nextTargetLocation)
+        // unit.jumpTo(0, 0)
       }
     }
   }

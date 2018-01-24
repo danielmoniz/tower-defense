@@ -3,8 +3,9 @@ import WeightsGrid from './WeightsGrid'
 import PathsGrid from './PathsGrid'
 
 export default class Pathing {
-  constructor(game, grid_size, endGoal) {
-    this.game = game
+  constructor(dimensions, grid_size, endGoal, helpers) {
+    this.dimensions = dimensions
+    this.helpers = helpers
     this.GRID_SIZE = grid_size
     this.calculateGridDimensions()
 
@@ -43,6 +44,7 @@ export default class Pathing {
     if (!allowed) { return false }
 
     this.weights.setValues(newWeights.copyValues())
+    console.log(this.weights);
     this.pathLengths.setValues(newPathLengths.copyValues())
 
     return true
@@ -67,7 +69,7 @@ export default class Pathing {
   }
 
   obstacleOverlapsEntrance(location, width, height) {
-    const entranceZone = this.game.getEntranceZone()
+    const entranceZone = this.helpers.getEntranceZone()
 
     if (location.x < entranceZone.x + entranceZone.width && location.x + width > entranceZone.x
       && location.y < entranceZone.y + entranceZone.height && location.y + height > entranceZone.y) {
@@ -194,8 +196,8 @@ export default class Pathing {
   }
 
   calculateGridDimensions() {
-    this.tilesWide = this.convertToGridValue(this.game.width)
-    this.tilesHigh = this.convertToGridValue(this.game.height)
+    this.tilesWide = this.convertToGridValue(this.dimensions.width)
+    this.tilesHigh = this.convertToGridValue(this.dimensions.height)
   }
 
   calculateGridLocation(location) {
