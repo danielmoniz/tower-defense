@@ -119,6 +119,9 @@ class ClientGame extends Game {
   }
 
   @action selectEntity(entity) {
+    if (this.placingTower) {
+      return
+    }
     this.deselectEntity()
     entity.select()
     this.selectedEntity = entity
