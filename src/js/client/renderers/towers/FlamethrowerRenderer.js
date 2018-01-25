@@ -6,10 +6,29 @@ import TowerRenderer from './TowerRenderer'
 
 export default class FlamethrowerRenderer extends TowerRenderer {
 
+  constructor(...args) {
+    super(...args)
+
+    this.towerBaseOptions = {
+      color: 0xffd8c4,
+      lineStyle: { width: 2, color: 0x000000, alpha: 1, },
+    }
+  }
+
+  getGunOptions(unit) {
+    return {
+      color: 0x8c847a,
+      lineStyle: { width: 1, color: 0x000000, alpha: 1, },
+      gunHeight: 8,
+      gunLength: this.getGunLength(unit),
+    }
+  }
+
   startRender(unit, board) {
     const circleRadius = unit.width / 2
     const gunHeight = 8
     const gunLength = unit.width * 0.6
+    const gunOptions = this.getGunOptions(unit)
 
     const backgroundOptions = {
       backgroundColor: 0xCCCCCC,
@@ -20,10 +39,6 @@ export default class FlamethrowerRenderer extends TowerRenderer {
       color: 0xffd8c4,
       lineStyle: { width: 2, color: 0x000000, alpha: 1, },
     }
-    const gunOptions = {
-      color: 0x8c847a,
-      lineStyle: { width: 1, color: 0x000000, alpha: 1, },
-    }
     const maxRangeOptions = {
       color: 0x40ef4c,
       alpha: 0.2,
@@ -33,8 +48,9 @@ export default class FlamethrowerRenderer extends TowerRenderer {
     const { container, unitContainer } = this.getContainer(unit, board)
     const { disableBackground, background } = this.setBackground(unit, unitContainer, backgroundOptions)
     this.setTowerBase(unitContainer, circleRadius, towerBaseOptions)
-    const gunContainer = this.setGun(unit, unitContainer, gunHeight, gunLength, gunOptions)
-    const maxRange = this.setMaxRange(unit, container, circleRadius, maxRangeOptions)
+    const gunContainer = this.setGun(unit, unitContainer, gunOptions)
+    const maxRange = this.setMaxRange(container)
+    this.drawMaxRange(maxRange, unit, circleRadius)
     board.app.stage.addChild(container)
 
     this.setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange)
