@@ -121,7 +121,7 @@ export default class TowerRenderer extends UnitRenderer {
     maxRange.beginFill(options.color)
     maxRange.lineStyle(options.lineStyle.width, options.lineStyle.color,
       options.lineStyle.alpha)
-    maxRange.drawCircle(circleRadius, circleRadius, unit.range)
+    maxRange.drawCircle(circleRadius, circleRadius, unit.range.current)
     maxRange.endFill()
     maxRange.alpha = options.alpha
     container.addChildAt(maxRange, 0) // add to overall container, not to unit

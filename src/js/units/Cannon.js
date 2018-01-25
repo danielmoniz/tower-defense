@@ -12,8 +12,14 @@ export default class Cannon extends Tower {
 
     this.name = 'Cannon'
 
-    this.attackPower = 11
-    this.range = 300
+    this.attackPower = {
+      base: 11,
+      current: 11,
+    }
+    this.range = {
+      base: 300,
+      current: 300,
+    }
     this.purchaseCost = 25
     this.firingTime = 0
     this.clipSize = 1
