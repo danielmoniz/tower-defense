@@ -133,7 +133,7 @@ class ClientGame extends Game {
 
     this.enemies.add(enemy)
     const enemyTarget = this.getEnemyGoal(enemy)
-    enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+    enemy.setMoveTarget()
 
     this.renderer.queueRender(enemy)
     return enemy
