@@ -178,6 +178,10 @@ export default class TowerRenderer extends UnitRenderer {
     })
   }
 
+  getGunLength(unit) {
+    return unit.width * 0.6
+  }
+
 }
 
 function displayRange(unit, maxRange) {
