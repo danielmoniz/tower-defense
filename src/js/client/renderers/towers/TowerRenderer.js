@@ -22,6 +22,43 @@ export default class TowerRenderer extends UnitRenderer {
   }
 
   startRender(unit, board) {
+    const circleRadius = unit.width / 2
+    const gunOptions = this.getGunOptions(unit) // requires getGunOptions() to be defined in child class
+
+    const { container, unitContainer } = this.getContainer(unit, board)
+    const { disableBackground, background } = this.setBackground(unit, unitContainer, this.backgroundOptions)
+    this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
+    const gunContainer = this.setGun(unit, unitContainer, gunOptions)
+    const maxRange = this.setMaxRange(container)
+    board.app.stage.addChild(container)
+
+
+    autorun(() => {
+      disable(unit, background, disableBackground, maxRange)
+    })
+
+    autorun(() => {
+      rotateToTarget(unit, gunContainer)
+    })
+
+    autorun(() => {
+      this.drawMaxRange(maxRange, unit, circleRadius)
+      displayRange(unit, maxRange)
+    })
+
+    autorun(() => {
+      ghostUnit(unit, unitContainer)
+    })
+
+
+
+    // this.setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange)
+
+    return container
+
+
+
+    /*
     // @TODO do everything that is shared between all towers
     const { container, unitContainer } = this.getContainer(unit, board)
 
@@ -42,6 +79,7 @@ export default class TowerRenderer extends UnitRenderer {
 
     // return artifacts that might be useful
     return { container, unitContainer, maxRange }
+    */
   }
 
   getContainer(unit, board) {
@@ -83,7 +121,7 @@ export default class TowerRenderer extends UnitRenderer {
     unitContainer.addChild(towerBase)
   }
 
-  setGun(unit, unitContainer, gunHeight, gunLength, options) {
+  setGun(unit, unitContainer, options) {
     const gunContainer = new PIXI.Container()
     gunContainer.height = unit.height
     gunContainer.width = unit.width
@@ -96,22 +134,22 @@ export default class TowerRenderer extends UnitRenderer {
     gun.beginFill(options.color)
     gun.lineStyle(options.lineStyle.width, options.lineStyle.color,
       options.lineStyle.alpha)
-    gun.drawRect(0, 0, gunLength, gunHeight)
+    gun.drawRect(0, 0, options.gunLength, options.gunHeight)
     gun.endFill()
-    gun.pivot.y = gunHeight / 2
+    gun.pivot.y = options.gunHeight / 2
     gunContainer.addChild(gun)
 
     return gunContainer
   }
 
-  setMaxRange(unit, container, circleRadius) {
+  setMaxRange(container) {
     const maxRange = new PIXI.Graphics()
-    this.drawMaxRange(maxRange, unit, circleRadius)
     container.addChildAt(maxRange, 0) // add to bottom of container
     return maxRange
   }
 
   drawMaxRange(graphics, unit, circleRadius) {
+    console.log("Redrawing max range circle");
     const options = this.maxRangeOptions
 
     graphics.clear()
