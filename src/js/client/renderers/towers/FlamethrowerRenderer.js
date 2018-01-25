@@ -28,24 +28,9 @@ export default class FlamethrowerRenderer extends TowerRenderer {
     const circleRadius = unit.width / 2
     const gunOptions = this.getGunOptions(unit)
 
-    const backgroundOptions = {
-      backgroundColor: 0xCCCCCC,
-      disableBackgroundColor: 0xFF4444,
-      lineStyle: { width: 1, color: 0x000000, alpha: 0.5, },
-    }
-    const towerBaseOptions = {
-      color: 0xffd8c4,
-      lineStyle: { width: 2, color: 0x000000, alpha: 1, },
-    }
-    const maxRangeOptions = {
-      color: 0x40ef4c,
-      alpha: 0.2,
-      lineStyle: { width: 3, color: 0x000000, alpha: 1, },
-    }
-
     const { container, unitContainer } = this.getContainer(unit, board)
-    const { disableBackground, background } = this.setBackground(unit, unitContainer, backgroundOptions)
-    this.setTowerBase(unitContainer, circleRadius, towerBaseOptions)
+    const { disableBackground, background } = this.setBackground(unit, unitContainer, this.backgroundOptions)
+    this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
     const gunContainer = this.setGun(unit, unitContainer, gunOptions)
     const maxRange = this.setMaxRange(container)
     this.drawMaxRange(maxRange, unit, circleRadius)
