@@ -20,7 +20,7 @@ export default class MachineGunRenderer extends TowerRenderer {
       color: 0x444444,
       lineStyle: { width: 1, color: 0x000000, alpha: 1, },
       gunHeight: 12,
-      gunLength: unit.width * 0.6,
+      gunLength: this.getGunLength(unit),
     }
   }
 

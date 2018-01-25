@@ -25,7 +25,7 @@ export default class CannonRenderer extends TowerRenderer {
       color: 0x666666,
       lineStyle: { width: 1, color: 0x000000, alpha: 1, },
       gunHeight: 8,
-      gunLength: unit.width * 0.6,
+      gunLength: this.getGunLength(unit),
     }
   }
 }
