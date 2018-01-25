@@ -30,6 +30,8 @@ export default class TowerRenderer extends UnitRenderer {
     this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
     const gunContainer = this.setGun(unit, unitContainer, gunOptions)
     const maxRange = this.setMaxRange(container)
+
+    // @TODO This should probably be done in UnitRenderer
     board.app.stage.addChild(container)
 
 
@@ -50,36 +52,7 @@ export default class TowerRenderer extends UnitRenderer {
       ghostUnit(unit, unitContainer)
     })
 
-
-
-    // this.setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange)
-
     return { container, unitContainer, maxRange }
-
-
-
-    /*
-    // @TODO do everything that is shared between all towers
-    const { container, unitContainer } = this.getContainer(unit, board)
-
-    const circleRadius = unit.width / 2
-
-    // set autorun for draw/redraw of maxRange
-
-    const maxRange = this.setMaxRange(unit, container, circleRadius)
-
-    // set autorun for turn turret
-
-    // set autorun for disable
-
-    // set autorun for ghosting
-
-    // render to board
-    board.app.stage.addChild(container)
-
-    // return artifacts that might be useful
-    return { container, unitContainer, maxRange }
-    */
   }
 
   getContainer(unit, board) {
@@ -158,24 +131,6 @@ export default class TowerRenderer extends UnitRenderer {
     graphics.drawCircle(circleRadius, circleRadius, unit.range.current)
     graphics.endFill()
     graphics.alpha = options.alpha
-  }
-
-  setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange) {
-    autorun(() => {
-      disable(unit, background, disableBackground, maxRange)
-    })
-
-    autorun(() => {
-      rotateToTarget(unit, gunContainer)
-    })
-
-    autorun(() => {
-      displayRange(unit, maxRange)
-    })
-
-    autorun(() => {
-      ghostUnit(unit, unitContainer)
-    })
   }
 
   getGunLength(unit) {
