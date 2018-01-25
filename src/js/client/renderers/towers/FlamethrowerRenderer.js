@@ -26,8 +26,6 @@ export default class FlamethrowerRenderer extends TowerRenderer {
 
   startRender(unit, board) {
     const circleRadius = unit.width / 2
-    const gunHeight = 8
-    const gunLength = unit.width * 0.6
     const gunOptions = this.getGunOptions(unit)
 
     const backgroundOptions = {
@@ -57,7 +55,7 @@ export default class FlamethrowerRenderer extends TowerRenderer {
 
     let flameEmitter = this.getFlameEmitter(container, unit, 0, 0)
     flameEmitter.updateOwnerPos(unit.width / 2, unit.height / 2)
-    flameEmitter.updateSpawnPos(gunLength, gunHeight / 2)
+    flameEmitter.updateSpawnPos(gunOptions.gunLength, gunOptions.gunHeight / 2)
 
     this.registerEmitterCallback(() => {
       flameEmitter.update(0.005) // higher numbers mean more/faster fire
