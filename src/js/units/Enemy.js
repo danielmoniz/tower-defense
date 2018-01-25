@@ -28,22 +28,13 @@ class Enemy extends Unit {
    * It should NOT actually trigger the unit to move if stopped.
    * If the unit is already moving, it ensures they continue in the new direction.
    */
-  @action setMoveTarget(finalX, finalY) {
+  @action setMoveTarget() {
     this.act = (nextLocation) => {
       this.moveXAndY(nextLocation.x, nextLocation.y)
-      const reachedGoal = this.hasReachedGoal(finalX, finalY)
-      if (reachedGoal) {
-        this.complete() // assumes enemies only get one goal
-      }
     }
     if (this.movementId) { // if already moving, continue in a new direction
       this.startMovement()
     }
-  }
-
-  hasReachedGoal(finalX, finalY) {
-    // use approximation to stop enemy from bouncing around target
-    return Math.abs(this.x - finalX) < 3 && Math.abs(this.y - finalY) < 3
   }
 
   /*

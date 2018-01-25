@@ -129,7 +129,10 @@ export default class Game {
   commandEnemies(unitManager) {
     for (let i = unitManager.all.length - 1; i >= 0; i--) {
       let unit = unitManager.all[i]
-      if (unit.completed) { // assume it also has `removeMe = true`
+      const shiftedExit = this.getTileCoordinate(this.getEndGoal())
+      const distanceFromExit = unit.getDistanceToPoint(shiftedExit)
+      if (distanceFromExit < 3) { // assume it also has `removeMe = true`
+        unit.complete()
         const livesLeft = this.loseLife()
         console.log(`Unit reached goal! Remaining lives: ${livesLeft}`);
       }
@@ -144,7 +147,7 @@ export default class Game {
           x: nextTargetLocation.x + Math.floor(GRID_SIZE / 2),
           y: nextTargetLocation.y + Math.floor(GRID_SIZE / 2),
         }
-        console.log(adjustedTargetLocation);
+
         unit.act(adjustedTargetLocation)
         // unit.jumpTo(0, 0)
       }
@@ -196,7 +199,7 @@ export default class Game {
     newEnemies.forEach((enemy, index) => {
       this.placeEnemy(enemy, newEnemies.length, index)
       const enemyTarget = this.getEnemyGoal(enemy)
-      enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+      enemy.setMoveTarget()
     })
   }
 
@@ -265,6 +268,17 @@ export default class Game {
     return {
       x: 0,
       y: halfHeight - (halfHeight % GRID_SIZE),
+    }
+  }
+
+  /*
+   * Returns a coordinate, but shifts down-right by the distance of half a tile.
+   * Very naive. Maybe be useful to make this method smarter.
+   */
+  getTileCoordinate(coordinate) {
+    return {
+      x: coordinate.x + Math.floor(GRID_SIZE / 2),
+      y: coordinate.y + Math.floor(GRID_SIZE / 2),
     }
   }
 

@@ -9,6 +9,7 @@ export default class Pathing {
     this.GRID_SIZE = grid_size
     this.calculateGridDimensions()
 
+    this.actualEndGoal = endGoal
     this.endGoal = this.setEndGoal(endGoal)
     this.objectives = [endGoal]
 
@@ -123,7 +124,7 @@ export default class Pathing {
     // @TODO What to do if on final space? ie. value of current value is 0?
     const currentValue = this.pathLengths.directionAt(x, y)
     if (currentValue === 0) {
-      return this.endGoal
+      return this.actualEndGoal
     }
 
     const north = this.pathLengths.directionAt(x, y - 1)
@@ -176,19 +177,6 @@ export default class Pathing {
 
     // pick random direction out of smallest options (might be multiple)
     const finalDirection = directions[randomIndex]
-
-    // console.log(this.convertToRealLocation(finalDirection.location));
-    // console.log('---');
-    // console.log(finalDirection.direction, gridLocation, finalDirection.location);
-
-    // Shift the suggested location either down or right
-    // This is because tiles are measured from their top left corner
-    // if (finalDirection.south) {
-    //   finalDirection.location.y += 1
-    // }
-    // if (finalDirection.east) {
-    //   finalDirection.location.x += 1
-    // }
     return this.convertToRealLocation(finalDirection.location)
   }
 
