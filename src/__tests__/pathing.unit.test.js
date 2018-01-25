@@ -164,8 +164,9 @@ describe('Pathing', function() {
     })
 
     it('should suggest current location when at target location', () => {
+      const endGoal = { x: 1, y: 1 }
       const dimensions = getDimensions(2, 2)
-      const pathHelper = new Pathing(dimensions, 1)
+      const pathHelper = new Pathing(dimensions, 1, endGoal)
       pathHelper.compute()
 
       expect(pathHelper.getDirection(1, 1)).toMatchObject({
