@@ -109,8 +109,8 @@ export default class Game {
   gameLogic() {
     this.updateWave()
     // @TODO Pass the enemies or towers unit manager
-    this.commandUnits(this.enemies)
-    this.commandUnits(this.towers)
+    this.commandEnemies(this.enemies)
+    this.commandTowers(this.towers)
     if (this.lives <= 0) {
       this.endGame()
       this.actions.destroyGame() // could possibly pass scores/end-state here
@@ -122,11 +122,11 @@ export default class Game {
   }
 
   /*
-   * Causes units act. Removes them when needed.
+   * Causes enemies to act. Removes them when needed.
    * Detects when a unit has completed its objective and subtracts a life.
-   * Accepts a UnitManager object to command & manipulate various unit types.
+   * Accepts a UnitManager object containing the enemies.
    */
-  commandUnits(unitManager) {
+  commandEnemies(unitManager) {
     for (let i = unitManager.all.length - 1; i >= 0; i--) {
       let unit = unitManager.all[i]
       if (unit.completed) { // assume it also has `removeMe = true`
@@ -140,8 +140,30 @@ export default class Game {
       if (!unit.disabled && unit.act) {
         // @TODO Get terrain type and pass it to unit (for speed/cover purposes)
         const nextTargetLocation = this.pathHelper.getDirection(unit.x, unit.y)
-        unit.act(nextTargetLocation)
+        const adjustedTargetLocation = {
+          x: nextTargetLocation.x + Math.floor(GRID_SIZE / 2),
+          y: nextTargetLocation.y + Math.floor(GRID_SIZE / 2),
+        }
+        console.log(adjustedTargetLocation);
+        unit.act(adjustedTargetLocation)
         // unit.jumpTo(0, 0)
+      }
+    }
+  }
+
+  /*
+   * Causes towers to act. Removes them when needed.
+   * Accepts a UnitManager object containing the towers.
+   */
+  commandTowers(unitManager) {
+    for (let i = unitManager.all.length - 1; i >= 0; i--) {
+      let unit = unitManager.all[i]
+      if (unit.removeMe) {
+        unitManager.remove(i)
+        continue
+      }
+      if (!unit.disabled && unit.act) {
+        unit.act()
       }
     }
   }
