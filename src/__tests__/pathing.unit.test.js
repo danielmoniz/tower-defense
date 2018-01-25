@@ -328,6 +328,51 @@ describe('Pathing', function() {
 
   })
 
+  describe('calculateGridLocation', function() {
+    it('should convert 0,0 to grid location 0,0', () => {
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 2)
+
+      const result = pathHelper.calculateGridLocation({ x: 0, y: 0 })
+      expect(result).toMatchObject({ x: 0, y: 0 })
+    })
+
+    it('should convert location on the map to a matching grid location', () => {
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 2)
+
+      const result = pathHelper.calculateGridLocation({ x: 4, y: 4 })
+      expect(result).toMatchObject({ x: 2, y: 2 })
+    })
+
+    it('should convert location at far edge of map to a lesser grid location', () => {
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 2)
+
+      const result = pathHelper.calculateGridLocation({ x: 10, y: 10 })
+      expect(result).toMatchObject({ x: 4, y: 4 })
+    })
+
+    it('should convert location inside a map tile to the corresponding grid location', () => {
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 2)
+
+      const result = pathHelper.calculateGridLocation({ x: 2.357, y: 5.887 })
+      expect(result).toMatchObject({ x: 1, y: 2 })
+    })
+
+    it('should convert off map coordinates to the closest grid location', () => {
+      const dimensions = getDimensions(10, 10)
+      const pathHelper = new Pathing(dimensions, 2)
+
+      let result = pathHelper.calculateGridLocation({ x: 15, y: 6 })
+      expect(result).toMatchObject({ x: 4, y: 3 })
+
+      result = pathHelper.calculateGridLocation({ x: 3, y: 14 })
+      expect(result).toMatchObject({ x: 1, y: 4 })
+    })
+  })
+
   // @TODO should not provide a default direction (west?) if at end
 })
 
