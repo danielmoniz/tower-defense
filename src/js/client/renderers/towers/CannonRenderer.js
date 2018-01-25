@@ -17,21 +17,7 @@ export default class CannonRenderer extends TowerRenderer {
   }
 
   startRender(unit, board) {
-    // super.startRender(unit, board)
-
-    const circleRadius = unit.width / 2
-    const gunOptions = this.getGunOptions(unit)
-
-    const { container, unitContainer } = this.getContainer(unit, board)
-    const { disableBackground, background } = this.setBackground(unit, unitContainer, this.backgroundOptions)
-    this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
-    const gunContainer = this.setGun(unit, unitContainer, gunOptions.gunHeight, gunOptions.gunLength, gunOptions)
-    const maxRange = this.setMaxRange(unit, container, circleRadius)
-    board.app.stage.addChild(container)
-
-    this.setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange)
-
-    return container
+    super.startRender(unit, board)
   }
 
   getGunOptions(unit) {
