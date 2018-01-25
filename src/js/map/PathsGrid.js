@@ -54,7 +54,7 @@ export default class PathsGrid extends Grid {
       this.addMultipleToQueue(queue, coordinates, currentPos, weights)
     }
 
-    console.log('Time to calculate path lengths:', new Date() - start)
+    // console.log('Time to calculate path lengths:', new Date() - start)
     return this.isMapValid() // need to know if map is blocked
   }
 

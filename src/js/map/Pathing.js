@@ -44,8 +44,9 @@ export default class Pathing {
     if (!allowed) { return false }
 
     this.weights.setValues(newWeights.copyValues())
-    console.log(this.weights);
+    // console.log(this.weights);
     this.pathLengths.setValues(newPathLengths.copyValues())
+    // console.log(this.pathLengths);
 
     return true
   }
@@ -182,12 +183,12 @@ export default class Pathing {
 
     // Shift the suggested location either down or right
     // This is because tiles are measured from their top left corner
-    if (finalDirection.south) {
-      finalDirection.location.y += 1
-    }
-    if (finalDirection.east) {
-      finalDirection.location.x += 1
-    }
+    // if (finalDirection.south) {
+    //   finalDirection.location.y += 1
+    // }
+    // if (finalDirection.east) {
+    //   finalDirection.location.x += 1
+    // }
     return this.convertToRealLocation(finalDirection.location)
   }
 
@@ -200,13 +201,23 @@ export default class Pathing {
     this.tilesHigh = this.convertToGridValue(this.dimensions.height)
   }
 
+  /*
+   * Accepts a real location and converts it to a grid location.
+   * Note that it will not allow for values too large, and will instead round
+   * them down to the nearest tile.
+   */
   calculateGridLocation(location) {
+    let gridX = this.convertToGridValue(location.x)
+    if (gridX >= this.tilesWide) { gridX = this.tilesWide - 1 }
+
+    let gridY = this.convertToGridValue(location.y)
+    if (gridY >= this.tilesHigh) { gridY = this.tilesHigh - 1 }
+
     return {
-      x: this.convertToGridValue(location.x),
-      y: this.convertToGridValue(location.y),
+      x: gridX,
+      y: gridY,
     }
   }
-
 
   convertToRealLocation(gridLocation) {
     return {
