@@ -11,8 +11,8 @@ export default class BoardRenderer {
 
   setupGameBox(game) {
     this.app = new PIXI.Application({
-      width: game.width + GRID_SIZE,
-      height: game.height + GRID_SIZE,
+      width: game.width + GRID_SIZE, // extra width for entrance - still needed?
+      height: game.height,
       antialias: true,
       transparent: false,
       resolution: 1,
