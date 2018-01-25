@@ -149,7 +149,6 @@ export default class TowerRenderer extends UnitRenderer {
   }
 
   drawMaxRange(graphics, unit, circleRadius) {
-    console.log("Redrawing max range circle");
     const options = this.maxRangeOptions
 
     graphics.clear()
