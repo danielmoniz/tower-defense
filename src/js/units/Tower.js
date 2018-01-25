@@ -119,6 +119,13 @@ export default class Tower extends Unit {
   }
 
   @action checkLevel() {
+    /**
+     * Calculations based on 100xp for level 1 -> 2, each subsequent level
+     * requiring 1.15x the xp of the previous level (115, 132, etc.)
+     *
+     * Cumulative xp = (1st level xp) * (1 - (1+r) ^ (level - 1)) / (-r)
+     * Re-arranged to convert xp --> level, as below
+     */
     const currentLevel = this.Level
     this.level = Math.floor(1 + Math.log(1 + 0.0015 * this.xp) / Math.log(1.15))
     if (currentLevel !== this.level) {
