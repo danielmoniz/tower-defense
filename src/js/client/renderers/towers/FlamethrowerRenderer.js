@@ -25,18 +25,8 @@ export default class FlamethrowerRenderer extends TowerRenderer {
   }
 
   startRender(unit, board) {
-    const circleRadius = unit.width / 2
+    const { container, unitContainer } = super.startRender(unit, board)
     const gunOptions = this.getGunOptions(unit)
-
-    const { container, unitContainer } = this.getContainer(unit, board)
-    const { disableBackground, background } = this.setBackground(unit, unitContainer, this.backgroundOptions)
-    this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
-    const gunContainer = this.setGun(unit, unitContainer, gunOptions)
-    const maxRange = this.setMaxRange(container)
-    this.drawMaxRange(maxRange, unit, circleRadius)
-    board.app.stage.addChild(container)
-
-    this.setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange)
 
     let flameEmitter = this.getFlameEmitter(container, unit, 0, 0)
     flameEmitter.updateOwnerPos(unit.width / 2, unit.height / 2)

@@ -54,7 +54,7 @@ export default class TowerRenderer extends UnitRenderer {
 
     // this.setAutorun(unit, background, disableBackground, unitContainer, gunContainer, maxRange)
 
-    return container
+    return { container, unitContainer, maxRange }
 
 
 
