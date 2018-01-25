@@ -16,10 +16,6 @@ export default class CannonRenderer extends TowerRenderer {
 
   }
 
-  startRender(unit, board) {
-    super.startRender(unit, board)
-  }
-
   getGunOptions(unit) {
     return {
       color: 0x666666,
