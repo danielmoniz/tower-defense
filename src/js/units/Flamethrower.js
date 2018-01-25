@@ -14,8 +14,14 @@ export default class Flamethrower extends Tower {
 
     this.name = 'Flamethrower'
 
-    this.attackPower = 1
-    this.range = 200
+    this.attackPower = {
+      base: 1,
+      current: 1,
+    }
+    this.range = {
+      base: 200,
+      current: 200,
+    }
     this.firingTime = 0
     this.clipSize = 30
     this.reloadTime = 2000

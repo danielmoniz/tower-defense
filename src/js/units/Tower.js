@@ -104,7 +104,7 @@ export default class Tower extends Unit {
     if (!this.target) { return }
 
     var targetValue = this.target.killValue
-    const killedUnit = this.target.takeDamage(this.attackPower)
+    const killedUnit = this.target.takeDamage(this.attackPower.current)
     if (killedUnit) {
       // console.log('Killed enemy!');
       // do cool stuff! Add experience? Make money? Mow the lawn?
@@ -112,10 +112,23 @@ export default class Tower extends Unit {
       this.game.profit(targetValue.credits * this.killProfitMultiplier)
       this.kills++
       this.xp += targetValue.xp
-      this.level = Math.floor(1 + Math.log(1 + 0.0015 * this.xp) / Math.log(1.15))
+      this.checkLevel()
       return
     }
     return this.target
+  }
+
+  @action checkLevel() {
+    const currentLevel = this.Level
+    this.level = Math.floor(1 + Math.log(1 + 0.0015 * this.xp) / Math.log(1.15))
+    if (currentLevel !== this.level) {
+      this.updateStats()
+    }
+  }
+
+  @action updateStats() {
+    this.attackPower.current = this.attackPower.base * Math.pow(1.05, this.level - 1)
+    this.range.current = this.range.base * Math.pow(1.01, this.level - 1)
   }
 
   targetIsValid() {
@@ -125,7 +138,7 @@ export default class Tower extends Unit {
   }
 
   unitInRange(unit) {
-    return this.distanceToUnit(unit) < this.range
+    return this.distanceToUnit(unit) < this.range.current
   }
 
   findNearestEnemyInRange() {

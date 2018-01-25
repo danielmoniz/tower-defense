@@ -85,8 +85,8 @@ export default class BoardRenderer {
   // @TODO Consider using Vue.js for templating here
   displayTower(infoPanelData, entity) {
     infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br>" +
-        "Damage: " + entity.attackPower + "<br>" +
-        "Range: " + entity.range + "<br>" +
+        "Damage: " + entity.attackPower.current.toFixed(2) + "<br>" +
+        "Range: " + entity.range.current.toFixed(0) + "<br>" +
         "Clip size: " + entity.clipSize + "<br>" +
         "Firing time: " + entity.firingTime + "ms" + "<br>" +
         "Reload time: " + entity.reloadTime + "ms" + "<br>" +

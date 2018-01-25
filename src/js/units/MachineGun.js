@@ -12,8 +12,14 @@ export default class MachineGun extends Tower {
 
     this.name = 'MachineGun'
 
-    this.attackPower = 7
-    this.range = 300
+    this.attackPower = {
+      base: 7,
+      current: 7,
+    }
+    this.range = {
+      base: 300,
+      current: 300,
+    }
     this.purchaseCost = 60
     this.firingTime = 130
     this.clipSize = 25
