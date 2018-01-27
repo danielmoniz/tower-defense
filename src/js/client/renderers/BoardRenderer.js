@@ -49,6 +49,7 @@ export default class BoardRenderer {
       console.log("All images loaded!");
       this.assetsReady = true
       onCompletion()
+<<<<<<< HEAD
     })
   }
 
@@ -58,6 +59,8 @@ export default class BoardRenderer {
 
     autorun(() => {
       this.updateInfoPanel(game, infoPanelName, infoPanelData)
+=======
+>>>>>>> 2470dcdc62705c232c60ae5cd811351acae11ee1
     })
   }
 
