@@ -104,7 +104,7 @@ describe('Pathing', function() {
       })
     })
 
-    it.skip('should provide the next target node given a location with non-integer coordinates', () => {
+    it('should provide the next target node given a location with non-integer coordinates', () => {
       const dimensions = getDimensions(2, 5)
       const pathHelper = new Pathing(dimensions, 1)
       pathHelper.weights.set(0, 1, 0)
@@ -125,7 +125,7 @@ describe('Pathing', function() {
       })
     })
 
-    it.skip('should provide the next target node given a location given a larger grid size', () => {
+    it('should provide the next target node given a location given a larger grid size', () => {
       const tileSize = 10
       const dimensions = getDimensions(2 * tileSize, 5 * tileSize)
       const pathHelper = new Pathing(dimensions, tileSize)
