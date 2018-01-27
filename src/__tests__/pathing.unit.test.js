@@ -67,7 +67,7 @@ describe('Pathing', function() {
   })
 
   describe('getDirection', function() {
-    it.skip('should provide the next target node given a location with valid x and y', () => {
+    it('should provide the next target node given a location with valid x and y', () => {
       const dimensions = getDimensions(2, 5)
       const pathHelper = new Pathing(dimensions, 1)
       pathHelper.weights.set(0, 1, 0)

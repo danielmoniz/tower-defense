@@ -132,23 +132,16 @@ export default class Pathing {
     const east = this.pathLengths.directionAt(x + 1, y)
     const west = this.pathLengths.directionAt(x - 1, y)
 
-
-    // @TODO Angular pathfinding needs reworking (in PathsGrid and here)
-    const northEast = this.pathLengths.directionAt(x + 1, y - 1)
-    const northWest = this.pathLengths.directionAt(x - 1, y - 1)
-    const southEast = this.pathLengths.directionAt(x + 1, y + 1)
-    const southWest = this.pathLengths.directionAt(x - 1, y + 1)
-
     let directions = [
-      {direction: 'north', value: north, angle: this.degreesToRadians(90), location: { x: x, y: y - 1 }},
-      {direction: 'south', value: south, angle: this.degreesToRadians(270), location: { x: x, y: y + 1 }},
-      {direction: 'east', value: east, angle: this.degreesToRadians(0), location: { x: x + 1, y: y }},
-      {direction: 'west', value: west, angle: this.degreesToRadians(180), location: { x: x - 1, y: y }},
-      {direction: 'northEast', value: northEast, angle: this.degreesToRadians(45), location: { x: x + 1, y: y - 1 }, east: true},
-      {direction: 'northWest', value: northWest, angle: this.degreesToRadians(135), location: { x: x - 1, y: y - 1 }},
-      {direction: 'southEast', value: southEast, angle: this.degreesToRadians(315), location: { x: x + 1, y: y + 1 }, south: true, east: true},
-      {direction: 'southWest', value: southWest, angle: this.degreesToRadians(225), location: { x: x - 1, y: y + 1 }, south: true},
+      { value: north, location: { x: x, y: y - 1 } },
+      { value: south, location: { x: x, y: y + 1 } },
+      { value: east, location: { x: x + 1, y: y } },
+      { value: west, location: { x: x - 1, y: y } },
     ]
+
+    const diagonals = this.getValidDiagonals(x, y, north, south, east, west)
+    directions = directions.concat(diagonals)
+
     const directionValues = directions.map((directionInfo) => {
       return directionInfo.value
     }).filter((value) => {
@@ -178,6 +171,39 @@ export default class Pathing {
     // pick random direction out of smallest options (might be multiple)
     const finalDirection = directions[randomIndex]
     return this.convertToRealLocation(finalDirection.location)
+  }
+
+  /*
+   * Return an array of diagonal locations that are valid.
+   * A valid diagonal requires that both primary directions are valid.
+   */
+  getValidDiagonals(x, y, northValue, southValue, eastValue, westValue) {
+    const northEastValue = this.pathLengths.directionAt(x + 1, y - 1)
+    const northWestValue = this.pathLengths.directionAt(x - 1, y - 1)
+    const southEastValue = this.pathLengths.directionAt(x + 1, y + 1)
+    const southWestValue = this.pathLengths.directionAt(x - 1, y + 1)
+
+    const northEast = { value: northEastValue, location: { x: x + 1, y: y - 1 } }
+    const northWest = { value: northWestValue, location: { x: x - 1, y: y - 1 } }
+    const southEast = { value: southEastValue, location: { x: x + 1, y: y + 1 } }
+    const southWest = { value: southWestValue, location: { x: x - 1, y: y + 1 } }
+
+    const diagonals = []
+
+    if (northValue > 0 && eastValue > 0) {
+      diagonals.push(northEast)
+    }
+    if (northValue > 0 && westValue > 0) {
+      diagonals.push(northWest)
+    }
+    if (southValue > 0 && eastValue > 0) {
+      diagonals.push(southEast)
+    }
+    if (southValue > 0 && westValue > 0) {
+      diagonals.push(southWest)
+    }
+
+    return diagonals
   }
 
   degreesToRadians(degrees) {
