@@ -175,6 +175,49 @@ describe('Pathing', function() {
       })
     })
 
+    it('should suggest a diagonal path if valid', () => {
+      const dimensions = getDimensions(3, 3)
+      const pathHelper = new Pathing(dimensions, 1)
+      pathHelper.compute()
+
+      expect(pathHelper.getDirection(0, 0)).toMatchObject({
+        x: 1,
+        y: 1,
+      })
+      expect(pathHelper.getDirection(1, 1)).toMatchObject({
+        x: 2,
+        y: 2,
+      })
+      expect(pathHelper.getDirection(0, 1)).toMatchObject({
+        x: 1,
+        y: 2,
+      })
+      expect(pathHelper.getDirection(1, 0)).toMatchObject({
+        x: 2,
+        y: 1,
+      })
+    })
+
+    it('should not suggest a diagonal path if corner not valid', () => {
+      const dimensions = getDimensions(3, 3)
+      const pathHelper = new Pathing(dimensions, 1)
+      pathHelper.weights.set(0, 1, 0)
+      pathHelper.compute()
+
+      expect(pathHelper.getDirection(0, 0)).toMatchObject({
+        x: 1,
+        y: 0,
+      })
+      expect(pathHelper.getDirection(1, 0)).toMatchObject({
+        x: 2,
+        y: 1,
+      })
+      expect(pathHelper.getDirection(2, 1)).toMatchObject({
+        x: 2,
+        y: 2,
+      })
+    })
+
   })
 
   describe('addObstacle', function() {

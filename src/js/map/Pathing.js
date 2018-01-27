@@ -9,8 +9,11 @@ export default class Pathing {
     this.GRID_SIZE = grid_size
     this.calculateGridDimensions()
 
-    this.actualEndGoal = endGoal
     this.endGoal = this.setEndGoal(endGoal)
+    this.actualEndGoal = endGoal // the actual coordinates of the end goal
+    if (endGoal === undefined) {
+      this.actualEndGoal = this.convertToRealLocation(this.endGoal)
+    }
     this.objectives = [endGoal]
 
 
