@@ -116,17 +116,49 @@ export default class Pathing {
     // console.log(this.pathLengths.values);
   }
 
-  // @TODO Split into smaller functions!
   getDirection(realX, realY) {
     const gridLocation = this.calculateGridLocation({ x: realX, y: realY })
     const { x, y } = gridLocation
 
-    // @TODO What to do if on final space? ie. value of current value is 0?
+    // if on final space, simply return that space in actual values
     const currentValue = this.pathLengths.directionAt(x, y)
     if (currentValue === 0) {
       return this.actualEndGoal
     }
 
+    const directions = this.getDirections(x, y)
+    const validDirections = this.getValidDirections(directions)
+
+    // Return false if there is nowhere to go
+      // ^^^ Shouldn't happen if we prevent towers from being placed anywhere!
+      // however, terrain might still cause issues
+    if (validDirections.length === 0) {
+      const oneTileLeft = this.calculateGridLocation({ x: gridLocation.x - 1, y: gridLocation.y })
+      return oneTileLeft
+    }
+
+    const finalDirection = this.getBestDirection(validDirections)
+    return this.convertToRealLocation(finalDirection.location)
+  }
+
+  /*
+   * Given a set of valid directions, will suggest a best direction.
+   */
+  getBestDirection(validDirections) {
+    const smallestValue = validDirections.map((direction) => {
+      return direction.value
+    }).reduce((smallest, value) => {
+      return value < smallest ? value : smallest
+    })
+
+    const bestDirections = validDirections.filter((direction) => {
+      return direction.value === smallestValue
+    })
+
+    return bestDirections[bestDirections.length - 1]
+  }
+
+  getDirections(x, y) {
     const north = this.pathLengths.directionAt(x, y - 1)
     const south = this.pathLengths.directionAt(x, y + 1)
     const east = this.pathLengths.directionAt(x + 1, y)
@@ -140,37 +172,17 @@ export default class Pathing {
     ]
 
     const diagonals = this.getValidDiagonals(x, y, north, south, east, west)
-    directions = directions.concat(diagonals)
+    return directions.concat(diagonals)
+  }
 
-    const directionValues = directions.map((directionInfo) => {
-      return directionInfo.value
-    }).filter((value) => {
-      return value >= 0
+  /*
+   * Given an array of direction objects, returns an array of valid direction
+   * objects.
+   */
+  getValidDirections(directions) {
+    return directions.filter((direction) => {
+      return direction.value >= 0
     })
-
-    // Return false if there is nowhere to go
-      // ^^^ Shouldn't happen if we prevent towers from being placed anywhere!
-      // however, terrain might still cause issues
-    if (directionValues.length === 0) {
-      const oneTileLeft = this.calculateGridLocation({ x: gridLocation.x - 1, y: gridLocation.y })
-      // console.log("No directions - sending left. Unit at:", gridLocation.x, gridLocation.y);
-      return oneTileLeft
-      // return this.calculateGridLocation({ x: x - 1, y: y })
-      // return {x: Math.floor(x - 1), y: Math.floor(y) }
-    }
-    // console.log(directionValues);
-
-    const smallestValue = Math.min(...directionValues)
-    directions = directions.filter((direction) => {
-      return direction.value === smallestValue
-    })
-    // const randomIndex = Math.floor(Math.random() * directions.length)
-    // const randomIndex = 0
-    const randomIndex = directions.length - 1
-
-    // pick random direction out of smallest options (might be multiple)
-    const finalDirection = directions[randomIndex]
-    return this.convertToRealLocation(finalDirection.location)
   }
 
   /*
