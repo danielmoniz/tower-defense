@@ -43,7 +43,8 @@ export default class Game {
     this.emitter = emitter
 
 
-    this.UNIT_TYPES = { Tank, Cannon, Flamethrower, MachineGun }
+    this.TOWER_TYPES = { Cannon, Flamethrower, MachineGun }
+    this.ENEMY_TYPES = { Tank }
 
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
@@ -55,7 +56,7 @@ export default class Game {
 
   // to be overwritten by a subclass if another wave spawner is needed
   setUpWaveSpawner() {
-    this.wave = new WaveSpawner(this.createEnemy.bind(this))
+    this.wave = new WaveSpawner(this.createEnemy.bind(this), this.ENEMY_TYPES)
   }
 
   newGame() {
@@ -160,7 +161,7 @@ export default class Game {
   }
 
   createEnemy(type, subtype) {
-    const UnitClass = this.UNIT_TYPES[type]
+    const UnitClass = this.ENEMY_TYPES[type]
     return new UnitClass(this, subtype)
   }
 
@@ -198,7 +199,7 @@ export default class Game {
     const placingTower = tower || this.placingTower
     if (!placingTower) { return }
 
-    const TowerType = this.UNIT_TYPES[placingTower.name]
+    const TowerType = this.TOWER_TYPES[placingTower.name]
     const finalTower = new TowerType(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 

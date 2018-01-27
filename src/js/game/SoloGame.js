@@ -11,7 +11,7 @@ class SoloGame extends ClientGame {
   }
 
   setUpWaveSpawner() {
-    this.wave = new WaveSpawnerLocal(this.createEnemy.bind(this))
+    this.wave = new WaveSpawnerLocal(this.createEnemy.bind(this), this.ENEMY_TYPES)
   }
 
   spawnWaveEarly() {

@@ -16,6 +16,18 @@ class Enemy extends Unit {
     this.type = 'Enemy'
   }
 
+  @computed get pointsValue() {
+    // width: GRID_SIZE * 2,
+    // height: GRID_SIZE * 2,
+    // speed: 20,
+    // maxHitPoints: 50,
+    // killValue: {
+    //   credits: 5,
+    //   xp: 10,
+    // },
+    return this.killValue.credits
+  }
+
   /*
    * Clears the movement for the unit. Needs a new target before moving again.
    */
@@ -69,6 +81,12 @@ class Enemy extends Unit {
     this.completed = true
     this.destroy()
   }
+}
+
+// @TODO Would be nice if this was a @computed function
+Enemy.pointsValue = function(subType) {
+  const data = this.subTypes[subType]
+  return data.maxHitPoints * data.speed / 100
 }
 
 export default Enemy
