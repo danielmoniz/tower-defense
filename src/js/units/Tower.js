@@ -21,6 +21,10 @@ export default class Tower extends Unit {
   @observable clipSize
   @observable reloadTime
 
+  // tower performance data
+  @observable kills = 0
+  @observable xp = 0
+  @observable level = 1
 
   // default size: 1 tile
   @observable width = GRID_SIZE
@@ -100,14 +104,38 @@ export default class Tower extends Unit {
     if (!this.target) { return }
 
     var targetValue = this.target.killValue
-    const killedUnit = this.target.takeDamage(this.attackPower)
+    const killedUnit = this.target.takeDamage(this.attackPower.current)
     if (killedUnit) {
       // console.log('Killed enemy!');
       // do cool stuff! Add experience? Make money? Mow the lawn?
-      this.game.profit(targetValue * this.killProfitMultiplier)
+      // @TODO move these state changes into separate method
+      this.game.profit(targetValue.credits * this.killProfitMultiplier)
+      this.kills++
+      this.xp += targetValue.xp
+      this.checkLevel()
       return
     }
     return this.target
+  }
+
+  @action checkLevel() {
+    /**
+     * Calculations based on 100xp for level 1 -> 2, each subsequent level
+     * requiring 1.15x the xp of the previous level (115, 132, etc.)
+     *
+     * Cumulative xp = (1st level xp) * (1 - (1+r) ^ (level - 1)) / (-r)
+     * Re-arranged to convert xp --> level, as below
+     */
+    const currentLevel = this.Level
+    this.level = Math.floor(1 + Math.log(1 + 0.0015 * this.xp) / Math.log(1.15))
+    if (currentLevel !== this.level) {
+      this.updateStats()
+    }
+  }
+
+  @action updateStats() {
+    this.attackPower.current = this.attackPower.base * Math.pow(1.05, this.level - 1)
+    this.range.current = this.range.base * Math.pow(1.01, this.level - 1)
   }
 
   targetIsValid() {
@@ -117,7 +145,7 @@ export default class Tower extends Unit {
   }
 
   unitInRange(unit) {
-    return this.distanceToUnit(unit) < this.range
+    return this.distanceToUnit(unit) < this.range.current
   }
 
   findNearestEnemyInRange() {
