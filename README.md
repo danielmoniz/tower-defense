@@ -4,7 +4,11 @@ This is an online co-operative Tower Defense game.
 
 The [blog is up][blog]!
 
+[![Build Status](https://travis-ci.org/danielmoniz/tower-defense.svg?branch=master)](https://travis-ci.org/danielmoniz/tower-defense)
+
+
 ## Setup
+
 
 Initially, set it up by running:
 
@@ -12,6 +16,14 @@ Initially, set it up by running:
     npm install -g gulp
     cd client
     gulp build
+
+Run the tests with:
+
+    npm test
+
+Or, for continuous testing:
+
+    npm run test:watch
 
 Then run:
 

@@ -99,7 +99,7 @@ class ClientGame extends Game {
     })
   }
 
-  deselectPlacingTower() {
+  @action deselectPlacingTower() {
     if (this.placingTower) {
       this.renderer.destroyEntity(this.placingTower)
       this.placingTower = false
@@ -133,7 +133,7 @@ class ClientGame extends Game {
 
     this.enemies.add(enemy)
     const enemyTarget = this.getEnemyGoal(enemy)
-    enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+    enemy.setMoveTarget()
 
     this.renderer.queueRender(enemy)
     return enemy

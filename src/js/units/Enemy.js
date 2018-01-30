@@ -28,12 +28,9 @@ class Enemy extends Unit {
    * It should NOT actually trigger the unit to move if stopped.
    * If the unit is already moving, it ensures they continue in the new direction.
    */
-  @action setMoveTarget(finalX, finalY) {
-    this.act = () => {
-      const reachedGoal = this.moveXAndY(finalX, finalY)
-      if (reachedGoal) {
-        this.complete() // assumes enemies only get one goal
-      }
+  @action setMoveTarget() {
+    this.act = (nextLocation) => {
+      this.moveXAndY(nextLocation.x, nextLocation.y)
     }
     if (this.movementId) { // if already moving, continue in a new direction
       this.startMovement()
@@ -61,8 +58,9 @@ class Enemy extends Unit {
     const xMovement = distance * Math.cos(angle)
     const yMovement = distance * Math.sin(angle)
 
-    this.x += xMovement
-    this.y += yMovement
+    // round current position coordinate to two decimals
+    this.x = Math.round((this.x + xMovement) * 100) / 100
+    this.y = Math.round((this.y + yMovement) * 100) / 100
   }
 
   @action complete() {

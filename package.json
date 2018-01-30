@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "postinstall": "gulp build:client; gulp build:server",
+    "heroku-postbuild": "gulp build:client; gulp build:server",
     "start": "node ./bin/www",
     "start-debug": "DEBUG=tower-defense-web:* node ./bin/www",
     "start-watch": "DEBUG=tower-defense-web:* supervisor ./bin/www",
