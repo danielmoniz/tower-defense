@@ -54,18 +54,31 @@ export default class GameEvents {
       if (game.placingTower) {
         const placingTower = game.placingTower
 
-        const actualX = event.offsetX - placingTower.width / 2.0 + (GRID_SIZE / 2)
-        const actualY = event.offsetY - placingTower.height / 2.0 + (GRID_SIZE / 2)
-        let gridX = Math.floor(actualX / GRID_SIZE) * GRID_SIZE
-        let gridY = Math.floor(actualY / GRID_SIZE) * GRID_SIZE
+        const actualX = event.offsetX// - placingTower.width / 2.0 + (GRID_SIZE / 2)
+        const actualY = event.offsetY// - placingTower.height / 2.0 + (GRID_SIZE / 2)
+
+        // calculate left x and top y
+        const leftX = actualX - (placingTower.width / 2)
+        const topY = actualY - (placingTower.height / 2)
+
+        // ensure left x and top y are shifted to a grid point
+        let gridX = Math.floor(leftX / GRID_SIZE) * GRID_SIZE
+        let gridY = Math.floor(topY / GRID_SIZE) * GRID_SIZE
 
         // prevent towers being placed over left/top edges
         gridX = Math.max(gridX, 0)
         gridY = Math.max(gridY, 0)
 
         // prevent towers overlapping right/bottom edges
+        // @FIXME @TODO This is not secure! Tower placement over the entrance needs to be handled
+        // somewhere in Game so that the server can prevent it.
         gridX = Math.min(gridX, game.width - placingTower.width)
         gridY = Math.min(gridY, game.height - placingTower.height)
+
+
+        // shift left x and top y to refer to the centre of the unit again for placement (because placement is based on centre)
+        gridX += placingTower.width / 2
+        gridY += placingTower.height / 2
 
         placingTower.jumpTo(gridX, gridY)
       }

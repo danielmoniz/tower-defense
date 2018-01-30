@@ -11,8 +11,8 @@ import Flamethrower from '../units/Flamethrower'
 import MachineGun from '../units/MachineGun'
 import Tank from '../units/Tank'
 
-import Map from '../map/Map'
-import { GAME_REFRESH_RATE } from '../appConstants'
+import Pathing from '../map/Pathing'
+import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
 
 
@@ -49,7 +49,10 @@ export default class Game {
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
 
-    this.map = new Map(this)
+    this.pathHelper = new Pathing(this, GRID_SIZE, this.getEndGoal(), {
+      getEntranceZone: this.getEntranceZone.bind(this),
+    })
+    // this.pathHelper.setUpRandomMap()
 
     this.setUpWaveSpawner()
   }
@@ -107,8 +110,8 @@ export default class Game {
   gameLogic() {
     this.updateWave()
     // @TODO Pass the enemies or towers unit manager
-    this.commandUnits(this.enemies)
-    this.commandUnits(this.towers)
+    this.commandEnemies(this.enemies)
+    this.commandTowers(this.towers)
     if (this.lives <= 0) {
       this.endGame()
       this.actions.destroyGame() // could possibly pass scores/end-state here
@@ -120,17 +123,45 @@ export default class Game {
   }
 
   /*
-   * Causes units act. Removes them when needed.
+   * Causes enemies to act. Removes them when needed.
    * Detects when a unit has completed its objective and subtracts a life.
-   * Accepts a UnitManager object to command & manipulate various unit types.
+   * Accepts a UnitManager object containing the enemies.
    */
-  commandUnits(unitManager) {
+  commandEnemies(unitManager) {
     for (let i = unitManager.all.length - 1; i >= 0; i--) {
       let unit = unitManager.all[i]
-      if (unit.completed) { // assume it also has `removeMe = true`
+      const shiftedExit = this.getTileCoordinate(this.getEndGoal())
+      const distanceFromExit = unit.getDistanceToPoint(shiftedExit)
+      if (distanceFromExit < 3) { // assume it also has `removeMe = true`
+        unit.complete()
         const livesLeft = this.loseLife()
         console.log(`Unit reached goal! Remaining lives: ${livesLeft}`);
       }
+      if (unit.removeMe) {
+        unitManager.remove(i)
+        continue
+      }
+      if (!unit.disabled && unit.act) {
+        // @TODO Get terrain type and pass it to unit (for speed/cover purposes)
+        const nextTargetLocation = this.pathHelper.getDirection(unit.x, unit.y)
+        const adjustedTargetLocation = {
+          x: nextTargetLocation.x + Math.floor(GRID_SIZE / 2),
+          y: nextTargetLocation.y + Math.floor(GRID_SIZE / 2),
+        }
+
+        unit.act(adjustedTargetLocation)
+        // unit.jumpTo(0, 0)
+      }
+    }
+  }
+
+  /*
+   * Causes towers to act. Removes them when needed.
+   * Accepts a UnitManager object containing the towers.
+   */
+  commandTowers(unitManager) {
+    for (let i = unitManager.all.length - 1; i >= 0; i--) {
+      let unit = unitManager.all[i]
       if (unit.removeMe) {
         unitManager.remove(i)
         continue
@@ -169,13 +200,14 @@ export default class Game {
     newEnemies.forEach((enemy, index) => {
       this.placeEnemy(enemy, newEnemies.length, index)
       const enemyTarget = this.getEnemyGoal(enemy)
-      enemy.setMoveTarget(enemyTarget.x, enemyTarget.y)
+      enemy.setMoveTarget()
     })
   }
 
   placeEnemy(enemy, enemiesInWave, numEnemy) {
-    const enemyDistance = Math.floor(this.height / enemiesInWave)
-    enemy.jumpTo(this.width, numEnemy * enemyDistance)
+    const entrance = this.getEntranceZone()
+    const enemyDistance = Math.floor(entrance.height / enemiesInWave)
+    enemy.jumpTo(entrance.x + entrance.width, entrance.y + numEnemy * enemyDistance)
   }
 
   canAfford(unit) {
@@ -203,7 +235,16 @@ export default class Game {
     const finalTower = new TowerType(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 
-    if (finalTower && this.buyTower(finalTower)) {
+    if (finalTower && this.canAfford(finalTower)) {
+      const placed = this.pathHelper.addObstacle(
+        finalTower.getTopLeft(), finalTower.width, finalTower.height)
+      if (!placed) {
+        // @TODO Add message that says tower cannot be placed to block enemies
+        console.log("Tower placement not allowed! You cannot block the goal or place on top of existing towers.");
+        return false
+      }
+
+      this.buyTower(finalTower)
       finalTower.place()
       finalTower.show()
       this.towers.add(finalTower)
@@ -220,9 +261,37 @@ export default class Game {
   }
 
   getEnemyGoal(enemy) {
+    return this.getEndGoal()
+  }
+
+  getEndGoal() {
+    const halfHeight = this.height / 2
     return {
-      x: -enemy.width,
-      y: this.height / 2,
+      x: 0,
+      y: halfHeight - (halfHeight % GRID_SIZE),
+    }
+  }
+
+  /*
+   * Returns a coordinate, but shifts down-right by the distance of half a tile.
+   * Very naive. Maybe be useful to make this method smarter.
+   */
+  getTileCoordinate(coordinate) {
+    return {
+      x: coordinate.x + Math.floor(GRID_SIZE / 2),
+      y: coordinate.y + Math.floor(GRID_SIZE / 2),
+    }
+  }
+
+  /*
+   * Return a rectangular area where towers cannot be built.
+   */
+  getEntranceZone() {
+    return {
+      x: this.width - GRID_SIZE,
+      y: 0,
+      width: GRID_SIZE,
+      height: this.height,
     }
   }
 
