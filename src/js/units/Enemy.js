@@ -17,10 +17,17 @@ class Enemy extends Unit {
     this.gameLevel = gameLevel
 
     this.setAttributes(enemyType)
+    this.scale(gameLevel)
+    this.currentHitPoints = this.maxHitPoints
   }
 
   setAttributes(enemyType) {
     throw 'Not implemented.'
+  }
+
+  scale(gameLevel) {
+    const scaleFactor = Math.pow(1.20, gameLevel)
+    this.maxHitPoints = Math.ceil(this.maxHitPoints * scaleFactor)
   }
 
   /*

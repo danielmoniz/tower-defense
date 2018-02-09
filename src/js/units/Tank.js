@@ -3,9 +3,6 @@ import { GRID_SIZE } from '../appConstants'
 import Enemy from './Enemy'
 
 export default class Tank extends Enemy {
-  // constructor(game, enemyType, gameLevel) { // options moved to this constructor, not super
-  //   super(game, enemyType, gameLevel)
-  // }
 
   // @TODO This code should really be in Enemy. Need better way of specifying
   // different unit types with minimizing code (eg. JSON configuration).
@@ -33,7 +30,6 @@ export default class Tank extends Enemy {
     this.name = `Tank (${enemyType})`
     this.enemyType = 'Tank'
     this.subtype = enemyType
-    this.currentHitPoints = this.maxHitPoints
   }
 }
 

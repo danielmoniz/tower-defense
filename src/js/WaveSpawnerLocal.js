@@ -26,8 +26,9 @@ class WaveSpawnerLocal extends WaveSpawner {
     super()
     this.createEnemy = createEnemy
 
-    this.startingPoints = 20
-    this.wavePointsIncrease = 1.15
+    this.startingPoints = 1000
+    // this.wavePointsIncrease = 1.15
+    this.wavePointsIncrease = 1
 
     this.enemyTypes = this.sortEnemyTypes(this.getEnemyTypes(enemyTypes))
     console.log(this.enemyTypes);
