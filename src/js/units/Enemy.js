@@ -10,22 +10,17 @@ class Enemy extends Unit {
   @observable completed = false
   @observable killValue // should be overridden
 
-  constructor(game, options) {
+  constructor(game, enemyType, gameLevel, options) {
     super(game, options)
     this.movementId = undefined
     this.type = 'Enemy'
+    this.gameLevel = gameLevel
+
+    this.setAttributes(enemyType)
   }
 
-  @computed get pointsValue() {
-    // width: GRID_SIZE * 2,
-    // height: GRID_SIZE * 2,
-    // speed: 20,
-    // maxHitPoints: 50,
-    // killValue: {
-    //   credits: 5,
-    //   xp: 10,
-    // },
-    return this.killValue.credits
+  setAttributes(enemyType) {
+    throw 'Not implemented.'
   }
 
   /*

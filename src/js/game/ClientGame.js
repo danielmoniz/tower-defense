@@ -129,9 +129,7 @@ class ClientGame extends Game {
 
   addEnemy(enemyData) {
     if (enemyData.currentHitPoints <= 0) { return }
-    // @TODO Allow for other unit types\
-    const EnemyType = this.ENEMY_TYPES['Tank']
-    let enemy = new EnemyType(this, enemyData.name)
+    let enemy = this.createEnemy(enemyData.enemyType, enemy.subtype)
     this.buildEntityFromData(enemy, enemyData)
 
     this.enemies.add(enemy)

@@ -193,7 +193,8 @@ export default class Game {
 
   createEnemy(type, subtype) {
     const UnitClass = this.ENEMY_TYPES[type]
-    return new UnitClass(this, subtype)
+    const gameLevel = this.wave.number
+    return new UnitClass(this, subtype, gameLevel)
   }
 
   placeWaveEnemies(newEnemies) {
