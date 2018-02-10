@@ -1,35 +1,19 @@
 
 import { GRID_SIZE } from '../appConstants'
 import Enemy from './Enemy'
+import { getPointsValue, getEnemyData } from './Enemies'
 
 export default class Tank extends Enemy {
 
   // @TODO This code should really be in Enemy. Need better way of specifying
   // different unit types with minimizing code (eg. JSON configuration).
   setAttributes(enemyType) {
-    let enemyTypes = Tank.subTypes
-    let enemyAttributes
 
-    if (enemyTypes.hasOwnProperty(enemyType)) {
-      enemyAttributes = enemyTypes[enemyType]
-    } else {
-      enemyAttributes = enemyTypes["normal"]
-    }
+    let enemyAttributes = getEnemyData('Tank', enemyType)
 
     for (let attribute of Object.keys(enemyAttributes)) {
       this[attribute] = enemyAttributes[attribute]
     }
-
-    // @TODO Have credits be determined dynamically
-    // @TODO Have XP be determined dynamically (or just be points value)
-    // if (this.killValue === undefined) {
-    //   this.killValue = {}
-    // }
-    // this.killValue.credits = Enemy.getCredits(this)
-
-    this.name = `Tank (${enemyType})`
-    this.enemyType = 'Tank'
-    this.subtype = enemyType
   }
 }
 
