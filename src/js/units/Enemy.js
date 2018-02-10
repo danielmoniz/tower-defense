@@ -83,10 +83,4 @@ class Enemy extends Unit {
   }
 }
 
-// @TODO Would be nice if this was a @computed function
-Enemy.pointsValue = function(subType) {
-  const data = this.subTypes[subType]
-  return data.maxHitPoints * data.speed / 100
-}
-
 export default Enemy

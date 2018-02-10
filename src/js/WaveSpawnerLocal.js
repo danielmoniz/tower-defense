@@ -3,6 +3,7 @@ import { observable, action } from 'mobx'
 
 import WaveSpawner from './WaveSpawner'
 import Enemy from './units/Enemy'
+import { getEnemyData, getEnemyType } from './units/Enemies'
 
 /*
  * Handles actually spawning units.
@@ -36,13 +37,15 @@ class WaveSpawnerLocal extends WaveSpawner {
 
   getEnemyTypes(enemyTypes) {
     const newEnemyTypes = []
-    const enemyTypesList = Object.values(enemyTypes)
     const typeNames = Object.keys(enemyTypes)
+    const enemyTypesList = Object.values(enemyTypes)
 
     enemyTypesList.forEach((enemyType, index) => {
       const typeName = typeNames[index]
-      const subTypesList = Object.values(enemyType.subTypes)
-      const subTypeNames = Object.keys(enemyType.subTypes)
+      const typeData = getEnemyType(typeName)
+
+      const subTypesList = Object.values(typeData)
+      const subTypeNames = Object.keys(typeData)
 
       subTypesList.forEach((subTypeData, index) => {
         const subTypeName = subTypeNames[index]
@@ -132,7 +135,9 @@ class WaveSpawnerLocal extends WaveSpawner {
       const currentEnemy = this.enemyTypes[currentEnemyIndex]
       const typeName = currentEnemy.typeName
       const subTypeName = currentEnemy.subTypeName
-      const pointsValue = currentEnemy.class.pointsValue(subTypeName)
+      const enemyData = getEnemyData(typeName, subTypeName)
+
+      const pointsValue = enemyData.points
       const isLastUnit = currentEnemyIndex === this.enemyTypes.length - 1
 
       // is enemy affordable?
