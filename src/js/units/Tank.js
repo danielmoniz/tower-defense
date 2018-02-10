@@ -7,9 +7,8 @@ export default class Tank extends Enemy {
 
   // @TODO This code should really be in Enemy. Need better way of specifying
   // different unit types with minimizing code (eg. JSON configuration).
-  setAttributes(enemyType) {
-
-    let enemyAttributes = getEnemyData('Tank', enemyType)
+  setAttributes(type, enemyType) {
+    let enemyAttributes = getEnemyData(type, enemyType)
 
     for (let attribute of Object.keys(enemyAttributes)) {
       this[attribute] = enemyAttributes[attribute]

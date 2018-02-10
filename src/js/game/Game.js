@@ -10,6 +10,7 @@ import Cannon from '../units/Cannon'
 import Flamethrower from '../units/Flamethrower'
 import MachineGun from '../units/MachineGun'
 import Tank from '../units/Tank'
+import Enemy from '../units/Enemy'
 
 import Pathing from '../map/Pathing'
 import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
@@ -192,9 +193,7 @@ export default class Game {
   }
 
   createEnemy(type, subtype) {
-    const UnitClass = this.ENEMY_TYPES[type]
-    const gameLevel = this.wave.number
-    return new UnitClass(this, subtype, gameLevel)
+    return new Enemy(this, type, subtype, this.wave.number)
   }
 
   placeWaveEnemies(newEnemies) {
