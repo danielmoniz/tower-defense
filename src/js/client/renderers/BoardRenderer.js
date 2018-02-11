@@ -80,9 +80,10 @@ export default class BoardRenderer {
   // @TODO Consider using Vue.js for templating here
   displayEnemy(infoPanelData, entity) {
     infoPanelData.innerHTML = "Speed: " + entity.speed + "<br>" +
-        "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br>" +
-        "Value: $" + entity.killValue.credits + ", " + entity.killValue.xp + "xp<br>" +
-        "Size: " + entity.width + "x" + entity.height
+        "Hit points: " + Math.ceil(entity.currentHitPoints) + "/" + entity.maxHitPoints + "<br>" +
+        "Value: $" + entity.killValue.credits + ", " + entity.killValue.xp + "xp<br>"
+        // (we probably don't need size, as it has no in-game effect)
+        // "Size: " + entity.width + "x" + entity.height
   }
 
   // @TODO Consider using Vue.js for templating here
