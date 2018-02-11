@@ -1,5 +1,4 @@
 
-// @TODO Should have enemy sizes as ratios of GRID_SIZE (eg. 1, 2, 0.5, etc.)
 import { GRID_SIZE } from '../appConstants'
 
 export function getPointsValue(enemyData) {
@@ -12,7 +11,9 @@ export function getEnemyData(type, subtype) {
   }
   const data = enemies[type][subtype]
 
+  // @TODO also set credits and XP dynamically
   data.points = getPointsValue(data)
+
   data.enemyType = type
   data.subtype = subtype
   data.name = `${type} (${subtype})`
@@ -20,19 +21,26 @@ export function getEnemyData(type, subtype) {
   return data
 }
 
-export function getEnemyType(type) {
+export function getEnemySubtypes(type) {
   if (!(type in enemies)) {
     throw 'Must supply a valid enemy type.'
   }
   const result = {}
-  const subTypeNames = Object.keys(enemies[type])
   for (const subTypeName in enemies[type]) {
-    const subTypeData = enemies[type][subTypeName]
     result[subTypeName] = getEnemyData(type, subTypeName)
   }
   return result
 }
 
+export function getEnemyTypes() {
+  const result = {}
+  for (const typeName in enemies) {
+    result[typeName] = getEnemySubtypes(typeName)
+  }
+  return result
+}
+
+// @TODO Should have enemy sizes as ratios of GRID_SIZE (eg. 1, 2, 0.5, etc.)
 export const enemies = {
   'Tank': {
     boss: {

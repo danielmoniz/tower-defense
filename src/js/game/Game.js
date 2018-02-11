@@ -9,7 +9,6 @@ import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Flamethrower from '../units/Flamethrower'
 import MachineGun from '../units/MachineGun'
-import Tank from '../units/Tank'
 import Enemy from '../units/Enemy'
 
 import Pathing from '../map/Pathing'
@@ -45,7 +44,6 @@ export default class Game {
 
 
     this.TOWER_TYPES = { Cannon, Flamethrower, MachineGun }
-    this.ENEMY_TYPES = { Tank }
 
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
@@ -60,7 +58,7 @@ export default class Game {
 
   // to be overwritten by a subclass if another wave spawner is needed
   setUpWaveSpawner() {
-    this.wave = new WaveSpawner(this.createEnemy.bind(this), this.ENEMY_TYPES)
+    this.wave = new WaveSpawner(this.createEnemy.bind(this))
   }
 
   newGame() {

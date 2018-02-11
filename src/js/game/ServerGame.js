@@ -13,7 +13,7 @@ class ServerGame extends Game {
     super(emitter, actions)
     this.runningOnServer = true
     this.serverInfo = serverInfo
-    this.wave = new WaveSpawnerLocal(this.createEnemy.bind(this), this.ENEMY_TYPES)
+    this.wave = new WaveSpawnerLocal(this.createEnemy.bind(this))
 
     // for calculating performance
     this.performance = new Performance(200, GAME_REFRESH_RATE)

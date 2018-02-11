@@ -3,7 +3,7 @@ import { observable, action } from 'mobx'
 
 import WaveSpawner from './WaveSpawner'
 import Enemy from './units/Enemy'
-import { getEnemyData, getEnemyType } from './units/Enemies'
+import { getEnemyData, getEnemySubtypes, getEnemyTypes } from './units/Enemies'
 
 /*
  * Handles actually spawning units.
@@ -23,7 +23,7 @@ class WaveSpawnerLocal extends WaveSpawner {
     },
   }
 
-  constructor(createEnemy, enemyTypes) {
+  constructor(createEnemy) {
     super()
     this.createEnemy = createEnemy
 
@@ -31,18 +31,19 @@ class WaveSpawnerLocal extends WaveSpawner {
     // this.wavePointsIncrease = 1.15
     this.wavePointsIncrease = 1
 
-    this.enemyTypes = this.sortEnemyTypes(this.getEnemyTypes(enemyTypes))
+    this.enemyTypes = this.sortEnemyTypes(this.getEnemyTypes())
     console.log(this.enemyTypes);
   }
 
-  getEnemyTypes(enemyTypes) {
+  getEnemyTypes() {
+    const enemyTypes = getEnemyTypes()
     const newEnemyTypes = []
     const typeNames = Object.keys(enemyTypes)
     const enemyTypesList = Object.values(enemyTypes)
 
     enemyTypesList.forEach((enemyType, index) => {
       const typeName = typeNames[index]
-      const typeData = getEnemyType(typeName)
+      const typeData = getEnemySubtypes(typeName)
 
       const subTypesList = Object.values(typeData)
       const subTypeNames = Object.keys(typeData)
