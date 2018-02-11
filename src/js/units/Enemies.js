@@ -2,7 +2,7 @@
 import { GRID_SIZE } from '../appConstants'
 
 export function getPointsValue(enemyData) {
-  return enemyData.maxHitPoints * enemyData.speed / 100
+  return enemyData.maxHitPoints * enemyData.speed / 10
 }
 
 export function getEnemyData(type, subtype) {
@@ -13,6 +13,15 @@ export function getEnemyData(type, subtype) {
 
   // @TODO also set credits and XP dynamically
   data.points = getPointsValue(data)
+  if (!data.killValue) {
+    data.killValue = {}
+  }
+  if (!data.killValue.xp) {
+    data.killValue.xp = data.points
+  }
+  if (!data.killValue.credits) {
+    data.killValue.credits = Math.floor(Math.sqrt(data.points))
+  }
 
   data.enemyType = type
   data.subtype = subtype
@@ -41,30 +50,56 @@ export function getEnemyTypes() {
 }
 
 // @TODO Should have enemy sizes as ratios of GRID_SIZE (eg. 1, 2, 0.5, etc.)
+/*
+ * NOTE: Can hardcode credits and xp by adding killValue object.
+ */
 export const enemies = {
-  'Tank': {
-    boss: {
-      width: GRID_SIZE * 3,
-      height: GRID_SIZE * 3,
-      speed: 15,
-      maxHitPoints: 500,
-      killValue: {
-        credits: 50,
-        xp: 100,
-      },
-      probability: 0.1,
-      priority: 500,
+  // 'Swarm': {
+  //   'normal': {
+  //
+  //   },
+  // },
+  //
+  // 'Carrier': {
+  //   'normal': {
+  //
+  //   },
+  // },
+
+  'Invader': {
+    'normal': {
+      width: GRID_SIZE * 1,
+      height: GRID_SIZE * 1,
+      speed: 20,
+      maxHitPoints: 20,
+      probability: 1,
+      priority: 0,
     },
+    fast: {
+      width: GRID_SIZE * 0.75,
+      height: GRID_SIZE * 0.75,
+      speed: 40,
+      maxHitPoints: 20,
+      probability: 0.5,
+      priority: 20,
+    },
+  },
+
+  'Tank': {
     normal: {
       width: GRID_SIZE * 2,
       height: GRID_SIZE * 2,
       speed: 20,
       maxHitPoints: 50,
-      killValue: {
-        credits: 5,
-        xp: 10,
-      },
-      probability: 1,
+      probability: 0.2,
+      priority: 0,
+    },
+    large: {
+      width: GRID_SIZE * 3,
+      height: GRID_SIZE * 3,
+      speed: 14,
+      maxHitPoints: 80,
+      probability: 0.05,
       priority: 0,
     },
     fast: {
@@ -72,26 +107,8 @@ export const enemies = {
       height: GRID_SIZE * 1.5,
       speed: 40,
       maxHitPoints: 40,
-      killValue: {
-        credits: 7,
-        xp: 10,
-      },
-      probability: 0.5,
-      priority: 20,
-    },
-    tiny: {
-      width: GRID_SIZE * 1,
-      height: GRID_SIZE * 1,
-      speed: 30,
-      maxHitPoints: 20,
-      killValue: {
-        credits: 3,
-        xp: 5,
-      },
-      probability: 0.5,
-      priority: 10,
+      probability: 0.1,
+      priority: 50,
     },
   },
-
-  // more enemy types here
 }

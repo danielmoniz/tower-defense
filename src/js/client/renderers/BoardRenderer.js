@@ -37,8 +37,7 @@ export default class BoardRenderer {
     this.loader.add('healthBar', '/images/healthBar.png')
           .add('healthBarBackground', '/images/healthBarBackground.png')
           .add('tank', '/images/tank.png')
-          .add('tank_normal', '/images/normal.png')
-          .add('tank_fast', '/images/fast.png')
+          .add('invader', '/images/invader.png')
           .add('exit', '/images/exit.png')
     console.log("Loading images...");
     this.loader.on("progress", (loader, resource) => {

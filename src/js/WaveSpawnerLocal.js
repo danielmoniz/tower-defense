@@ -18,7 +18,7 @@ class WaveSpawnerLocal extends WaveSpawner {
   waveList = {
     10: {
       'Tank': { // @FIXME Must be capitalized
-        'boss': 5, // @FIXME Must be lowercase
+        'large': 5, // @FIXME Must be lowercase
       },
     },
   }
@@ -53,7 +53,6 @@ class WaveSpawnerLocal extends WaveSpawner {
         const enemySubType = {
           typeName,
           subTypeName,
-          class: enemyType,
           data: subTypeData,
         }
         newEnemyTypes.push(enemySubType)
