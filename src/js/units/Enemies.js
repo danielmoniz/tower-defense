@@ -65,6 +65,17 @@ export const enemies = {
     },
   },
 
+  'Scout': {
+    'normal': {
+      width: GRID_SIZE * 1,
+      height: GRID_SIZE * 1,
+      speed: 40,
+      maxHitPoints: 10,
+      probability: 0.4,
+      priority: 22,
+    }
+  },
+
   // 'Carrier': {
   //   'normal': {
   //
@@ -83,9 +94,9 @@ export const enemies = {
     fast: {
       width: GRID_SIZE * 0.75,
       height: GRID_SIZE * 0.75,
-      speed: 40,
+      speed: 30,
       maxHitPoints: 20,
-      probability: 0.5,
+      probability: 0.2,
       priority: 20,
     },
   },
@@ -97,7 +108,7 @@ export const enemies = {
       speed: 20,
       maxHitPoints: 50,
       probability: 0.2,
-      priority: 0,
+      priority: 15,
     },
     large: {
       width: GRID_SIZE * 3,
@@ -105,14 +116,6 @@ export const enemies = {
       speed: 14,
       maxHitPoints: 80,
       probability: 0.05,
-      priority: 0,
-    },
-    fast: {
-      width: GRID_SIZE * 1.5,
-      height: GRID_SIZE * 1.5,
-      speed: 40,
-      maxHitPoints: 40,
-      probability: 0.1,
       priority: 50,
     },
   },

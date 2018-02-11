@@ -39,6 +39,7 @@ export default class BoardRenderer {
           .add('tank', '/images/tank.png')
           .add('invader', '/images/invader.png')
           .add('swarm', '/images/swarm.png')
+          .add('scout', '/images/scout.png')
           .add('exit', '/images/exit.png')
     console.log("Loading images...");
     this.loader.on("progress", (loader, resource) => {
