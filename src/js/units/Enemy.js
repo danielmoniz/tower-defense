@@ -31,7 +31,8 @@ class Enemy extends Unit {
   }
 
   scale(gameLevel) {
-    const scaleFactor = Math.pow(1.20, gameLevel)
+    // const scaleFactor = Math.pow(1.20, gameLevel) // exponential
+    const scaleFactor = Math.pow(gameLevel, 1.2) // slow power
     this.maxHitPoints = Math.ceil(this.maxHitPoints * scaleFactor)
   }
 

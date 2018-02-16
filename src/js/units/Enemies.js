@@ -20,7 +20,7 @@ export function getEnemyData(type, subtype) {
     data.killValue.xp = data.points
   }
   if (!data.killValue.credits) {
-    data.killValue.credits = Math.floor(Math.sqrt(data.points))
+    data.killValue.credits = Math.floor(data.points / 10)
   }
 
   data.enemyType = type
