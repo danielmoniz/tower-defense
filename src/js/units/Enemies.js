@@ -11,17 +11,11 @@ export function getEnemyData(type, subtype) {
   }
   const data = enemies[type][subtype]
 
-  // @TODO also set credits and XP dynamically
   data.points = getPointsValue(data)
-  if (!data.killValue) {
-    data.killValue = {}
-  }
-  if (!data.killValue.xp) {
-    data.killValue.xp = data.points
-  }
-  if (!data.killValue.credits) {
-    data.killValue.credits = Math.floor(data.points / 10)
-  }
+  data.killValue = data.killValue || {}
+  data.killValue.xp = data.killValue.xp || data.points
+  const newCredits = Math.floor(data.points / 10)
+  data.killValue.credits = data.killValue.credits || newCredits
 
   data.enemyType = type
   data.subtype = subtype
@@ -67,7 +61,7 @@ export const enemies = {
       width: GRID_SIZE * 0.5,
       height: GRID_SIZE * 0.5,
       speed: 25,
-      maxHitPoints: 5,
+      maxHitPoints: 2,
       probability: 0.4,
       priority: 4,
     },
