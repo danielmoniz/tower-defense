@@ -86,6 +86,7 @@ export const enemies = {
       maxHitPoints: 1000,
       probability: 0.2,
       priority: 100,
+      minWaveStart: 10,
     },
   },
 

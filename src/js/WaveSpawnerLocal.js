@@ -140,6 +140,11 @@ class WaveSpawnerLocal extends WaveSpawner {
       const pointsValue = enemyData.points
       const isLastUnit = currentEnemyIndex === this.enemyTypes.length - 1
 
+      if (enemyData.minWaveStart && enemyData.minWaveStart > this.number) {
+        currentEnemyIndex += 1
+        continue
+      }
+
       // is enemy affordable?
       if (pointsValue > pointsLeft) {
         // console.log(`Moving on - enemy ${typeName} (${subTypeName}) not affordable.`);
