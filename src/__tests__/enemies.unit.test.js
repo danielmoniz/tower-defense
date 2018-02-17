@@ -65,6 +65,27 @@ describe('enemies.js', function() {
     })
   })
 
+  describe('scaleEnemy', function() {
+    // @NOTE These attributes will change depending on which enemy attributes are scaled
+    const scaledAttributes = ['maxHitPoints']
+
+    it('should return data for a scaled enemy', () => {
+      const enemyData = Enemies.getEnemyData(validEnemyType, validEnemySubtype)
+      const scaledEnemyData = Enemies.scaleEnemy(enemyData, 4)
+      scaledAttributes.forEach((attribute) => {
+        expect(scaledEnemyData[attribute]).toBeGreaterThan(enemyData[attribute])
+      })
+    })
+
+    it('should not scale an enemy on the first level', () => {
+      const enemyData = Enemies.getEnemyData(validEnemyType, validEnemySubtype)
+      const scaledEnemyData = Enemies.scaleEnemy(enemyData, 1)
+      scaledAttributes.forEach((attribute) => {
+        expect(scaledEnemyData[attribute]).toEqual(enemyData[attribute])
+      })
+    })
+  })
+
 })
 
 /*

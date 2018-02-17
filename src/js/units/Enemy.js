@@ -3,37 +3,27 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import Unit from './Unit'
 import { GAME_REFRESH_RATE } from '../appConstants'
-import { getEnemyData } from './Enemies'
 
 class Enemy extends Unit {
-  // defaults (observables)
+  // default observables
   @observable speed = 100 // pixels per second
   @observable completed = false
   @observable killValue // should be overridden
 
-  constructor(game, type, subtype, gameLevel, options) {
+  constructor(game, enemyData, gameLevel, options) {
     super(game, options)
     this.movementId = undefined
     this.type = 'Enemy'
     this.gameLevel = gameLevel
 
-    this.setAttributes(type, subtype)
-    this.scale(gameLevel)
+    this.setAttributes(enemyData)
     this.currentHitPoints = this.maxHitPoints
   }
 
-  setAttributes(type, enemyType) {
-    let enemyAttributes = getEnemyData(type, enemyType)
-
+  setAttributes(enemyAttributes) {
     for (let attribute of Object.keys(enemyAttributes)) {
       this[attribute] = enemyAttributes[attribute]
     }
-  }
-
-  scale(gameLevel) {
-    // const scaleFactor = Math.pow(1.20, gameLevel) // exponential
-    const scaleFactor = Math.pow(gameLevel, 1.2) // slow power
-    this.maxHitPoints = Math.ceil(this.maxHitPoints * scaleFactor)
   }
 
   /*

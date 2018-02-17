@@ -30,6 +30,14 @@ export function getEnemyData(type, subtype) {
   return data
 }
 
+export function scaleEnemy(enemyData, gameLevel) {
+  const data = { ...enemyData } // copy original data
+  // const scaleFactor = Math.pow(1.20, gameLevel) // exponential
+  const scaleFactor = Math.pow(gameLevel, 1.2) // slow power
+  data.maxHitPoints = Math.ceil(data.maxHitPoints * scaleFactor)
+  return data
+}
+
 export function getEnemySubtypes(type) {
   if (!(type in enemies)) {
     throw 'Must supply a valid enemy type.'
