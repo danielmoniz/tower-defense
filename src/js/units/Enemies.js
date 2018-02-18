@@ -5,6 +5,10 @@ export function getPointsValue(enemyData) {
   return enemyData.maxHitPoints * enemyData.speed / 10
 }
 
+export function getCreditsValue(points) {
+  return points / 10
+}
+
 export function getEnemyData(type, subtype) {
   if (!(type in enemies) || !(subtype in enemies[type])) {
     throw 'Must supply a valid enemy type and subtype.'
@@ -14,7 +18,7 @@ export function getEnemyData(type, subtype) {
   data.points = getPointsValue(data)
   data.killValue = data.killValue || {}
   data.killValue.xp = data.killValue.xp || data.points
-  const newCredits = Math.floor(data.points / 10)
+  const newCredits = getCreditsValue(data.points)
   data.killValue.credits = data.killValue.credits || newCredits
 
   data.enemyType = type

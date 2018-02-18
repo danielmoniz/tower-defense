@@ -65,6 +65,14 @@ describe('enemies.js', function() {
     })
   })
 
+  describe('getCreditsValue', function() {
+    it('should return a non-zero credits amount given a small points value', () => {
+      const creditsValue = Enemies.getCreditsValue(0.4)
+      expect(creditsValue).toEqual(expect.any(Number))
+      expect(creditsValue).toBeGreaterThan(0)
+    })
+  })
+
   describe('scaleEnemy', function() {
     // @NOTE These attributes will change depending on which enemy attributes are scaled
     const scaledAttributes = ['maxHitPoints']
