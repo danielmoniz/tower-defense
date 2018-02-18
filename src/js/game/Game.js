@@ -75,6 +75,7 @@ export default class Game {
 
   @action reset() {
     this.wave.reset()
+    this.pathHelper.weights.reset()
     this.lives = 20
     this.credits.current = this.credits.start
   }

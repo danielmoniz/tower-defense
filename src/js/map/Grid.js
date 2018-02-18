@@ -3,6 +3,7 @@ export default class Grid {
   constructor(tilesWide, tilesHigh, initialValue) {
     this.tilesWide = tilesWide
     this.tilesHigh = tilesHigh
+    this.initialValue = initialValue
 
     this.values = this.newMapArray(initialValue)
   }
@@ -16,6 +17,10 @@ export default class Grid {
       mapArray[i] = new Array(this.tilesHigh).fill(initialValue)
     }
     return mapArray
+  }
+
+  reset(initialValue = this.initialValue) {
+    this.values = this.newMapArray(initialValue)
   }
 
   /*
