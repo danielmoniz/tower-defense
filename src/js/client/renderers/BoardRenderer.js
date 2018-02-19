@@ -40,6 +40,7 @@ export default class BoardRenderer {
           .add('tank_normal', '/images/normal.png')
           .add('tank_fast', '/images/fast.png')
           .add('exit', '/images/exit.png')
+          .add('sell', '/images/sell.png')
     console.log("Loading images...");
     this.loader.on("progress", (loader, resource) => {
       const completion = `${Math.floor(loader.progress)}%`

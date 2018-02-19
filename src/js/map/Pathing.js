@@ -55,6 +55,15 @@ export default class Pathing {
     return true
   }
 
+  removeObstacle(location, width, height) {
+    const gridLocation = this.calculateGridLocation(location)
+    const gridWidth = this.convertToGridValue(width)
+    const gridHeight = this.convertToGridValue(height)
+
+    this.weights.removeObstacle(gridLocation, gridWidth, gridHeight)
+    this.compute()
+  }
+
   /*
    * Determines whether or not an obstacle would be blocking the pathfinding.
    * Returns an object of information about the obstacle placement.

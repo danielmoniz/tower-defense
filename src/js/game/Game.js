@@ -252,6 +252,11 @@ export default class Game {
     }
   }
 
+  @action sellTower(tower) {
+    this.profit(tower.getSellValue())
+    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+  }
+
   endGame() {
     this.pause()
     this.towers.clear()
