@@ -30,6 +30,7 @@ export default class TowerRenderer extends UnitRenderer {
     this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
     const gunContainer = this.setGun(unit, unitContainer, gunOptions)
     const maxRange = this.setMaxRange(container)
+    const sellButton = this.setSellButton(container)
 
     // @TODO This should probably be done in UnitRenderer
     board.app.stage.addChild(container)
@@ -50,6 +51,10 @@ export default class TowerRenderer extends UnitRenderer {
 
     autorun(() => {
       ghostUnit(unit, unitContainer)
+    })
+
+    autorun(() => {
+      toggleSellButton(unit, sellButton)
     })
 
     return { container, unitContainer, maxRange }
@@ -115,6 +120,23 @@ export default class TowerRenderer extends UnitRenderer {
     return gunContainer
   }
 
+  setSellButton(container) {
+    const sellButton = new PIXI.Sprite(PIXI.utils.TextureCache["sell"])
+    sellButton.x = -30
+    sellButton.y = -50
+    sellButton.width = 40
+    sellButton.height = 40
+    sellButton.alpha = 0.75
+    sellButton.interactive = true
+    sellButton.buttonMode = true
+    sellButton.on('click', () => {
+      console.log('Selling tower! (to be implemented)');
+    })
+
+    container.addChild(sellButton)
+    return sellButton
+  }
+
   setMaxRange(container) {
     const maxRange = new PIXI.Graphics()
     container.addChildAt(maxRange, 0) // add to bottom of container
@@ -173,5 +195,13 @@ function disable(unit, background, disableBackground) {
   } else {
     background.alpha = 0
     disableBackground.alpha = 1
+  }
+}
+
+function toggleSellButton(unit, sellButton) {
+  if (unit.selected) {
+    sellButton.visible = true
+  } else {
+    sellButton.visible = false
   }
 }
