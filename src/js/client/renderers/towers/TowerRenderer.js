@@ -29,7 +29,7 @@ export default class TowerRenderer extends UnitRenderer {
     const { disableBackground, background } = this.setBackground(unit, unitContainer, this.backgroundOptions)
     this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
     const gunContainer = this.setGun(unit, unitContainer, gunOptions)
-    const maxRange = this.setMaxRange(container)
+    const maxRange = this.setMaxRange(container, this.board.backgroundLayer)
     const sellButton = this.setSellButton(container, unitContainer, unit)
 
     // @TODO This should probably be done in UnitRenderer
@@ -152,9 +152,11 @@ export default class TowerRenderer extends UnitRenderer {
     return sellButton
   }
 
-  setMaxRange(container) {
+  setMaxRange(container, layer) {
     const maxRange = new PIXI.Graphics()
-    container.addChildAt(maxRange, 0) // add to bottom of container
+    container.addChild(maxRange)
+    maxRange.parentLayer = layer
+    // maxRange.zIndex = -5 // can use z-index to adjust height within layer
     return maxRange
   }
 

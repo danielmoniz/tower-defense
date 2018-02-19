@@ -17,14 +17,16 @@ export default class BoardRenderer {
       transparent: false,
       resolution: 1,
     })
+
     this.app.view.id = "game-viewport"
     const displayBox = document.querySelector("#display-box")
     displayBox.appendChild(this.app.view)
     this.app.renderer.backgroundColor = 0xFFFFFF
     this.app.renderer.view.style.border = '2px solid black'
 
-    this.background = new PIXI.display.Layer()
-    this.foreground = new PIXI.display.Layer()
+    this.app.stage = new PIXI.display.Stage(); // necessary for layers to work
+    this.backgroundLayer = new PIXI.display.Layer()
+    this.app.stage.addChild(this.backgroundLayer)
 
     this.loadUnitAssets(() => {
       this.renderMap(game)
