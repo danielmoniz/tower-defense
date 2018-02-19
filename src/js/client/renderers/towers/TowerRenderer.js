@@ -30,7 +30,7 @@ export default class TowerRenderer extends UnitRenderer {
     this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
     const gunContainer = this.setGun(unit, unitContainer, gunOptions)
     const maxRange = this.setMaxRange(container)
-    const sellButton = this.setSellButton(container, unit)
+    const sellButton = this.setSellButton(container, unitContainer, unit)
 
     // @TODO This should probably be done in UnitRenderer
     board.app.stage.addChild(container)
@@ -120,12 +120,27 @@ export default class TowerRenderer extends UnitRenderer {
     return gunContainer
   }
 
-  setSellButton(container, tower) {
+  setSellButton(container, unitContainer, tower) {
+    const buttonHeight = 40,
+          buttonWidth = 40,
+          buttonX = 30,
+          buttonY = 50
+
+    console.log(tower.x, tower.y);
     const sellButton = new PIXI.Sprite(PIXI.utils.TextureCache["sell"])
-    sellButton.x = -30
-    sellButton.y = -50
-    sellButton.width = 40
-    sellButton.height = 40
+
+    // adjust sell button as needed to render regardless of tower position
+    sellButton.x = -buttonX
+    if (tower.x <= buttonX) {
+      sellButton.x = unitContainer.width + buttonX - buttonWidth
+    }
+    sellButton.y = -buttonY
+    if (tower.y <= buttonY) {
+      sellButton.y = unitContainer.height + buttonY - buttonHeight
+    }
+
+    sellButton.width = buttonWidth
+    sellButton.height = buttonHeight
     sellButton.alpha = 0.75
     sellButton.interactive = true
     sellButton.buttonMode = true
