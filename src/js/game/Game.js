@@ -255,7 +255,7 @@ export default class Game {
   @action sellTower(tower) {
     this.credits.current += tower.getSellValue()
     tower.destroy()
-    // @TODO Clear up spot in terrain to enemies can move through
+    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
   }
 
   endGame() {
