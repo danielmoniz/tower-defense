@@ -23,6 +23,9 @@ export default class BoardRenderer {
     this.app.renderer.backgroundColor = 0xFFFFFF
     this.app.renderer.view.style.border = '2px solid black'
 
+    this.background = new PIXI.display.Layer()
+    this.foreground = new PIXI.display.Layer()
+
     this.loadUnitAssets(() => {
       this.renderMap(game)
     })
