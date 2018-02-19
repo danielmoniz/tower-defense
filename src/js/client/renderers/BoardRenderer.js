@@ -26,13 +26,13 @@ export default class BoardRenderer {
 
     this.app.stage = new PIXI.display.Stage(); // necessary for layers to work
 
-    this.backgroundLayer = new PIXI.display.Layer()
     this.mapLayer = new PIXI.display.Layer()
+    this.backgroundLayer = new PIXI.display.Layer()
     this.unitsLayer = new PIXI.display.Layer()
     this.menuLayer = new PIXI.display.Layer()
 
-    this.app.stage.addChild(this.backgroundLayer)
     this.app.stage.addChild(this.mapLayer)
+    this.app.stage.addChild(this.backgroundLayer)
     this.app.stage.addChild(this.unitsLayer)
     this.app.stage.addChild(this.menuLayer)
 
