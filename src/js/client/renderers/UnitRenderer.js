@@ -24,6 +24,8 @@ export default class UnitRenderer {
     container.interactive = true
     container.buttonMode = true
 
+    container.parentLayer = board.unitsLayer
+
     board.app.stage.addChild(container)
 
     container.on('click', () => {
