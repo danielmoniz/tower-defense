@@ -44,6 +44,11 @@ class ClientMultiGame extends ClientGame {
     this.emitter.placeTower(placedTower)
   }
 
+  sendSellTower(tower) {
+    super.sendSellTower(tower)
+    this.emitter.sellTower(tower)
+  }
+
   newGame() {
     this.emitter.addNewGame()
   }

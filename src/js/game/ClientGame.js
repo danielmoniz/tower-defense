@@ -59,6 +59,10 @@ class ClientGame extends Game {
     return tower
   }
 
+  sendSellTower(tower) {
+    this.sellTower(tower)
+  }
+
   spawnWaveEarly() {}
 
 
