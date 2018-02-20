@@ -182,16 +182,19 @@ class ClientGame extends Game {
         towerIsNew = true
         const TowerType = this.UNIT_TYPES[towerData.name]
         tower = new TowerType(this, towerData.name)
-
-        tower.id = towerData.id
-        this.towers.add(tower)
-        tower.place()
-        this.renderer.queueRender(tower)
       } else {
         console.log('Tower already exists! It has ID', towerData.id);
       }
       console.log(towerData);
       this.buildEntityFromData(tower, towerData)
+
+      if (towerIsNew) {
+        this.pathHelper.addObstacle(
+          tower.getTopLeft(), tower.width, tower.height)
+        this.towers.add(tower)
+        tower.place()
+        this.renderer.queueRender(tower)
+      }
 
       // @TODO Refactor setting of cooldown ticksPassed
       tower.setCooldowns()
