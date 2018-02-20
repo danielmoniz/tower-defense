@@ -229,9 +229,9 @@ export default class Game {
   }
 
   placeTower(tower) {
-    if (!this.inProgress) { console.log('not in progress'); return }
+    if (!this.inProgress) { return }
     const placingTower = tower || this.placingTower
-    if (!placingTower) { console.log('still no placing tower'); return }
+    if (!placingTower) { return }
 
     const TowerType = this.TOWER_TYPES[placingTower.name]
     const finalTower = new TowerType(this)
@@ -254,7 +254,7 @@ export default class Game {
       this.towers.add(finalTower)
       return finalTower
     }
-    console.log("Tower not placed - can't afford? No finalTower?");
+    console.log("Tower not placed - can't afford or no finalTower exists.");
   }
 
   @action sellTower(tower) {
