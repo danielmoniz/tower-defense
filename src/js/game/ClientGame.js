@@ -81,8 +81,12 @@ class ClientGame extends Game {
     // @TODO Handle case where the game has extra enemies the server did not?
     // --> May not need to because enemies are spawned via waves (not player actions)
 
-    this.towers.clear()
-    this.addTowers(data.towers)
+    // this.towers.clear()
+    // this.addTowers(data.towers)
+    // @TODO Handle towers that exist here but not on the server
+    this.updateTowers(data.towers)
+
+
 
     this.credits.current = data.credits
     this.wave.setNumber(data.waveNumber)
@@ -146,7 +150,7 @@ class ClientGame extends Game {
   }
 
   /*
-   * Add and render towers to the game given data describing those enemies.
+   * Add and render towers to the game given data describing those towers.
    */
   addTowers(towers) {
     towers.forEach((towerData) => {
@@ -162,6 +166,54 @@ class ClientGame extends Game {
       tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
       this.towers.add(tower)
       this.renderer.queueRender(tower)
+    })
+  }
+
+  /*
+   * Update existing towers given data describing those towers.
+   */
+  updateTowers(towers) {
+    console.log('Number of towers on server:', towers.length);
+    towers.forEach((towerData) => {
+      let tower = this.towers.byId[towerData.id]
+      let towerIsNew = false
+      if (!tower) { // Create tower
+        console.log('Tower is new. It has ID', towerData.id);
+        towerIsNew = true
+        const TowerType = this.UNIT_TYPES[towerData.name]
+        tower = new TowerType(this, towerData.name)
+
+        tower.id = towerData.id
+        this.towers.add(tower)
+        tower.place()
+        this.renderer.queueRender(tower)
+      } else {
+        console.log('Tower already exists! It has ID', towerData.id);
+      }
+      console.log(towerData);
+      this.buildEntityFromData(tower, towerData)
+
+      // @TODO Refactor setting of cooldown ticksPassed
+      tower.setCooldowns()
+      tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
+      tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
+      tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
+
+      if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
+        tower.setTarget(this.enemies.byId[tower.target.id])
+      } else {
+        tower.selectTarget()
+      }
+
+      // if (towerIsNew) {
+      //   tower.place()
+      //   const towerPlacementSuccess = this.placeTower(tower)
+      //   console.log('Placed new tower. Success:', towerPlacementSuccess);
+      //   // tower.selectTarget()
+      //
+      //   // this.towers.add(tower)
+      //   // this.renderer.queueRender(tower)
+      // }
     })
   }
 

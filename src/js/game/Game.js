@@ -229,9 +229,9 @@ export default class Game {
   }
 
   placeTower(tower) {
-    if (!this.inProgress) { return }
+    if (!this.inProgress) { console.log('not in progress'); return }
     const placingTower = tower || this.placingTower
-    if (!placingTower) { return }
+    if (!placingTower) { console.log('still no placing tower'); return }
 
     const TowerType = this.TOWER_TYPES[placingTower.name]
     const finalTower = new TowerType(this)
@@ -254,6 +254,7 @@ export default class Game {
       this.towers.add(finalTower)
       return finalTower
     }
+    console.log("Tower not placed - can't afford? No finalTower?");
   }
 
   @action sellTower(tower) {
@@ -321,8 +322,9 @@ export default class Game {
   // GAME UPDATE METHODS ---------------------
 
   buildEntityFromData(entity, data) {
+    const attrsToIgnore = ['target', 'cooldown', 'selected']
     Object.keys(data).forEach((datum) => {
-      if (['target', 'cooldown'].indexOf(datum) !== -1) { return } // ignore certain keys
+      if (attrsToIgnore.indexOf(datum) !== -1) { return } // ignore certain keys
       entity.setAttr(datum, data[datum])
     })
     return entity
