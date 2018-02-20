@@ -50,8 +50,10 @@ export default class BoardRenderer {
     this.loader.add('healthBar', '/images/healthBar.png')
           .add('healthBarBackground', '/images/healthBarBackground.png')
           .add('tank', '/images/tank.png')
-          .add('tank_normal', '/images/normal.png')
-          .add('tank_fast', '/images/fast.png')
+          .add('invader', '/images/invader.png')
+          .add('swarm', '/images/swarm.png')
+          .add('scout', '/images/scout.png')
+          .add('carrier', '/images/carrier.png')
           .add('exit', '/images/exit.png')
           .add('sell', '/images/sell.png')
     console.log("Loading images...");
@@ -95,9 +97,10 @@ export default class BoardRenderer {
   // @TODO Consider using Vue.js for templating here
   displayEnemy(infoPanelData, entity) {
     infoPanelData.innerHTML = "Speed: " + entity.speed + "<br>" +
-        "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br>" +
-        "Value: $" + entity.killValue.credits + ", " + entity.killValue.xp + "xp<br>" +
-        "Size: " + entity.width + "x" + entity.height
+        "Hit points: " + Math.ceil(entity.currentHitPoints) + "/" + entity.maxHitPoints + "<br>" +
+        "Value: $" + entity.killValue.credits + ", " + entity.killValue.xp + "xp<br>"
+        // (we probably don't need size, as it has no in-game effect)
+        // "Size: " + entity.width + "x" + entity.height
   }
 
   // @TODO Consider using Vue.js for templating here

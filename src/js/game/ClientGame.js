@@ -31,7 +31,7 @@ class ClientGame extends Game {
   @action selectNewTower(towerType) {
     if (!this.inProgress) { return }
     this.deselectAll()
-    const TowerType = this.UNIT_TYPES[towerType]
+    const TowerType = this.TOWER_TYPES[towerType]
     this.placingTower = new TowerType(this)
     this.selectedEntity = this.placingTower
     this.renderer.queueRender(this.placingTower)
@@ -130,9 +130,7 @@ class ClientGame extends Game {
 
   addEnemy(enemyData) {
     if (enemyData.currentHitPoints <= 0) { return }
-    // @TODO Allow for other unit types\
-    const EnemyType = this.UNIT_TYPES['Tank']
-    let enemy = new EnemyType(this, enemyData.name)
+    let enemy = this.createEnemy(enemyData.enemyType, enemyData.subtype)
     this.buildEntityFromData(enemy, enemyData)
 
     this.enemies.add(enemy)
@@ -148,7 +146,7 @@ class ClientGame extends Game {
    */
   addTowers(towers) {
     towers.forEach((towerData) => {
-      const TowerType = this.UNIT_TYPES[towerData.name]
+      const TowerType = this.TOWER_TYPES[towerData.name]
       let tower = new TowerType(this, towerData.name)
       this.buildEntityFromData(tower, towerData)
 

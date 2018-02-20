@@ -9,11 +9,12 @@ import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Flamethrower from '../units/Flamethrower'
 import MachineGun from '../units/MachineGun'
-import Tank from '../units/Tank'
+import Enemy from '../units/Enemy'
 
 import Pathing from '../map/Pathing'
 import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
+import { getEnemyData, scaleEnemy } from '../units/Enemies'
 
 
 export default class Game {
@@ -43,7 +44,7 @@ export default class Game {
     this.emitter = emitter
 
 
-    this.UNIT_TYPES = { Tank, Cannon, Flamethrower, MachineGun }
+    this.TOWER_TYPES = { Cannon, Flamethrower, MachineGun }
 
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
@@ -192,8 +193,9 @@ export default class Game {
   }
 
   createEnemy(type, subtype) {
-    const UnitClass = this.UNIT_TYPES[type]
-    return new UnitClass(this, subtype)
+    const enemyData = getEnemyData(type, subtype)
+    const scaledEnemyData = scaleEnemy(enemyData, this.wave.number)
+    return new Enemy(this, scaledEnemyData)
   }
 
   placeWaveEnemies(newEnemies) {
@@ -231,7 +233,7 @@ export default class Game {
     const placingTower = tower || this.placingTower
     if (!placingTower) { return }
 
-    const TowerType = this.UNIT_TYPES[placingTower.name]
+    const TowerType = this.TOWER_TYPES[placingTower.name]
     const finalTower = new TowerType(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
 

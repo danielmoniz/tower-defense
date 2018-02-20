@@ -5,15 +5,25 @@ import Unit from './Unit'
 import { GAME_REFRESH_RATE } from '../appConstants'
 
 class Enemy extends Unit {
-  // defaults (observables)
+  // default observables
   @observable speed = 100 // pixels per second
   @observable completed = false
   @observable killValue // should be overridden
 
-  constructor(game, options) {
+  constructor(game, enemyData, gameLevel, options) {
     super(game, options)
     this.movementId = undefined
     this.type = 'Enemy'
+    this.gameLevel = gameLevel
+
+    this.setAttributes(enemyData)
+    this.currentHitPoints = this.maxHitPoints
+  }
+
+  setAttributes(enemyAttributes) {
+    for (let attribute of Object.keys(enemyAttributes)) {
+      this[attribute] = enemyAttributes[attribute]
+    }
   }
 
   /*
