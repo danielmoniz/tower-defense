@@ -7,13 +7,17 @@ export default function socketListeners(socket, emitter, serverFunctions) {
       socket.broadcast.to(socket.roomId).emit('place tower', tower)
     }
   })
-    socket.on('sell tower', (tower) => {
-      console.log('selling tower at:', tower.x, tower.y);
-      if (socket.gameManager && socket.gameManager.game) {
-        // socket.gameManager.game.sellTower(tower)
-        // socket.broadcast.to(socket.roomId).emit('sell tower', tower)
+
+  socket.on('sell tower', (towerId) => {
+    console.log('selling tower with ID:', towerId);
+    if (socket.gameManager && socket.gameManager.game) {
+      const sellSuccess = socket.gameManager.game.receiveSellTower(towerId)
+      if (sellSuccess) {
+        console.log('Sell tower success on server side!');
+        socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
       }
-    })
+    }
+  })
 
   socket.on('spawn wave early', () => {
     if (socket.gameManager && socket.gameManager.game) {

@@ -236,6 +236,8 @@ export default class Game {
     const TowerType = this.TOWER_TYPES[placingTower.name]
     const finalTower = new TowerType(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
+    if (tower && tower.id) { finalTower.id = tower.id }
+    // @TODO Should probably be copying over all stats, not just id and location
 
     if (finalTower && this.canAfford(finalTower)) {
       const placed = this.pathHelper.addObstacle(
@@ -328,6 +330,16 @@ export default class Game {
 
   // WEB FUNCTIONS --------------------------
   // These functions are web related - they are shared between ClientMultiGame and ServerGame.
+
+  @action receiveSellTower(towerId) {
+    const tower = this.towers.byId[towerId]
+    if (!tower) {
+      console.log("No tower with id", towerId);
+      return
+    }
+    this.sellTower(tower)
+    return true
+  }
 
   @action adjustGameSpeed(multiplier) {
     // console.log('Setting game speed to:', multiplier);

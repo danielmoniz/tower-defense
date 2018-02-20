@@ -40,7 +40,7 @@ class GameEmitter {
   }
 
   sellTower(tower) {
-    this.emit('sell tower', tower)
+    this.emit('sell tower', tower.id)
     console.log('EMITTED SELL TOWER');
   }
 
