@@ -2,8 +2,7 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../appConstants'
-
-let ID = 1
+import getAltId from '../utility/altId'
 
 class Unit {
   // defaults (observables)
@@ -22,8 +21,7 @@ class Unit {
 
   constructor(game, options) {
     options = options || {}
-    this.id = ID
-    ID += 1
+    this.id = getAltId()
     this.type = 'Unit' // should be overwritten
 
     // add a reference to game which avoids circular referencing
