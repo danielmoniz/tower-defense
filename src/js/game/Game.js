@@ -76,6 +76,7 @@ export default class Game {
 
   @action reset() {
     this.wave.reset()
+    this.pathHelper.weights.reset()
     this.lives = 20
     this.credits.current = this.credits.start
   }
@@ -251,6 +252,11 @@ export default class Game {
       this.towers.add(finalTower)
       return finalTower
     }
+  }
+
+  @action sellTower(tower) {
+    this.profit(tower.getSellValue())
+    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
   }
 
   endGame() {

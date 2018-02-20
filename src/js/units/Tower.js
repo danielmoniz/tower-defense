@@ -166,6 +166,15 @@ export default class Tower extends Unit {
     return target.getDistanceToPoint(this.getCentre())
   }
 
+  getSellValue() {
+    return Math.floor(this.purchaseCost / 2)
+  }
+
+  sell() {
+    this.destroy()
+    this.game.sellTower(this)
+  }
+
   /*
    * Returns the top-left coordinate of the tower.
    * Needed because coordinates are based on the centre point.

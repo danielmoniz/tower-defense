@@ -30,6 +30,7 @@ export default class TowerRenderer extends UnitRenderer {
     this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
     const gunContainer = this.setGun(unit, unitContainer, gunOptions)
     const maxRange = this.setMaxRange(container)
+    const sellButton = this.setSellButton(container, unitContainer, unit)
 
     // @TODO This should probably be done in UnitRenderer
     board.app.stage.addChild(container)
@@ -50,6 +51,10 @@ export default class TowerRenderer extends UnitRenderer {
 
     autorun(() => {
       ghostUnit(unit, unitContainer)
+    })
+
+    autorun(() => {
+      toggleSellButton(unit, sellButton)
     })
 
     return { container, unitContainer, maxRange }
@@ -115,6 +120,38 @@ export default class TowerRenderer extends UnitRenderer {
     return gunContainer
   }
 
+  setSellButton(container, unitContainer, tower) {
+    const buttonHeight = 40,
+          buttonWidth = 40,
+          buttonX = 30,
+          buttonY = 50
+
+    console.log(tower.x, tower.y);
+    const sellButton = new PIXI.Sprite(PIXI.utils.TextureCache["sell"])
+
+    // adjust sell button as needed to render regardless of tower position
+    sellButton.x = -buttonX
+    if (tower.x <= buttonX) {
+      sellButton.x = unitContainer.width + buttonX - buttonWidth
+    }
+    sellButton.y = -buttonY
+    if (tower.y <= buttonY) {
+      sellButton.y = unitContainer.height + buttonY - buttonHeight
+    }
+
+    sellButton.width = buttonWidth
+    sellButton.height = buttonHeight
+    sellButton.alpha = 0.75
+    sellButton.interactive = true
+    sellButton.buttonMode = true
+    sellButton.on('click', () => {
+      tower.sell()
+    })
+
+    container.addChild(sellButton)
+    return sellButton
+  }
+
   setMaxRange(container) {
     const maxRange = new PIXI.Graphics()
     container.addChildAt(maxRange, 0) // add to bottom of container
@@ -173,5 +210,13 @@ function disable(unit, background, disableBackground) {
   } else {
     background.alpha = 0
     disableBackground.alpha = 1
+  }
+}
+
+function toggleSellButton(unit, sellButton) {
+  if (unit.selected) {
+    sellButton.visible = true
+  } else {
+    sellButton.visible = false
   }
 }
