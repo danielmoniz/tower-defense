@@ -177,7 +177,7 @@ class ClientGame extends Game {
     towers.forEach((towerData) => {
       let tower = this.towers.byId[towerData.id]
       let towerIsNew = false
-      if (!tower) { // Create tower
+      if (!tower) { // Create tower if needed
         console.log('Tower is new. It has ID', towerData.id);
         towerIsNew = true
         const TowerType = this.UNIT_TYPES[towerData.name]
@@ -207,16 +207,6 @@ class ClientGame extends Game {
       } else {
         tower.selectTarget()
       }
-
-      // if (towerIsNew) {
-      //   tower.place()
-      //   const towerPlacementSuccess = this.placeTower(tower)
-      //   console.log('Placed new tower. Success:', towerPlacementSuccess);
-      //   // tower.selectTarget()
-      //
-      //   // this.towers.add(tower)
-      //   // this.renderer.queueRender(tower)
-      // }
     })
   }
 
