@@ -53,7 +53,6 @@ export default class PathsGrid extends Grid {
       this.addMultipleToQueue(queue, coordinates, currentPos, weights)
     }
 
-    console.log(this.values)
     return this.isMapValid() // need to know if map is blocked
   }
 

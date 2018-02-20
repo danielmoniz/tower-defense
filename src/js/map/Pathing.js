@@ -24,6 +24,11 @@ export default class Pathing {
     this.compute()
   }
 
+  reset() {
+    this.weights.reset()
+    this.compute()
+  }
+
   /*
    * Attempts to add an obstacle to the map. This involves updating both
    * the weights and pathLengths grids.

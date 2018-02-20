@@ -5,10 +5,18 @@ export default class WeightsGrid extends Grid {
   constructor(tilesWide, tilesHigh) {
     // this.grid = new Grid(tilesWide, tilesHigh)
     super(tilesWide, tilesHigh, 1)
+    this.generateTerrain()
+  }
+
+  reset() {
+    super.reset()
+    this.generateTerrain()
+  }
+
+  generateTerrain() {
     this.addTestCrater({x:17,y:17}, 3, 4)
     this.addTestCrater({x:30,y:30}, 3, 4)
     this.addTestCrater({x:30,y:4}, 3, 4)
-    console.log(this.values)
   }
 
   addTestCrater(gridLocation, weight, size) {
