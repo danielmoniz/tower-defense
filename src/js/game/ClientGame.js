@@ -30,6 +30,7 @@ class ClientGame extends Game {
    */
   @action selectNewTower(towerType) {
     if (!this.inProgress) { return }
+    this.deselectAll()
     const TowerType = this.TOWER_TYPES[towerType]
     this.placingTower = new TowerType(this)
     this.selectedEntity = this.placingTower

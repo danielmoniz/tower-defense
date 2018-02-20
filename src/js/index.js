@@ -1,6 +1,7 @@
 import { useStrict } from 'mobx'
 import * as PIXI from 'pixi.js'
 import * as particles from 'pixi-particles'
+import * as layers from 'pixi-layers'
 
 window.particles = particles
 // console.log(particles);

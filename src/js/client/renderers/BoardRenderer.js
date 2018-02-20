@@ -17,11 +17,24 @@ export default class BoardRenderer {
       transparent: false,
       resolution: 1,
     })
+
     this.app.view.id = "game-viewport"
     const displayBox = document.querySelector("#display-box")
     displayBox.appendChild(this.app.view)
     this.app.renderer.backgroundColor = 0xFFFFFF
     this.app.renderer.view.style.border = '2px solid black'
+
+    this.app.stage = new PIXI.display.Stage(); // necessary for layers to work
+
+    this.mapLayer = new PIXI.display.Layer()
+    this.backgroundLayer = new PIXI.display.Layer()
+    this.unitsLayer = new PIXI.display.Layer()
+    this.menuLayer = new PIXI.display.Layer()
+
+    this.app.stage.addChild(this.mapLayer)
+    this.app.stage.addChild(this.backgroundLayer)
+    this.app.stage.addChild(this.unitsLayer)
+    this.app.stage.addChild(this.menuLayer)
 
     this.loadUnitAssets(() => {
       this.renderMap(game)
@@ -157,6 +170,8 @@ export default class BoardRenderer {
     exitImage.width = GRID_SIZE
     exitImage.height = GRID_SIZE
     exitContainer.addChild(exitImage)
+
+    exitContainer.parentLayer = this.mapLayer
 
     this.app.stage.addChild(exitContainer)
   }
