@@ -66,26 +66,15 @@ class ClientGame extends Game {
   spawnWaveEarly() {}
 
 
-  @action updateAll(data) {
+  @action updateAll(data, serverTime) {
     console.log('Updating all');
+
     this.enemies.clear()
     this.addEnemies(data.enemies)
-    // Below is an attempt to update existing enemies instead of rebuilding them
-    // data.enemies.forEach((enemy) => {
-    //   if (enemy.id in this.enemiesById) {
-    //     this.buildEntityFromData(this.enemiesById[enemy.id], enemy)
-    //   } else {
-    //     this.addEnemy(enemy)
-    //   }
-    // })
-    // @TODO Handle case where the game has extra enemies the server did not?
-    // --> May not need to because enemies are spawned via waves (not player actions)
 
-    // this.towers.clear()
-    // this.addTowers(data.towers)
-    // @TODO Handle towers that exist here but not on the server
     this.updateTowers(data.towers)
-    this.removeTowers(data.towers)
+    this.removeTowers(data.towers, serverTime)
+
 
 
 
@@ -150,21 +139,25 @@ class ClientGame extends Game {
     return enemy
   }
 
-  removeTowers(towers) {
+  removeTowers(towers, serverTime) {
+    const clientTime = Date.now()
     const serverTowersById = {}
     towers.forEach((tower) => {
       serverTowersById[tower.id] = tower
     })
 
-    console.log('Server towers:', towers.length);
-    console.log('Client towers:', this.towers.all.length);
     for (let i = this.towers.all.length - 1; i >= 0; i--) {
       const tower = this.towers.all[i]
-      console.log(tower.id);
-      console.log();
+      const timeSinceBuild = clientTime - tower.createdAt
+      const timeSinceServerCall = clientTime - serverTime
+      const towerIsNew = timeSinceBuild <= timeSinceServerCall
+      if (towerIsNew) {
+        console.log('Tower is new! Cannot remove. ID:', tower.id);
+        continue
+      }
       if (!(tower.id in serverTowersById)) {
         console.log("Removed tower with ID:", tower.id);
-        // @TODO Recalculate pathing - there should be a reset/recalculate weights function
+        // @FIXME @TODO Recalculate pathing - there should be a reset/recalculate weights function
         this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
         this.towers.remove(i)
         tower.destroy()

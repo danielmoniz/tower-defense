@@ -53,7 +53,7 @@ class GameServer {
       const gameManager = this.getGameManager(roomId)
       if (gameManager.gameInProgress()) { // only update games in progress
         const gameData = this.getGameData(gameManager.game)
-        this.io.to(roomId).emit('update all', gameData)
+        this.io.to(roomId).emit('update all', gameData, Date.now())
       }
     })
   }

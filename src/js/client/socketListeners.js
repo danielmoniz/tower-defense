@@ -35,8 +35,8 @@ function setUpListeners(game, emitter) {
     game.receiveSellTower(towerId)
   })
 
-  socket.on('update all', (data) => {
-    game.updateAll(data)
+  socket.on('update all', (data, serverTime) => {
+    game.updateAll(data, serverTime)
   })
 
   socket.on('join existing game', (gameData) => {
