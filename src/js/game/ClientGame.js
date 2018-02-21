@@ -85,6 +85,7 @@ class ClientGame extends Game {
     // this.addTowers(data.towers)
     // @TODO Handle towers that exist here but not on the server
     this.updateTowers(data.towers)
+    this.removeTowers(data.towers)
 
 
 
@@ -149,43 +150,45 @@ class ClientGame extends Game {
     return enemy
   }
 
-  /*
-   * Add and render towers to the game given data describing those towers.
-   */
-  addTowers(towers) {
-    towers.forEach((towerData) => {
-      const TowerType = this.TOWER_TYPES[towerData.name]
-      let tower = new TowerType(this, towerData.name)
-      this.buildEntityFromData(tower, towerData)
-
-      // @TODO Refactor setting of cooldown ticksPassed
-      tower.setCooldowns()
-      tower.selectTarget() // makes towers pick a (new) target, making it look more continuous
-      tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
-      tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
-      tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
-      this.towers.add(tower)
-      this.renderer.queueRender(tower)
+  removeTowers(towers) {
+    const serverTowersById = {}
+    towers.forEach((tower) => {
+      serverTowersById[tower.id] = tower
     })
+
+    console.log('Server towers:', towers.length);
+    console.log('Client towers:', this.towers.all.length);
+    for (let i = this.towers.all.length - 1; i >= 0; i--) {
+      const tower = this.towers.all[i]
+      console.log(tower.id);
+      console.log();
+      if (!(tower.id in serverTowersById)) {
+        console.log("Removed tower with ID:", tower.id);
+        // @TODO Recalculate pathing - there should be a reset/recalculate weights function
+        this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+        this.towers.remove(i)
+        tower.destroy()
+      }
+    }
   }
 
   /*
    * Update existing towers given data describing those towers.
    */
   updateTowers(towers) {
-    console.log('Number of towers on server:', towers.length);
+    // console.log('Number of towers on server:', towers.length);
     towers.forEach((towerData) => {
       let tower = this.towers.byId[towerData.id]
       let towerIsNew = false
       if (!tower) { // Create tower if needed
-        console.log('Tower is new. It has ID', towerData.id);
+        // console.log('Tower is new. It has ID', towerData.id);
         towerIsNew = true
         const TowerType = this.UNIT_TYPES[towerData.name]
         tower = new TowerType(this, towerData.name)
       } else {
-        console.log('Tower already exists! It has ID', towerData.id);
+        // console.log('Tower already exists! It has ID', towerData.id);
       }
-      console.log(towerData);
+      // console.log(towerData);
       this.buildEntityFromData(tower, towerData)
 
       if (towerIsNew) {
