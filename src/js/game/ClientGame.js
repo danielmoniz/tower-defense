@@ -139,6 +139,20 @@ class ClientGame extends Game {
     return enemy
   }
 
+  removeTower(towerData, towerIndex) {
+    const tower = this.towers.byId[towerData.id]
+    if (!tower) { return }
+    console.log('removed tower with ID:', tower.id);
+    // @FIXME @TODO Recalculate pathing - there should be a reset/recalculate weights function (at least for a specific area)
+    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+    if (towerIndex !== undefined) {
+      this.towers.remove(towerIndex)
+    } else {
+      this.towers.removeByValue(tower)
+    }
+    tower.destroy()
+  }
+
   removeTowers(towers, serverTime) {
     const clientTime = Date.now()
     const serverTowersById = {}
@@ -154,11 +168,7 @@ class ClientGame extends Game {
         continue
       }
       if (!(tower.id in serverTowersById)) {
-        console.log("Removed tower with ID:", tower.id);
-        // @FIXME @TODO Recalculate pathing - there should be a reset/recalculate weights function
-        this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
-        this.towers.remove(i)
-        tower.destroy()
+        this.removeTower(tower, i)
       }
     }
   }
