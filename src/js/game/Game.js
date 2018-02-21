@@ -240,8 +240,7 @@ export default class Game {
     // @TODO Should probably be copying over all stats, not just id and location
 
     if (finalTower && this.canAfford(finalTower)) {
-      const placed = this.pathHelper.addObstacle(
-        finalTower.getTopLeft(), finalTower.width, finalTower.height)
+      const placed = this.addTower(finalTower)
       if (!placed) {
         // @TODO Add message that says tower cannot be placed to block enemies
         console.log("Tower placement not allowed! You cannot block the goal or place on top of existing towers.");
@@ -249,12 +248,20 @@ export default class Game {
       }
 
       this.buyTower(finalTower)
-      finalTower.place()
-      finalTower.show()
-      this.towers.add(finalTower)
       return finalTower
     }
     console.log("Tower not placed - can't afford or no finalTower exists.");
+  }
+
+  addTower(tower) {
+    const placed = this.pathHelper.addObstacle(
+      tower.getTopLeft(), tower.width, tower.height)
+    if (!placed) { return false }
+
+    tower.place()
+    tower.show()
+    this.towers.add(tower)
+    return tower
   }
 
   @action sellTower(tower) {

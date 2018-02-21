@@ -139,6 +139,13 @@ class ClientGame extends Game {
     return enemy
   }
 
+  addTower(tower) {
+    const placed = super(tower)
+    if (!placed) { return false }
+    this.renderer.queueRender(tower)
+    return tower
+  }
+
   undoPlaceTower(tower) {
     const refund = tower.purchaseCost
     const success = this.removeTower(tower)
@@ -194,25 +201,15 @@ class ClientGame extends Game {
         towerIsNew = true
         const TowerType = this.UNIT_TYPES[towerData.name]
         tower = new TowerType(this, towerData.name)
-      } else {
-        // console.log('Tower already exists! It has ID', towerData.id);
       }
       // console.log(towerData);
       this.buildEntityFromData(tower, towerData)
 
       if (towerIsNew) {
-        this.pathHelper.addObstacle(
-          tower.getTopLeft(), tower.width, tower.height)
-        this.towers.add(tower)
-        tower.place()
-        this.renderer.queueRender(tower)
+        this.addTower(tower)
       }
 
-      // @TODO Refactor setting of cooldown ticksPassed
-      tower.setCooldowns()
-      tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
-      tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
-      tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
+      this.updateTowerCooldowns(tower, towerData)
 
       if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
         tower.setTarget(this.enemies.byId[tower.target.id])
@@ -220,6 +217,14 @@ class ClientGame extends Game {
         tower.selectTarget()
       }
     })
+  }
+
+  updateTowerCooldowns(tower, towerData) {
+    // @TODO Refactor setting of cooldown ticksPassed
+    tower.setCooldowns()
+    tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
+    tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
+    tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
   }
 
 }
