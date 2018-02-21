@@ -3,8 +3,10 @@ export default function socketListeners(socket, emitter, serverFunctions) {
   socket.on('place tower', (tower) => {
     console.log('placing tower at:', tower.x, tower.y);
     if (socket.gameManager && socket.gameManager.game) {
-      socket.gameManager.game.placeTower(tower)
-      socket.broadcast.to(socket.roomId).emit('place tower', tower)
+      const success = socket.gameManager.game.placeTower(tower)
+      if (success) {
+        socket.broadcast.to(socket.roomId).emit('place tower', tower)
+      }
     }
   })
 

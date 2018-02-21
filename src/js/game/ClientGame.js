@@ -148,9 +148,7 @@ class ClientGame extends Game {
 
     for (let i = this.towers.all.length - 1; i >= 0; i--) {
       const tower = this.towers.all[i]
-      const timeSinceBuild = clientTime - tower.createdAt
-      const timeSinceServerCall = clientTime - serverTime
-      const towerIsNew = timeSinceBuild <= timeSinceServerCall
+      const towerIsNew = tower.createdAt > serverTime
       if (towerIsNew) {
         console.log('Tower is new! Cannot remove. ID:', tower.id);
         continue
