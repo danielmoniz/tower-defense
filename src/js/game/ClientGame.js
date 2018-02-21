@@ -139,10 +139,17 @@ class ClientGame extends Game {
     return enemy
   }
 
+  undoPlaceTower(tower) {
+    const refund = tower.purchaseCost
+    const success = this.removeTower(tower)
+    if (!success) { return false }
+    this.profit(refund)
+    console.log("Refunded", refund, "for undoing tower placement.");
+  }
+
   removeTower(towerData, towerIndex) {
     const tower = this.towers.byId[towerData.id]
     if (!tower) { return }
-    console.log('removed tower with ID:', tower.id);
     // @FIXME @TODO Recalculate pathing - there should be a reset/recalculate weights function (at least for a specific area)
     this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
     if (towerIndex !== undefined) {
@@ -151,6 +158,7 @@ class ClientGame extends Game {
       this.towers.removeByValue(tower)
     }
     tower.destroy()
+    return true
   }
 
   removeTowers(towers, serverTime) {

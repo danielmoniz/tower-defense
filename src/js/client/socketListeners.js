@@ -32,7 +32,7 @@ function setUpListeners(game, emitter) {
 
   socket.on('place tower failed', (tower) => {
     console.log('Tower placement failed. Removing tower at:', tower.x, tower.y);
-    game.removeTower(tower)
+    game.undoPlaceTower(tower)
   })
 
   socket.on('sell tower', (towerId) => {
