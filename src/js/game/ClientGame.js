@@ -140,10 +140,18 @@ class ClientGame extends Game {
   }
 
   addTower(tower) {
-    const placed = super(tower)
+    const placed = super.addTower(tower)
     if (!placed) { return false }
     this.renderer.queueRender(tower)
     return tower
+  }
+
+  setTowerTarget(tower) {
+    if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
+      tower.setTarget(this.enemies.byId[tower.target.id])
+    } else {
+      tower.selectTarget()
+    }
   }
 
   undoPlaceTower(tower) {
@@ -192,31 +200,30 @@ class ClientGame extends Game {
    * Update existing towers given data describing those towers.
    */
   updateTowers(towers) {
-    // console.log('Number of towers on server:', towers.length);
-    towers.forEach((towerData) => {
-      let tower = this.towers.byId[towerData.id]
-      let towerIsNew = false
-      if (!tower) { // Create tower if needed
-        // console.log('Tower is new. It has ID', towerData.id);
-        towerIsNew = true
-        const TowerType = this.UNIT_TYPES[towerData.name]
-        tower = new TowerType(this, towerData.name)
-      }
-      // console.log(towerData);
-      this.buildEntityFromData(tower, towerData)
+    towers.forEach(this.updateTower.bind(this))
+  }
 
-      if (towerIsNew) {
-        this.addTower(tower)
-      }
+  /*
+   * Update a single tower given data about that tower.
+   */
+  updateTower(towerData) {
+    let tower = this.towers.byId[towerData.id]
+    let towerIsNew = false
+    if (!tower) { // Create tower if needed
+      // console.log('Tower is new. It has ID', towerData.id);
+      towerIsNew = true
+      const TowerType = this.UNIT_TYPES[towerData.name]
+      tower = new TowerType(this, towerData.name)
+    }
+    // console.log(towerData);
+    this.buildEntityFromData(tower, towerData)
 
-      this.updateTowerCooldowns(tower, towerData)
+    if (towerIsNew) {
+      this.addTower(tower)
+    }
 
-      if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
-        tower.setTarget(this.enemies.byId[tower.target.id])
-      } else {
-        tower.selectTarget()
-      }
-    })
+    this.updateTowerCooldowns(tower, towerData)
+    this.setTowerTarget(tower)
   }
 
   updateTowerCooldowns(tower, towerData) {
