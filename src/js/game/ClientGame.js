@@ -59,6 +59,14 @@ class ClientGame extends Game {
     return tower
   }
 
+  undoPlaceTower(tower) {
+    const refund = tower.purchaseCost
+    const success = this.removeTower(tower)
+    if (!success) { return false }
+    this.profit(refund)
+    console.log("Refunded", refund, "for undoing tower placement.");
+  }
+
   sendSellTower(tower) {
     this.sellTower(tower)
   }
@@ -127,16 +135,14 @@ class ClientGame extends Game {
    * Useful for when the game updates and wave spawning.
    */
   updateEnemy(enemyData) {
-    if (enemyData.currentHitPoints <= 0) { return }
     let enemy = this.enemies.byId[enemyData.id]
 
     let enemyIsNew = false
     if (!enemy) { // Create enemy if needed
-      // console.log('Enemy is new. It has ID', enemyData.id);
       enemyIsNew = true
       enemy = this.createEnemy(enemyData.enemyType, enemyData.subtype)
     }
-    // console.log(enemyData);
+
     this.buildEntityFromData(enemy, enemyData)
 
     if (enemyIsNew) {
@@ -146,77 +152,12 @@ class ClientGame extends Game {
     }
   }
 
-  addTower(tower) {
-    const placed = super.addTower(tower)
-    if (!placed) { return false }
-    this.renderer.queueRender(tower)
-    return tower
-  }
-
-  setTowerTarget(tower) {
-    if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
-      tower.setTarget(this.enemies.byId[tower.target.id])
-    } else {
-      tower.selectTarget()
-    }
-  }
-
-  undoPlaceTower(tower) {
-    const refund = tower.purchaseCost
-    const success = this.removeTower(tower)
-    if (!success) { return false }
-    this.profit(refund)
-    console.log("Refunded", refund, "for undoing tower placement.");
-  }
-
-  removeTower(towerData, towerIndex) {
-    const tower = this.towers.byId[towerData.id]
-    if (!tower) { return }
-    // @FIXME @TODO Recalculate pathing - there should be a reset/recalculate weights function (at least for a specific area)
-    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
-    if (towerIndex !== undefined) {
-      this.towers.remove(towerIndex)
-    } else {
-      this.towers.removeByValue(tower)
-    }
-    tower.destroy()
-    return true
-  }
-
-  removeTowers(towers, serverTime) {
-    const clientTime = Date.now()
-    const serverTowersById = {}
-    towers.forEach((tower) => {
-      serverTowersById[tower.id] = tower
-    })
-
-    for (let i = this.towers.all.length - 1; i >= 0; i--) {
-      const tower = this.towers.all[i]
-      const towerIsNew = tower.createdAt > serverTime
-      if (towerIsNew) {
-        console.log('Tower is new! Cannot remove. ID:', tower.id);
-        continue
-      }
-      if (!(tower.id in serverTowersById)) {
-        this.removeTower(tower, i)
-      }
-    }
-  }
-
   removeEnemies(enemiesData) {
-    const serverEnemiesById = {}
-    enemiesData.forEach((enemyData) => {
-      serverEnemiesById[enemyData.id] = enemyData
+    const enemiesToRemove = this.getRemovableUnits(enemiesData, this.enemies)
+    enemiesToRemove.forEach((enemy, i) => {
+      enemy.destroy()
+      // NOTE: Do NOT remove enemy from this.enemies. It will not derender.
     })
-
-    for (let i = this.enemies.all.length - 1; i >= 0; i--) {
-      const enemy = this.enemies.all[i]
-      if (!(enemy.id in serverEnemiesById)) {
-        enemy.destroy()
-        this.enemies.remove(i)
-      } else {
-      }
-    }
   }
 
   /*
@@ -250,12 +191,76 @@ class ClientGame extends Game {
     this.setTowerTarget(tower)
   }
 
+  addTower(tower) {
+    const placed = super.addTower(tower)
+    if (!placed) { return false }
+    this.renderer.queueRender(tower)
+    return tower
+  }
+
   updateTowerCooldowns(tower, towerData) {
     // @TODO Refactor setting of cooldown ticksPassed
     tower.setCooldowns()
     tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
     tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
     tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
+  }
+
+  setTowerTarget(tower) {
+    if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
+      tower.setTarget(this.enemies.byId[tower.target.id])
+    } else {
+      tower.selectTarget()
+    }
+  }
+
+  removeTowers(towersData, serverTime) {
+    const clientTime = Date.now()
+    const towersToRemove = this.getRemovableUnits(towersData, this.towers)
+    towersToRemove.forEach((tower, i) => {
+      const towerIsNew = tower.createdAt > serverTime
+      if (towerIsNew) {
+        console.log('Tower is new! Cannot remove. ID:', tower.id);
+        return
+      }
+      this.removeTower(tower, i)
+    })
+  }
+
+  removeTower(towerData, towerIndex) {
+    const tower = this.towers.byId[towerData.id]
+    if (!tower) { return }
+    // @FIXME @TODO Recalculate pathing - there should be a reset/recalculate weights function (at least for a specific area)
+    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+    if (towerIndex !== undefined) {
+      this.towers.remove(towerIndex)
+    } else {
+      this.towers.removeByValue(tower)
+    }
+    tower.destroy()
+    return true
+  }
+
+  /*
+   * Returns an array of units (ie. enemies or towers) whose IDs are
+   * not in the provided unitsData. That is, they should be removed.
+   */
+  getRemovableUnits(unitsData, units) {
+    const removableUnits = []
+
+    const serverUnitsById = {}
+    unitsData.forEach((unitData) => {
+      serverUnitsById[unitData.id] = unitData
+    })
+
+    for (let i = units.all.length - 1; i >= 0; i--) {
+      const unit = units.all[i]
+      if (!(unit.id in serverUnitsById)) {
+        removableUnits.push(unit)
+      }
+    }
+
+    return removableUnits
   }
 
 }
