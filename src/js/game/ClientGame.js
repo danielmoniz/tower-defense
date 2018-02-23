@@ -98,6 +98,7 @@ class ClientGame extends Game {
     console.log('Updating all');
 
     this.updateEnemies(data.enemies)
+    this.removeEnemies(data.enemies)
     // @TODO Remove enemies
 
     this.updateTowers(data.towers)
@@ -198,6 +199,22 @@ class ClientGame extends Game {
       }
       if (!(tower.id in serverTowersById)) {
         this.removeTower(tower, i)
+      }
+    }
+  }
+
+  removeEnemies(enemiesData) {
+    const serverEnemiesById = {}
+    enemiesData.forEach((enemyData) => {
+      serverEnemiesById[enemyData.id] = enemyData
+    })
+
+    for (let i = this.enemies.all.length - 1; i >= 0; i--) {
+      const enemy = this.enemies.all[i]
+      if (!(enemy.id in serverEnemiesById)) {
+        enemy.destroy()
+        this.enemies.remove(i)
+      } else {
       }
     }
   }
