@@ -65,39 +65,6 @@ class ClientGame extends Game {
 
   spawnWaveEarly() {}
 
-
-  @action updateAll(data, serverTime) {
-    console.log('Updating all');
-
-    this.enemies.clear()
-    this.addEnemies(data.enemies)
-
-    this.updateTowers(data.towers)
-    this.removeTowers(data.towers, serverTime)
-
-
-
-
-    this.credits.current = data.credits
-    this.wave.setNumber(data.waveNumber)
-    this.inProgress = data.inProgress
-    this.control.run = data.control.run
-    if (this.inProgress && this.control.run) {
-      this.play()
-    } else {
-      this.pause()
-    }
-  }
-
-  /*
-   * Add and render enemies to the game given data describing those enemies.
-   */
-  addEnemies(enemies) {
-    enemies.forEach((enemyData) => {
-      this.addEnemy(enemyData)
-    })
-  }
-
   @action deselectPlacingTower() {
     if (this.placingTower) {
       this.renderer.destroyEntity(this.placingTower)
@@ -126,17 +93,56 @@ class ClientGame extends Game {
     this.selectedEntity = entity
   }
 
-  addEnemy(enemyData) {
+
+  @action updateAll(data, serverTime) {
+    console.log('Updating all');
+
+    this.updateEnemies(data.enemies)
+    // @TODO Remove enemies
+
+    this.updateTowers(data.towers)
+    this.removeTowers(data.towers, serverTime)
+
+    this.credits.current = data.credits
+    this.wave.setNumber(data.waveNumber)
+    this.inProgress = data.inProgress
+    this.control.run = data.control.run
+    if (this.inProgress && this.control.run) {
+      this.play()
+    } else {
+      this.pause()
+    }
+  }
+
+  /*
+   * Update existing enemies given data describing those enemies.
+   */
+  updateEnemies(enemiesData) {
+    enemiesData.forEach(this.updateEnemy.bind(this))
+  }
+
+  /*
+   * Update/creates a single tower given data about that tower.
+   * Useful for when the game updates and wave spawning.
+   */
+  updateEnemy(enemyData) {
     if (enemyData.currentHitPoints <= 0) { return }
-    let enemy = this.createEnemy(enemyData.enemyType, enemyData.subtype)
+    let enemy = this.enemies.byId[enemyData.id]
+
+    let enemyIsNew = false
+    if (!enemy) { // Create enemy if needed
+      // console.log('Enemy is new. It has ID', enemyData.id);
+      enemyIsNew = true
+      enemy = this.createEnemy(enemyData.enemyType, enemyData.subtype)
+    }
+    // console.log(enemyData);
     this.buildEntityFromData(enemy, enemyData)
 
-    this.enemies.add(enemy)
-    const enemyTarget = this.getEnemyGoal(enemy)
-    enemy.setMoveTarget()
-
-    this.renderer.queueRender(enemy)
-    return enemy
+    if (enemyIsNew) {
+      this.enemies.add(enemy)
+      enemy.setMoveTarget()
+      this.renderer.queueRender(enemy)
+    }
   }
 
   addTower(tower) {
@@ -199,20 +205,21 @@ class ClientGame extends Game {
   /*
    * Update existing towers given data describing those towers.
    */
-  updateTowers(towers) {
-    towers.forEach(this.updateTower.bind(this))
+  updateTowers(towersData) {
+    towersData.forEach(this.updateTower.bind(this))
   }
 
   /*
-   * Update a single tower given data about that tower.
+   * Update/creates a single tower given data about that tower.
    */
   updateTower(towerData) {
     let tower = this.towers.byId[towerData.id]
+
     let towerIsNew = false
     if (!tower) { // Create tower if needed
       // console.log('Tower is new. It has ID', towerData.id);
       towerIsNew = true
-      const TowerType = this.UNIT_TYPES[towerData.name]
+      const TowerType = this.TOWER_TYPES[towerData.name]
       tower = new TowerType(this, towerData.name)
     }
     // console.log(towerData);
