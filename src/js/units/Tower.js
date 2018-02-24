@@ -20,6 +20,7 @@ export default class Tower extends Unit {
   @observable killProfitMultiplier // certain towers can gain extra credits when killing units
   @observable clipSize
   @observable reloadTime
+  @observable isFiring = false
 
   // tower performance data
   @observable kills = 0
@@ -59,6 +60,7 @@ export default class Tower extends Unit {
   }
 
   act() {
+    this.resetFiring()
     this.firingTimeCooldown.tick()
     if (this.canAttack()) {
       this.attack()
@@ -67,6 +69,10 @@ export default class Tower extends Unit {
     } else if (this.reloading) {
       this.attemptReload()
     }
+  }
+
+  @action resetFiring() {
+    this.isFiring = false
   }
 
   expendAmmo() {
@@ -102,6 +108,7 @@ export default class Tower extends Unit {
   @action attack() {
     this.selectTarget()
     if (!this.target) { return }
+    this.isFiring = true
 
     var targetValue = this.target.killValue
     const killedUnit = this.target.takeDamage(this.attackPower.current)

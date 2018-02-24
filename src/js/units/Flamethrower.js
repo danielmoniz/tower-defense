@@ -32,17 +32,6 @@ export default class Flamethrower extends Tower {
     this.height = GRID_SIZE * 3
   }
 
-  @action act() {
-    super.act()
-    this.firingTest += 1
-
-    if (this.targetIsValid() && this.canAttack()) {
-      this.isFiring = true
-    } else {
-      this.isFiring = false
-    }
-  }
-
   @action attack() {
     const target = super.attack()
     if (target) {

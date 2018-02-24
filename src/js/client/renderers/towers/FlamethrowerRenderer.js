@@ -13,6 +13,8 @@ export default class FlamethrowerRenderer extends TowerRenderer {
       color: 0xffd8c4,
       lineStyle: { width: 2, color: 0x000000, alpha: 1, },
     }
+
+    this.useMuzzleFlash = false
   }
 
   getGunOptions(unit) {
