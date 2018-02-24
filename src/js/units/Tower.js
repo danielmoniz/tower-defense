@@ -20,7 +20,9 @@ export default class Tower extends Unit {
   @observable killProfitMultiplier // certain towers can gain extra credits when killing units
   @observable clipSize
   @observable reloadTime
+
   @observable isFiring = false
+  @observable ammoType = 'bullet'
 
   // tower performance data
   @observable kills = 0
@@ -111,10 +113,8 @@ export default class Tower extends Unit {
     this.isFiring = true
 
     var targetValue = this.target.killValue
-    const killedUnit = this.target.takeDamage(this.attackPower.current, 'bullet')
+    const killedUnit = this.target.takeDamage(this.attackPower.current, this.ammoType)
     if (killedUnit) {
-      // console.log('Killed enemy!');
-      // do cool stuff! Add experience? Make money? Mow the lawn?
       // @TODO move these state changes into separate method
       this.game.profit(targetValue.credits * this.killProfitMultiplier)
       this.kills++
