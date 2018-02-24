@@ -111,7 +111,7 @@ export default class Tower extends Unit {
     this.isFiring = true
 
     var targetValue = this.target.killValue
-    const killedUnit = this.target.takeDamage(this.attackPower.current)
+    const killedUnit = this.target.takeDamage(this.attackPower.current, 'bullet')
     if (killedUnit) {
       // console.log('Killed enemy!');
       // do cool stuff! Add experience? Make money? Mow the lawn?

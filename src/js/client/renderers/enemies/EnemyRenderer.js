@@ -15,6 +15,25 @@ export default class EnemyRenderer extends UnitRenderer {
     container.addChild(unitBase)
 
     this.createHealthBar(unit, container)
+
+    const explosion = new PIXI.Sprite(PIXI.utils.TextureCache['enemyExplosionBasic'])
+    explosion.width = 10
+    explosion.height = 10
+    explosion.visible = false
+    explosion.x = unit.width * 1 / 3
+    explosion.y = unit.height * 1 / 3
+    container.addChild(explosion)
+
+    autorun(() => {
+      console.log('trying to add explosion');
+      if (unit.hitBy && unit.hitBy !== 'fire') {
+        explosion.visible = true
+        setTimeout(() => {
+          explosion.visible = false
+        }, 50)
+      }
+    })
+
     return container
   }
 
