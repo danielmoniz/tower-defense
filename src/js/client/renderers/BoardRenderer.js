@@ -56,6 +56,7 @@ export default class BoardRenderer {
           .add('carrier', '/images/carrier.png')
           .add('exit', '/images/exit.png')
           .add('sell', '/images/sell.png')
+          .add('muzzleFlash', '/images/muzzle_flash.png')
     console.log("Loading images...");
     this.loader.on("progress", (loader, resource) => {
       const completion = `${Math.floor(loader.progress)}%`
