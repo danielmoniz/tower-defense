@@ -37,7 +37,7 @@ export default class CannonRenderer extends TowerRenderer {
         const distance = unit.distanceToUnit(unit.target)
         console.log(distance);
         // laser.lineTo(targetLocation.x, 0)
-        laser.lineTo(distance + unit.target.width, 0)
+        laser.lineTo(distance + gunOptions.gunLength, 0)
         laser.endFill()
         gunContainer.addChild(laser)
         // muzzleFlash.visible = true
