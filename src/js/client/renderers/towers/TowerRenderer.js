@@ -66,7 +66,7 @@ export default class TowerRenderer extends UnitRenderer {
       toggleSellButton(unit, sellButton)
     })
 
-    return { container, unitContainer, maxRange }
+    return { container, unitContainer, maxRange, gunContainer }
   }
 
   getContainer(unit, board) {

@@ -119,7 +119,6 @@ class Unit {
 
   @action takeHit(type) {
     this.hitBy = type
-    console.log(this.hitBy);
   }
 
   @action clearHit() {
