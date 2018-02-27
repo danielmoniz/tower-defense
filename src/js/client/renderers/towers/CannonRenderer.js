@@ -21,30 +21,26 @@ export default class CannonRenderer extends TowerRenderer {
 
     autorun(() => {
       // @TODO @FIXME Why is this running twice?
-      // console.log('triggering autorun');
       if (unit.isFiring) {
+        const laserWidth = 4
         const laser = new PIXI.Graphics()
         laser.beginFill(0x00FF00)
-        laser.lineStyle(3, 0xFF0000, 1)
+        laser.lineStyle(2, 0xFF0000, 1)
         const gunOptions = this.getGunOptions(unit)
 
-        laser.moveTo(gunOptions.gunLength, 0)
-        // console.log(gunContainer.x, gunContainer.y);
+        laser.moveTo(gunOptions.gunLength, laserWidth / 2)
         const targetLocation = unit.target.getCentre()
-        // console.log(unit.target.x - unit.x + gunContainer.x, unit.target.y - unit.y + gunContainer.y);
-        // laser.lineTo(unit.target.x - unit.x + gunContainer.x, unit.target.y - unit.y + gunContainer.y)
-        // laser.lineTo(targetLocation.x - unit.x, targetLocation.y - unit.y)
         const distance = unit.distanceToUnit(unit.target)
-        console.log(distance);
-        // laser.lineTo(targetLocation.x, 0)
-        laser.lineTo(distance + gunOptions.gunLength, 0)
+
+        laser.lineTo(distance + gunOptions.gunLength, laserWidth / 2)
+        laser.lineTo(distance + gunOptions.gunLength, -laserWidth / 2)
+        laser.lineTo(gunOptions.gunLength, -laserWidth / 2)
         laser.endFill()
+
         gunContainer.addChild(laser)
-        // muzzleFlash.visible = true
         setTimeout(() => {
-          // muzzleFlash.visible = false
           laser.destroy()
-        }, 500)
+        }, 50)
       }
     })
 
