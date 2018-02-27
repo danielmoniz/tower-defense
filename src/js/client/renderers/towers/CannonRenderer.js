@@ -18,32 +18,40 @@ export default class CannonRenderer extends TowerRenderer {
 
   startRender(unit, board) {
     const { container, unitContainer, gunContainer } = super.startRender(unit, board)
+    this.setUpLaser(unit, gunContainer)
+  }
 
+  setUpLaser(unit, container) {
     autorun(() => {
-      // @TODO @FIXME Why is this running twice?
-      if (unit.isFiring) {
-        const laserWidth = 4
-        const laser = new PIXI.Graphics()
-        laser.beginFill(0x00FF00)
-        laser.lineStyle(2, 0xFF0000, 1)
-        const gunOptions = this.getGunOptions(unit)
+      if (!unit.isFiring) { return }
+      const laserWidth = 4
 
-        laser.moveTo(gunOptions.gunLength, laserWidth / 2)
-        const targetLocation = unit.target.getCentre()
-        const distance = unit.distanceToUnit(unit.target)
+      const gunOptions = this.getGunOptions(unit)
+      const startX = gunOptions.gunLength
+      const startY = laserWidth / 2
+      const targetLocation = unit.target.getCentre()
+      const distance = unit.distanceToUnit(unit.target)
 
-        laser.lineTo(distance + gunOptions.gunLength, laserWidth / 2)
-        laser.lineTo(distance + gunOptions.gunLength, -laserWidth / 2)
-        laser.lineTo(gunOptions.gunLength, -laserWidth / 2)
-        laser.endFill()
-
-        gunContainer.addChild(laser)
-        setTimeout(() => {
-          laser.destroy()
-        }, 50)
-      }
+      const laser = this.createLaser(container, startX, startY, distance)
+      setTimeout(() => {
+        laser.destroy()
+      }, 50)
     })
+  }
 
+  createLaser(container, startX, startY, length) {
+    const laser = new PIXI.Graphics()
+    laser.beginFill(0x00FF00)
+    laser.lineStyle(2, 0xFF0000, 1)
+
+    laser.moveTo(startX, startY)
+    laser.lineTo(length + startX, startY)
+    laser.lineTo(length + startX, -startY)
+    laser.lineTo(startX, -startY)
+    laser.endFill()
+
+    container.addChild(laser)
+    return laser
   }
 
   getGunOptions(unit) {
