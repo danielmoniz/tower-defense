@@ -126,23 +126,21 @@ class WaveSpawnerLocal extends WaveSpawner {
   generateEnemies() {
     const newEnemyData = []
     const newEnemies = []
-    // console.log(this.number);
     let pointsLeft = this.getPointsInWave(this.number)
     // console.log('Total points in wave:', pointsLeft);
     let currentEnemyIndex = 0
     let allocatedPoints
-    // console.log('----------');
 
     // should there be any attributes?
     let numAttributes = this.getNumAttributes(this.number)
-    console.log('Number of attributes this wave:', numAttributes);
+    // console.log('Number of attributes this wave:', numAttributes);
 
     while (pointsLeft > 0 && currentEnemyIndex < this.enemyTypes.length) {
       const currentEnemy = this.enemyTypes[currentEnemyIndex]
       const typeName = currentEnemy.typeName
       const subTypeName = currentEnemy.subTypeName
       const isLastUnit = currentEnemyIndex === this.enemyTypes.length - 1
-      const enemyData = getEnemyData(typeName, subTypeName)
+      let enemyData = getEnemyData(typeName, subTypeName)
 
       if (enemyData.minWaveStart && enemyData.minWaveStart > this.number) {
         currentEnemyIndex += 1
@@ -150,8 +148,9 @@ class WaveSpawnerLocal extends WaveSpawner {
       }
 
       const randomAttributes = getRandomSubarray(attributes, numAttributes)
-      console.log(randomAttributes.map(attr => attr.name));
-      applyAttributes(enemyData, randomAttributes)
+      // console.log(randomAttributes.map(attr => attr.name));
+      enemyData = applyAttributes(enemyData, randomAttributes)
+      // console.log(enemyData.points, enemyData.killValue.credits, enemyData.killValue.xp);
 
       const pointsValue = enemyData.points
 
@@ -174,6 +173,7 @@ class WaveSpawnerLocal extends WaveSpawner {
         numEnemies = maxEnemies
       }
       const pointsUsed = numEnemies * pointsValue
+
 
       for (let i = 0; i < numEnemies; i++) {
         const enemy = this.createEnemy(enemyData)

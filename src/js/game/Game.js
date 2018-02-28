@@ -14,7 +14,7 @@ import Enemy from '../units/Enemy'
 import Pathing from '../map/Pathing'
 import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
-import { getEnemyData, scaleEnemy } from '../units/Enemies'
+import { scaleEnemy } from '../units/Enemies'
 
 
 export default class Game {

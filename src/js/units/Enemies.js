@@ -13,23 +13,28 @@ export function getEnemyStats(enemyData) {
   const enemyStats = { ...enemyData }
   enemyStats.points = getPointsValue(enemyStats)
   enemyStats.killValue = enemyStats.killValue || {}
+
   enemyStats.killValue.xp = enemyStats.killValue.xp || enemyStats.points
+  enemyStats.killValue.xp = Math.ceil(enemyStats.killValue.xp)
+
   const newCredits = getCreditsValue(enemyStats.points)
   enemyStats.killValue.credits = enemyStats.killValue.credits || newCredits
+  enemyStats.killValue.credits = Math.ceil(enemyStats.killValue.credits)
   return enemyStats
 }
 
-export function applyAttributes(enemyData, attributes) {
-  console.log('applying attributes:', attributes);
+export function applyAttributes(oldEnemyData, attributes) {
+  const enemyData = { ...oldEnemyData }
   attributes.forEach((attribute) => {
     Object.keys(attribute).forEach((key) => {
       if (key === 'name') { return }
       enemyData[key] *= attribute[key]
-      console.log('increasing ' + key + ' of enemy!');
     })
   })
   enemyData.attributes = attributes.map((attribute) => attribute.name)
-  return enemyData
+
+  delete enemyData.killValue // remove this so getEnemyStats will not ignore it // @FIXME Hacky!
+  return getEnemyStats(enemyData)
 }
 
 export function getEnemyData(type, subtype, attributes = []) {
