@@ -154,18 +154,15 @@ class WaveSpawnerLocal extends WaveSpawner {
       applyAttributes(enemyData, randomAttributes)
 
       const pointsValue = enemyData.points
-      // console.log(enemyData);
 
       // is enemy affordable?
       if (pointsValue > pointsLeft) {
-        // console.log(`Moving on - enemy ${typeName} (${subTypeName}) not affordable.`);
         currentEnemyIndex += 1
         continue
       }
 
       // should enemy show up? If not last unit and probability not met, skip this unit
       if (!isLastUnit && currentEnemy.data.probability <= Math.random()) {
-        // console.log(`Moving on - enemy ${typeName} (${subTypeName}) did not meet probability`);
         currentEnemyIndex += 1
         continue
       }
@@ -177,13 +174,10 @@ class WaveSpawnerLocal extends WaveSpawner {
         numEnemies = maxEnemies
       }
       const pointsUsed = numEnemies * pointsValue
-      // console.log('Points left:', pointsLeft);
-      // console.log(currentEnemy.subTypeName, numEnemies, numEnemies * pointsValue);
 
       for (let i = 0; i < numEnemies; i++) {
-        const enemy = this.createEnemy(typeName, subTypeName)
-        // const enemy = this.createEnemy(enemyData)
-        newEnemyData.push(this.getNewEnemyData(typeName, subTypeName))
+        const enemy = this.createEnemy(enemyData)
+        newEnemyData.push(enemyData)
       }
 
       pointsLeft -= pointsUsed
@@ -197,8 +191,7 @@ class WaveSpawnerLocal extends WaveSpawner {
   spawnEnemiesFromData(enemiesData) {
     const enemies = []
     enemiesData.forEach((enemyData) => {
-      const enemy = this.createEnemy(enemyData.type, enemyData.subType)
-      // const enemy = this.createEnemy(enemyData)
+      const enemy = this.createEnemy(enemyData)
       enemies.push(enemy)
     })
     return enemies

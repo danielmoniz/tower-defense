@@ -192,11 +192,7 @@ export default class Game {
     return newEnemies
   }
 
-  // @TODO Update this to take data rather than type/subtype
-    // This will allow for the random attributes to not be overridden/ignored.
-  // createEnemy(enemyData) {
-  createEnemy(type, subtype) {
-    const enemyData = getEnemyData(type, subtype)
+  createEnemy(enemyData) {
     const scaledEnemyData = scaleEnemy(enemyData, this.wave.number)
     return new Enemy(this, scaledEnemyData)
   }
