@@ -3,7 +3,9 @@ import { observable, action } from 'mobx'
 
 import WaveSpawner from './WaveSpawner'
 import Enemy from './units/Enemy'
-import { getEnemyData, getEnemySubtypes, getEnemyTypes } from './units/Enemies'
+import { getEnemyData, getEnemySubtypes, getEnemyTypes, applyAttributes } from './units/Enemies'
+import { attributes } from './units/Attributes'
+import { getRandomSubarray } from './utility/random'
 
 /*
  * Handles actually spawning units.
@@ -131,19 +133,28 @@ class WaveSpawnerLocal extends WaveSpawner {
     let allocatedPoints
     // console.log('----------');
 
+    // should there be any attributes?
+    let numAttributes = this.getNumAttributes(this.number)
+    console.log('Number of attributes this wave:', numAttributes);
+
     while (pointsLeft > 0 && currentEnemyIndex < this.enemyTypes.length) {
       const currentEnemy = this.enemyTypes[currentEnemyIndex]
       const typeName = currentEnemy.typeName
       const subTypeName = currentEnemy.subTypeName
-      const enemyData = getEnemyData(typeName, subTypeName)
-
-      const pointsValue = enemyData.points
       const isLastUnit = currentEnemyIndex === this.enemyTypes.length - 1
+      const enemyData = getEnemyData(typeName, subTypeName)
 
       if (enemyData.minWaveStart && enemyData.minWaveStart > this.number) {
         currentEnemyIndex += 1
         continue
       }
+
+      const randomAttributes = getRandomSubarray(attributes, numAttributes)
+      console.log(randomAttributes.map(attr => attr.name));
+      applyAttributes(enemyData, randomAttributes)
+
+      const pointsValue = enemyData.points
+      // console.log(enemyData);
 
       // is enemy affordable?
       if (pointsValue > pointsLeft) {
@@ -171,6 +182,7 @@ class WaveSpawnerLocal extends WaveSpawner {
 
       for (let i = 0; i < numEnemies; i++) {
         const enemy = this.createEnemy(typeName, subTypeName)
+        // const enemy = this.createEnemy(enemyData)
         newEnemyData.push(this.getNewEnemyData(typeName, subTypeName))
       }
 
@@ -186,6 +198,7 @@ class WaveSpawnerLocal extends WaveSpawner {
     const enemies = []
     enemiesData.forEach((enemyData) => {
       const enemy = this.createEnemy(enemyData.type, enemyData.subType)
+      // const enemy = this.createEnemy(enemyData)
       enemies.push(enemy)
     })
     return enemies
@@ -233,6 +246,23 @@ class WaveSpawnerLocal extends WaveSpawner {
 
     return spawnArray
   }
+
+  getNumAttributes(waveNumber) {
+    let numAttributes = 0
+    if (this.number % 5 === 1) {
+      numAttributes = 0
+    } else if (this.number % 5 === 2) {
+      numAttributes = 1
+    } else if (this.number % 5 === 3) {
+      numAttributes = 2
+    } else if (this.number % 5 === 4) {
+      numAttributes = 3
+    } else if (this.number % 5 === 0) { // in future: boss wave
+      numAttributes = 3
+    }
+    return numAttributes
+  }
+
 }
 
 export default WaveSpawnerLocal

@@ -9,23 +9,42 @@ export function getCreditsValue(points) {
   return points / 10
 }
 
-export function getEnemyData(type, subtype) {
+export function getEnemyStats(enemyData) {
+  const enemyStats = { ...enemyData }
+  enemyStats.points = getPointsValue(enemyStats)
+  enemyStats.killValue = enemyStats.killValue || {}
+  enemyStats.killValue.xp = enemyStats.killValue.xp || enemyStats.points
+  const newCredits = getCreditsValue(enemyStats.points)
+  enemyStats.killValue.credits = enemyStats.killValue.credits || newCredits
+  return enemyStats
+}
+
+export function applyAttributes(enemyData, attributes) {
+  console.log('applying attributes:', attributes);
+  attributes.forEach((attribute) => {
+    Object.keys(attribute).forEach((key) => {
+      if (key === 'name') { return }
+      enemyData[key] *= attribute[key]
+      console.log('increasing ' + key + ' of enemy!');
+    })
+  })
+  enemyData.attributes = attributes.map((attribute) => attribute.name)
+  return enemyData
+}
+
+export function getEnemyData(type, subtype, attributes = []) {
   if (!(type in enemies) || !(subtype in enemies[type])) {
     throw 'Must supply a valid enemy type and subtype.'
   }
-  const data = enemies[type][subtype]
+  const data = getEnemyStats(enemies[type][subtype])
+  // const finalEnemyData = applyAttributes(data, attributes)
+  const finalEnemyData = data
 
-  data.points = getPointsValue(data)
-  data.killValue = data.killValue || {}
-  data.killValue.xp = data.killValue.xp || data.points
-  const newCredits = getCreditsValue(data.points)
-  data.killValue.credits = data.killValue.credits || newCredits
+  finalEnemyData.enemyType = type
+  finalEnemyData.subtype = subtype
+  finalEnemyData.name = `${type} (${subtype})`
 
-  data.enemyType = type
-  data.subtype = subtype
-  data.name = `${type} (${subtype})`
-
-  return data
+  return finalEnemyData
 }
 
 export function scaleEnemy(enemyData, gameLevel) {
@@ -60,40 +79,6 @@ export function getEnemyTypes() {
  * NOTE: Can hardcode credits and xp by adding killValue object.
  */
 export const enemies = {
-  'Swarm': {
-    'normal': {
-      width: GRID_SIZE * 0.5,
-      height: GRID_SIZE * 0.5,
-      speed: 25,
-      maxHitPoints: 5,
-      probability: 0.4,
-      priority: 4,
-    },
-  },
-
-  'Scout': {
-    'normal': {
-      width: GRID_SIZE * 1,
-      height: GRID_SIZE * 1,
-      speed: 40,
-      maxHitPoints: 10,
-      probability: 0.4,
-      priority: 22,
-    }
-  },
-
-  'Carrier': {
-    'normal': {
-      width: GRID_SIZE * 4,
-      height: GRID_SIZE * 4,
-      speed: 10,
-      maxHitPoints: 1000,
-      probability: 0.2,
-      priority: 100,
-      minWaveStart: 10,
-    },
-  },
-
   'Invader': {
     'normal': {
       width: GRID_SIZE * 1,
@@ -110,25 +95,60 @@ export const enemies = {
       maxHitPoints: 20,
       probability: 0.2,
       priority: 20,
+      probability: 0, // @TEST Remove this!
     },
   },
 
-  'Tank': {
-    normal: {
-      width: GRID_SIZE * 2,
-      height: GRID_SIZE * 2,
-      speed: 20,
-      maxHitPoints: 50,
-      probability: 0.2,
-      priority: 15,
-    },
-    large: {
-      width: GRID_SIZE * 3,
-      height: GRID_SIZE * 3,
-      speed: 14,
-      maxHitPoints: 80,
-      probability: 0.05,
-      priority: 50,
-    },
-  },
+  // 'Swarm': {
+  //   'normal': {
+  //     width: GRID_SIZE * 0.5,
+  //     height: GRID_SIZE * 0.5,
+  //     speed: 25,
+  //     maxHitPoints: 5,
+  //     probability: 0.4,
+  //     priority: 4,
+  //   },
+  // },
+  //
+  // 'Scout': {
+  //   'normal': {
+  //     width: GRID_SIZE * 1,
+  //     height: GRID_SIZE * 1,
+  //     speed: 40,
+  //     maxHitPoints: 10,
+  //     probability: 0.4,
+  //     priority: 22,
+  //   }
+  // },
+  //
+  // 'Carrier': {
+  //   'normal': {
+  //     width: GRID_SIZE * 4,
+  //     height: GRID_SIZE * 4,
+  //     speed: 10,
+  //     maxHitPoints: 1000,
+  //     probability: 0.2,
+  //     priority: 100,
+  //     minWaveStart: 10,
+  //   },
+  // },
+  //
+  // 'Tank': {
+  //   normal: {
+  //     width: GRID_SIZE * 2,
+  //     height: GRID_SIZE * 2,
+  //     speed: 20,
+  //     maxHitPoints: 50,
+  //     probability: 0.2,
+  //     priority: 15,
+  //   },
+  //   large: {
+  //     width: GRID_SIZE * 3,
+  //     height: GRID_SIZE * 3,
+  //     speed: 14,
+  //     maxHitPoints: 80,
+  //     probability: 0.05,
+  //     priority: 50,
+  //   },
+  // },
 }

@@ -130,6 +130,7 @@ class ClientGame extends Game {
 
   addEnemy(enemyData) {
     if (enemyData.currentHitPoints <= 0) { return }
+    // let enemy = this.createEnemy(enemyData)
     let enemy = this.createEnemy(enemyData.enemyType, enemyData.subtype)
     this.buildEntityFromData(enemy, enemyData)
 
