@@ -100,60 +100,59 @@ export const enemies = {
       maxHitPoints: 20,
       probability: 0.2,
       priority: 20,
-      probability: 0, // @TEST Remove this!
     },
   },
 
-  // 'Swarm': {
-  //   'normal': {
-  //     width: GRID_SIZE * 0.5,
-  //     height: GRID_SIZE * 0.5,
-  //     speed: 25,
-  //     maxHitPoints: 5,
-  //     probability: 0.4,
-  //     priority: 4,
-  //   },
-  // },
-  //
-  // 'Scout': {
-  //   'normal': {
-  //     width: GRID_SIZE * 1,
-  //     height: GRID_SIZE * 1,
-  //     speed: 40,
-  //     maxHitPoints: 10,
-  //     probability: 0.4,
-  //     priority: 22,
-  //   }
-  // },
-  //
-  // 'Carrier': {
-  //   'normal': {
-  //     width: GRID_SIZE * 4,
-  //     height: GRID_SIZE * 4,
-  //     speed: 10,
-  //     maxHitPoints: 1000,
-  //     probability: 0.2,
-  //     priority: 100,
-  //     minWaveStart: 10,
-  //   },
-  // },
-  //
-  // 'Tank': {
-  //   normal: {
-  //     width: GRID_SIZE * 2,
-  //     height: GRID_SIZE * 2,
-  //     speed: 20,
-  //     maxHitPoints: 50,
-  //     probability: 0.2,
-  //     priority: 15,
-  //   },
-  //   large: {
-  //     width: GRID_SIZE * 3,
-  //     height: GRID_SIZE * 3,
-  //     speed: 14,
-  //     maxHitPoints: 80,
-  //     probability: 0.05,
-  //     priority: 50,
-  //   },
-  // },
+  'Swarm': {
+    'normal': {
+      width: GRID_SIZE * 0.5,
+      height: GRID_SIZE * 0.5,
+      speed: 25,
+      maxHitPoints: 5,
+      probability: 0.4,
+      priority: 4,
+    },
+  },
+
+  'Scout': {
+    'normal': {
+      width: GRID_SIZE * 1,
+      height: GRID_SIZE * 1,
+      speed: 40,
+      maxHitPoints: 10,
+      probability: 0.4,
+      priority: 22,
+    }
+  },
+
+  'Carrier': {
+    'normal': {
+      width: GRID_SIZE * 4,
+      height: GRID_SIZE * 4,
+      speed: 10,
+      maxHitPoints: 1000,
+      probability: 0.2,
+      priority: 100,
+      minWaveStart: 10,
+    },
+  },
+
+  'Tank': {
+    normal: {
+      width: GRID_SIZE * 2,
+      height: GRID_SIZE * 2,
+      speed: 20,
+      maxHitPoints: 50,
+      probability: 0.2,
+      priority: 15,
+    },
+    large: {
+      width: GRID_SIZE * 3,
+      height: GRID_SIZE * 3,
+      speed: 14,
+      maxHitPoints: 80,
+      probability: 0.05,
+      priority: 50,
+    },
+  },
 }
