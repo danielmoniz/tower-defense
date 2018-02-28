@@ -1,39 +1,34 @@
-//
-// export const attributes = {
-//   speedy: {
-//     speed: 1.4,
-//   },
-//   'super speedy': {
-//     speed: 1.8,
-//   },
-//   'mega speedy': {
-//     speed: 3,
-//   },
-//   'turbo mega speedy': {
-//     speed: 10,
-//   }
-// }
 
+const normalFactor = 1.2
 
 export const attributes = [
   {
     name: 'Speedy',
-    speed: 1.4,
+    speed: normalFactor,
   },
   {
-    name: 'super speedy',
-    speed: 1.8,
+    name: 'Super speedy',
+    speed: multiply(normalFactor, 2),
   },
   {
-    name: 'mega speedy',
-    speed: 3,
+    name: 'Beefy',
+    maxHitPoints: normalFactor,
   },
   {
-    name: 'turbo mega speedy',
-    speed: 10,
-  },
+    name: 'Elite',
+    maxHitPoints: normalFactor,
+    speed: normalFactor,
+  }
 ]
 
 export function getAttributeNames(attributes) {
   return attributes.map((attribute) => attribute.name)
+}
+
+/*
+ * Takes a multiplier (such as 1.2) and multiplies it without its base of 1.
+ * Eg. multiply(1.2, 4) returns 1.8, not 4.8
+ */
+function multiply(number, factor) {
+  return (number - 1) * factor + 1
 }

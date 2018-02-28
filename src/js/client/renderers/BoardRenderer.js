@@ -99,8 +99,8 @@ export default class BoardRenderer {
   displayEnemy(infoPanelData, enemy) {
     const attributesMessage = this.getEnemyAttributesMessage(enemy)
 
-    infoPanelData.innerHTML = "Speed: " + enemy.speed + "<br>" +
-        "Hit points: " + Math.ceil(enemy.currentHitPoints) + "/" + enemy.maxHitPoints + "<br>" +
+    infoPanelData.innerHTML = "Speed: " + Math.ceil(enemy.speed) + "<br>" +
+        "Hit points: " + Math.ceil(enemy.currentHitPoints) + "/" + Math.ceil(enemy.maxHitPoints) + "<br>" +
         "Value: $" + enemy.killValue.credits + ", " + enemy.killValue.xp + "xp<br>" +
         attributesMessage + "<br>"
         // (we probably don't need size, as it has no in-game effect)
