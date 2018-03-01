@@ -17,13 +17,14 @@ class WaveSpawnerLocal extends WaveSpawner {
   /*
    * Describes the waves for each hardcoded level. Need not specify all waves.
    */
-  waveList = {
-    10: {
-      'Tank': { // @FIXME Must be capitalized
-        'large': 5, // @FIXME Must be lowercase
-      },
-    },
-  }
+  // waveList = {
+  //   8: {
+  //     'Tank': { // @FIXME Must be capitalized
+  //       'large': 5, // @FIXME Must be lowercase
+  //     },
+  //   },
+  // }
+  waveList = {}
 
   constructor(createEnemy) {
     super()
@@ -141,6 +142,17 @@ class WaveSpawnerLocal extends WaveSpawner {
       console.log(this.currentAttributes.map(attr => attr.name));
     }
 
+    if (this.number % this.bossSpawnOnWave === 0) { // boss wave!
+      const enemyData = applyAttributes(
+        getEnemyData('Carrier', 'normal'),
+        this.currentAttributes,
+      )
+
+      const enemy = this.createEnemy(enemyData)
+      newEnemyData.push(enemyData)
+      return newEnemyData
+    }
+
     // should there be any attributes?
     const numAttributes = this.getNumAttributes(this.number)
     // console.log('Number of attributes this wave:', numAttributes);
@@ -187,7 +199,6 @@ class WaveSpawnerLocal extends WaveSpawner {
         numEnemies = maxEnemies
       }
       const pointsUsed = numEnemies * pointsValue
-
 
       for (let i = 0; i < numEnemies; i++) {
         const enemy = this.createEnemy(enemyData)
