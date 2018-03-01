@@ -32,9 +32,13 @@ class WaveSpawnerLocal extends WaveSpawner {
     this.startingPoints = 1000
     // this.wavePointsIncrease = 1.15
     this.wavePointsIncrease = 1
+    this.bossSpawnOnWave = 5
 
     this.enemyTypes = this.sortEnemyTypes(this.getEnemyTypes())
-    console.log(this.enemyTypes);
+    // console.log(this.enemyTypes);
+
+    this.currentAttributes = []
+    this.numBossAttributes = 3
   }
 
   getEnemyTypes() {
@@ -131,25 +135,35 @@ class WaveSpawnerLocal extends WaveSpawner {
     let currentEnemyIndex = 0
     let allocatedPoints
 
+    if (this.number % this.bossSpawnOnWave === 1) { // first wave in new round
+      this.currentAttributes = getRandomSubarray(attributes, this.numBossAttributes)
+      console.log('NEXT ROUND ATTRIBUTES:');
+      console.log(this.currentAttributes.map(attr => attr.name));
+    }
+
     // should there be any attributes?
-    let numAttributes = this.getNumAttributes(this.number)
+    const numAttributes = this.getNumAttributes(this.number)
     // console.log('Number of attributes this wave:', numAttributes);
+    const randomAttributes = getRandomSubarray(this.currentAttributes, numAttributes)
+    console.log("Wave " + this.number + ':', randomAttributes.map(attr => attr.name));
 
     while (pointsLeft > 0 && currentEnemyIndex < this.enemyTypes.length) {
       const currentEnemy = this.enemyTypes[currentEnemyIndex]
       const typeName = currentEnemy.typeName
       const subTypeName = currentEnemy.subTypeName
       const isLastUnit = currentEnemyIndex === this.enemyTypes.length - 1
-      let enemyData = getEnemyData(typeName, subTypeName)
+
+      const enemyData = applyAttributes(
+        getEnemyData(typeName, subTypeName),
+        randomAttributes,
+      )
 
       if (enemyData.minWaveStart && enemyData.minWaveStart > this.number) {
         currentEnemyIndex += 1
         continue
       }
 
-      const randomAttributes = getRandomSubarray(attributes, numAttributes)
-      // console.log(randomAttributes.map(attr => attr.name));
-      enemyData = applyAttributes(enemyData, randomAttributes)
+      // enemyData = applyAttributes(enemyData, randomAttributes)
       // console.log(enemyData.points, enemyData.killValue.credits, enemyData.killValue.xp);
 
       const pointsValue = enemyData.points
