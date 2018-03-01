@@ -41,11 +41,11 @@ describe('Attributes.js', function() {
       expect(() => multiplyMultiplier(-5, 2)).toThrow()
     })
 
-    it('should multiply the effect the multiplier would have', () => {
-      expect(multiplyMultiplier(0.5, 2)).toBeCloseTo(1, 4)
-      expect(multiplyMultiplier(0.3, 3)).toBeCloseTo(0.9, 4)
-      expect(multiplyMultiplier(0.8, 4)).toBeCloseTo(3.2, 4)
+    it('should throw an error if provided a multiplier between 0 and 1', () => {
+      expect(() => multiplyMultiplier(0.4, 2)).toThrow()
+    })
 
+    it('should multiply the effect the multiplier would have', () => {
       expect(multiplyMultiplier(1.2, 2)).toBe(1.4)
       expect(multiplyMultiplier(2, 3)).toBe(4)
       expect(multiplyMultiplier(1.5, 3)).toBe(2.5)

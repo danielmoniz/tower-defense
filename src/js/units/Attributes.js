@@ -32,7 +32,7 @@ export function multiplyMultiplier(number, factor) {
   if (number === 0) { return 0 }
 
   if (number < 1) {
-    return number * factor
+    throw 'Cannot handle multipliers between 0 and 1.'
   }
   return (number - 1) * factor + 1
 }
