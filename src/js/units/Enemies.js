@@ -2,7 +2,11 @@
 import { GRID_SIZE } from '../appConstants'
 
 export function getPointsValue(enemyData) {
-  return enemyData.maxHitPoints * enemyData.speed / 10
+  let total = enemyData.maxHitPoints * enemyData.speed / 10
+  if (enemyData.regenerates) {
+    total *= (1 + enemyData.regenerates)
+  }
+  return total
 }
 
 export function getCreditsValue(points) {
@@ -28,7 +32,11 @@ export function applyAttributes(oldEnemyData, attributes) {
   attributes.forEach((attribute) => {
     Object.keys(attribute).forEach((key) => {
       if (key === 'name') { return }
-      enemyData[key] *= attribute[key]
+      if (isNaN(enemyData[key])) {
+        enemyData[key] = attribute[key]
+      } else {
+        enemyData[key] *= attribute[key]
+      }
     })
   })
   enemyData.attributes = attributes.map((attribute) => attribute.name)

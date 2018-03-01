@@ -6,10 +6,10 @@ export const attributes = [
     name: 'Speedy',
     speed: normalFactor,
   },
-  {
-    name: 'Super speedy',
-    speed: multiplyMultiplier(normalFactor, 2),
-  },
+  // {
+  //   name: 'Super speedy',
+  //   speed: multiplyMultiplier(normalFactor, 2),
+  // },
   {
     name: 'Beefy',
     maxHitPoints: normalFactor,
@@ -18,6 +18,10 @@ export const attributes = [
     name: 'Elite',
     maxHitPoints: normalFactor,
     speed: normalFactor,
+  },
+  {
+    name: 'Regenerative',
+    regenerates: 0.2, // 20% of some amount of max HP per second (eg. sqrt)
   }
 ]
 

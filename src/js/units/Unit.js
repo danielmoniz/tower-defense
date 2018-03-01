@@ -115,6 +115,10 @@ class Unit {
     }
   }
 
+  @action heal(amount) {
+    this.currentHitPoints = Math.min(this.currentHitPoints + amount, this.maxHitPoints)
+  }
+
   @action kill() {
     // @TODO should explode
     this.destroy()
