@@ -40,6 +40,7 @@ class Enemy extends Unit {
    */
   @action setMoveTarget() {
     this.act = (nextLocation) => {
+      this.clearHit()
       this.moveXAndY(nextLocation.x, nextLocation.y)
     }
     if (this.movementId) { // if already moving, continue in a new direction
