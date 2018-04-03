@@ -176,9 +176,9 @@ class WaveSpawnerLocal extends WaveSpawner {
 
       const pointsValue = enemyData.points
 
-      if ((enemyData.minWaveStart && enemyData.minWaveStart > waveNumber) ||  // wave too early
-          (pointsValue > pointsLeft) ||                                       // is enemy affordable?
-          (!isLastUnit && currentEnemy.data.probability <= Math.random())     // should enemy show up?
+      if (this.waveTooEarly(enemyData, waveNumber) ||
+          pointsValue > pointsLeft || // is enemy affordable?
+          !this.shouldSelectEnemy(enemyData, isLastUnit)
       ) {
         continue
       }
@@ -195,6 +195,14 @@ class WaveSpawnerLocal extends WaveSpawner {
     }
 
     return newEnemyData
+  }
+
+  waveTooEarly(enemyData, waveNumber) {
+    return enemyData.minWaveStart && enemyData.minWaveStart > waveNumber
+  }
+
+  shouldSelectEnemy(enemyData, isLastUnit) {
+    return isLastUnit || enemyData.probability >= Math.random()
   }
 
   getNumEnemies(pointsLeft, pointsValue, isLastUnit) {
