@@ -135,6 +135,9 @@ class WaveSpawnerLocal extends WaveSpawner {
     )
   }
 
+  /*
+   * Sets the random attributes for the given round.
+   */
   setRoundAttributes() {
     this.currentAttributes = getRandomSubarray(attributes, this.numBossAttributes)
     console.log('NEXT ROUND ATTRIBUTES:');
@@ -197,14 +200,23 @@ class WaveSpawnerLocal extends WaveSpawner {
     return newEnemyData
   }
 
+  /*
+   * Returns boolean - whether or not the unit can be spawned this early.
+   */
   waveTooEarly(enemyData, waveNumber) {
     return enemyData.minWaveStart && enemyData.minWaveStart > waveNumber
   }
 
+  /*
+   * Returns boolean - whether or not the enemy type will be used this wave.
+   */
   shouldSelectEnemy(enemyData, isLastUnit) {
     return isLastUnit || enemyData.probability >= Math.random()
   }
 
+  /*
+   * Returns the number of enemies to be used this wave.
+   */
   getNumEnemies(pointsLeft, pointsValue, isLastUnit) {
     const maxEnemies = Math.floor(pointsLeft / pointsValue)
     let numEnemies = Math.ceil(Math.random() * maxEnemies)
