@@ -140,8 +140,6 @@ export const enemies = {
       speed: 10,
       maxHitPoints: 1000,
       probability: 0, // only spawns under specific circumstances
-      priority: 100,
-      minWaveStart: 10,
     },
   },
 

@@ -8,7 +8,7 @@ describe('Attributes.js', function() {
       expect(attributes.length).toBeGreaterThan(3)
     })
 
-    it('should with objects that contain name and other attributes', () => {
+    it('should have objects that contain name and other attributes', () => {
       attributes.forEach((attribute) => {
         expect(attribute.name).toEqual(expect.any(String))
         expect(Object.keys(attribute).length).toBeGreaterThan(1)

@@ -97,7 +97,7 @@ class WaveSpawnerLocal extends WaveSpawner {
     if (this.waveList[this.number]) { // use hardcoded wave if possible
       enemyData = this.getEnemiesFromWaveData(this.waveList[this.number])
     } else { // otherwise, generate enemies from scratch with an algorithm
-      enemyData = this.generateEnemies()
+      enemyData = this.generateEnemies(this.number)
     }
 
     const randomizedEnemyData = this.randomizeSpawnArray(enemyData)
@@ -126,57 +126,57 @@ class WaveSpawnerLocal extends WaveSpawner {
   }
 
   /*
+   * Generate a boss using the current set of random attributes.
+   */
+  getBossData() {
+    return applyAttributes(
+      getEnemyData('Carrier', 'normal'),
+      this.currentAttributes,
+    )
+  }
+
+  setRoundAttributes() {
+    this.currentAttributes = getRandomSubarray(attributes, this.numBossAttributes)
+    console.log('NEXT ROUND ATTRIBUTES:');
+    console.log(this.currentAttributes.map(attr => attr.name));
+    // @TODO Present the round's random attributes to the player
+  }
+
+  /*
    * Return an array of enemies given data about what the wave should contain.
    */
-  generateEnemies() {
+  generateEnemies(waveNumber) {
+    if (waveNumber === 0) { return [] }
+    if (waveNumber % this.bossSpawnOnWave === 0) { // boss wave!
+      return [this.getBossData()] // enemies include just one boss
+    }
+
     const newEnemyData = []
     const newEnemies = []
-    let pointsLeft = this.getPointsInWave(this.number)
+    let pointsLeft = this.getPointsInWave(waveNumber)
     // console.log('Total points in wave:', pointsLeft);
     let currentEnemyIndex = 0
     let allocatedPoints
 
-    if (this.number % this.bossSpawnOnWave === 1) { // first wave in new round
-      this.currentAttributes = getRandomSubarray(attributes, this.numBossAttributes)
-      console.log('NEXT ROUND ATTRIBUTES:');
-      console.log(this.currentAttributes.map(attr => attr.name));
-    }
-
-    if (this.number % this.bossSpawnOnWave === 0) { // boss wave!
-      const enemyData = applyAttributes(
-        getEnemyData('Carrier', 'normal'),
-        this.currentAttributes,
-      )
-
-      const enemy = this.createEnemy(enemyData)
-      newEnemyData.push(enemyData)
-      return newEnemyData
-    }
-
     // should there be any attributes?
-    const numAttributes = this.getNumAttributes(this.number)
-    // console.log('Number of attributes this wave:', numAttributes);
-    const randomAttributes = getRandomSubarray(this.currentAttributes, numAttributes)
-    console.log("Wave " + this.number + ':', randomAttributes.map(attr => attr.name));
+    const numAttributes = this.getNumAttributes(waveNumber)
+    let randomAttributes = getRandomSubarray(this.currentAttributes, numAttributes)
+    randomAttributes = randomAttributes.sort((a, b) => a.name > b.name)
+    console.log("Wave " + waveNumber + ':', randomAttributes.map(attr => attr.name));
 
     while (pointsLeft > 0 && currentEnemyIndex < this.enemyTypes.length) {
       const currentEnemy = this.enemyTypes[currentEnemyIndex]
-      const typeName = currentEnemy.typeName
-      const subTypeName = currentEnemy.subTypeName
       const isLastUnit = currentEnemyIndex === this.enemyTypes.length - 1
 
       const enemyData = applyAttributes(
-        getEnemyData(typeName, subTypeName),
+        getEnemyData(currentEnemy.typeName, currentEnemy.subTypeName),
         randomAttributes,
       )
 
-      if (enemyData.minWaveStart && enemyData.minWaveStart > this.number) {
+      if (enemyData.minWaveStart && enemyData.minWaveStart > waveNumber) {
         currentEnemyIndex += 1
         continue
       }
-
-      // enemyData = applyAttributes(enemyData, randomAttributes)
-      // console.log(enemyData.points, enemyData.killValue.credits, enemyData.killValue.xp);
 
       const pointsValue = enemyData.points
 
@@ -201,7 +201,6 @@ class WaveSpawnerLocal extends WaveSpawner {
       const pointsUsed = numEnemies * pointsValue
 
       for (let i = 0; i < numEnemies; i++) {
-        const enemy = this.createEnemy(enemyData)
         newEnemyData.push(enemyData)
       }
 
@@ -220,6 +219,13 @@ class WaveSpawnerLocal extends WaveSpawner {
       enemies.push(enemy)
     })
     return enemies
+  }
+
+  nextWave() {
+    super.nextWave()
+    if (this.number % this.bossSpawnOnWave === 1) { // first wave in new round
+      this.setRoundAttributes()
+    }
   }
 
   /*
@@ -266,19 +272,18 @@ class WaveSpawnerLocal extends WaveSpawner {
   }
 
   getNumAttributes(waveNumber) {
-    let numAttributes = 0
-    if (this.number % 5 === 1) {
-      numAttributes = 0
-    } else if (this.number % 5 === 2) {
-      numAttributes = 1
-    } else if (this.number % 5 === 3) {
-      numAttributes = 2
-    } else if (this.number % 5 === 4) {
-      numAttributes = 3
-    } else if (this.number % 5 === 0) { // in future: boss wave
-      numAttributes = 3
+    switch (this.number % 5) {
+      case 1:
+        return 0
+      case 2:
+        return 1
+      case 3:
+        return 2
+      case 4:
+        return 3
+      case 5:
+        return 3
     }
-    return numAttributes
   }
 
 }
