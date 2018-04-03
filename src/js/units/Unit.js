@@ -117,6 +117,10 @@ class Unit {
     }
   }
 
+  @action heal(amount) {
+    this.currentHitPoints = Math.min(this.currentHitPoints + amount, this.maxHitPoints)
+  }
+
   @action takeHit(type) {
     this.hitBy = type
   }
