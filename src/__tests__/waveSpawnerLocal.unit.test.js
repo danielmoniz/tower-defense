@@ -27,10 +27,8 @@ describe('WaveSpawnerLocal.js', function() {
       this.waveSpawner.setRoundAttributes()
       const enemyData = this.waveSpawner.generateEnemies(this.waveSpawner.bossSpawnOnWave)
       expect(enemyData.length).toBe(1)
-      console.log(enemyData);
       expect(enemyData[0].attributes.length).toBe(this.waveSpawner.numBossAttributes)
     })
-
 
   })
 

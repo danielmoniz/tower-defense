@@ -155,7 +155,7 @@ class WaveSpawnerLocal extends WaveSpawner {
     const newEnemies = []
     let pointsLeft = this.getPointsInWave(waveNumber)
     // console.log('Total points in wave:', pointsLeft);
-    let currentEnemyIndex = 0
+    let currentEnemyIndex = -1
     let allocatedPoints
 
     // should there be any attributes?
@@ -164,7 +164,8 @@ class WaveSpawnerLocal extends WaveSpawner {
     randomAttributes = randomAttributes.sort((a, b) => a.name > b.name)
     console.log("Wave " + waveNumber + ':', randomAttributes.map(attr => attr.name));
 
-    while (pointsLeft > 0 && currentEnemyIndex < this.enemyTypes.length) {
+    while (pointsLeft > 0 && currentEnemyIndex < this.enemyTypes.length - 1) {
+      currentEnemyIndex += 1
       const currentEnemy = this.enemyTypes[currentEnemyIndex]
       const isLastUnit = currentEnemyIndex === this.enemyTypes.length - 1
 
@@ -173,31 +174,17 @@ class WaveSpawnerLocal extends WaveSpawner {
         randomAttributes,
       )
 
-      if (enemyData.minWaveStart && enemyData.minWaveStart > waveNumber) {
-        currentEnemyIndex += 1
-        continue
-      }
-
       const pointsValue = enemyData.points
 
-      // is enemy affordable?
-      if (pointsValue > pointsLeft) {
-        currentEnemyIndex += 1
-        continue
-      }
-
-      // should enemy show up? If not last unit and probability not met, skip this unit
-      if (!isLastUnit && currentEnemy.data.probability <= Math.random()) {
-        currentEnemyIndex += 1
+      if ((enemyData.minWaveStart && enemyData.minWaveStart > waveNumber) ||  // wave too early
+          (pointsValue > pointsLeft) ||                                       // is enemy affordable?
+          (!isLastUnit && currentEnemy.data.probability <= Math.random())     // should enemy show up?
+      ) {
         continue
       }
 
       // how many should show up? (min. 1)
-      const maxEnemies = Math.floor(pointsLeft / pointsValue)
-      let numEnemies = Math.ceil(Math.random() * maxEnemies)
-      if (isLastUnit) {
-        numEnemies = maxEnemies
-      }
+      const numEnemies = this.getNumEnemies(pointsLeft, pointsValue, isLastUnit)
       const pointsUsed = numEnemies * pointsValue
 
       for (let i = 0; i < numEnemies; i++) {
@@ -205,11 +192,18 @@ class WaveSpawnerLocal extends WaveSpawner {
       }
 
       pointsLeft -= pointsUsed
-
-      currentEnemyIndex += 1
     }
 
     return newEnemyData
+  }
+
+  getNumEnemies(pointsLeft, pointsValue, isLastUnit) {
+    const maxEnemies = Math.floor(pointsLeft / pointsValue)
+    let numEnemies = Math.ceil(Math.random() * maxEnemies)
+    if (isLastUnit) {
+      numEnemies = maxEnemies
+    }
+    return numEnemies
   }
 
   spawnEnemiesFromData(enemiesData) {
