@@ -19,6 +19,8 @@ export default class TowerRenderer extends UnitRenderer {
       disableBackgroundColor: 0xFF4444,
       lineStyle: { width: 1, color: 0x000000, alpha: 0.5, },
     }
+
+    this.useMuzzleFlash = true
   }
 
   startRender(unit, board) {
@@ -31,6 +33,13 @@ export default class TowerRenderer extends UnitRenderer {
     const gunContainer = this.setGun(unit, unitContainer, gunOptions)
     const maxRange = this.setMaxRange(container, this.board.backgroundLayer)
     const sellButton = this.setSellButton(board, container, unitContainer, unit)
+
+    if (this.useMuzzleFlash) {
+      const muzzleFlash = this.setMuzzleFlash(gunContainer, gunOptions)
+      autorun(() => {
+        performMuzzleFlash(unit, muzzleFlash)
+      })
+    }
 
     // @TODO This should probably be done in UnitRenderer
     board.app.stage.addChild(container)
@@ -57,7 +66,7 @@ export default class TowerRenderer extends UnitRenderer {
       toggleSellButton(unit, sellButton)
     })
 
-    return { container, unitContainer, maxRange }
+    return { container, unitContainer, maxRange, gunContainer }
   }
 
   getContainer(unit, board) {
@@ -177,6 +186,17 @@ export default class TowerRenderer extends UnitRenderer {
     return unit.width * 0.6
   }
 
+  setMuzzleFlash(gunContainer, gunOptions) {
+    const muzzleFlash = new PIXI.Sprite(PIXI.utils.TextureCache["muzzleFlash"])
+    muzzleFlash.height = 20
+    muzzleFlash.width = 20
+    muzzleFlash.position = { x: gunOptions.gunLength + muzzleFlash.width, y: -muzzleFlash.height / 2 }
+    muzzleFlash.rotation = Math.PI / 2
+    muzzleFlash.visible = false // defaults to invisible
+    gunContainer.addChild(muzzleFlash)
+    return muzzleFlash
+  }
+
 }
 
 function displayRange(unit, maxRange) {
@@ -221,5 +241,14 @@ function toggleSellButton(unit, sellButton) {
     sellButton.visible = true
   } else {
     sellButton.visible = false
+  }
+}
+
+function performMuzzleFlash(unit, muzzleFlash) {
+  if (unit.isFiring) {
+    muzzleFlash.visible = true
+    setTimeout(() => {
+      muzzleFlash.visible = false
+    }, 50)
   }
 }

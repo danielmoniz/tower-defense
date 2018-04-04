@@ -21,6 +21,9 @@ export default class Tower extends Unit {
   @observable clipSize
   @observable reloadTime
 
+  @observable isFiring = false
+  @observable ammoType = 'bullet'
+
   // tower performance data
   @observable kills = 0
   @observable xp = 0
@@ -59,6 +62,7 @@ export default class Tower extends Unit {
   }
 
   act() {
+    this.resetFiring()
     this.firingTimeCooldown.tick()
     if (this.canAttack()) {
       this.attack()
@@ -67,6 +71,10 @@ export default class Tower extends Unit {
     } else if (this.reloading) {
       this.attemptReload()
     }
+  }
+
+  @action resetFiring() {
+    this.isFiring = false
   }
 
   expendAmmo() {
@@ -106,12 +114,11 @@ export default class Tower extends Unit {
   @action attack() {
     this.selectTarget()
     if (!this.target) { return }
+    this.isFiring = true
 
     var targetValue = this.target.killValue
-    const killedUnit = this.target.takeDamage(this.attackPower.current)
+    const killedUnit = this.target.takeDamage(this.attackPower.current, this.ammoType)
     if (killedUnit) {
-      // console.log('Killed enemy!');
-      // do cool stuff! Add experience? Make money? Mow the lawn?
       // @TODO move these state changes into separate method
       this.game.profit(targetValue.credits * this.killProfitMultiplier)
       this.kills++

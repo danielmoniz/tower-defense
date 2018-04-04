@@ -101,7 +101,6 @@ class ClientGame extends Game {
     this.selectedEntity = entity
   }
 
-
   @action updateAll(data, serverTime) {
     console.log('Updating all');
 

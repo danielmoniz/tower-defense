@@ -1,33 +1,89 @@
 
 import { GRID_SIZE } from '../appConstants'
 
+/*
+ * Given data for an enemy, returns the number of points they cost to be placed
+ * in a wave.
+ */
 export function getPointsValue(enemyData) {
-  return enemyData.maxHitPoints * enemyData.speed / 10
+  let total = enemyData.maxHitPoints * enemyData.speed / 10
+  if (enemyData.regenerates) {
+    total *= (1 + enemyData.regenerates)
+  }
+  return total
 }
 
+/*
+ * Given an amount of points for an enemy, returns the number of credits that
+ * enemy would be worth to kill.
+ */
 export function getCreditsValue(points) {
   return points / 10
 }
 
-export function getEnemyData(type, subtype) {
+/*
+ * Given basic data for an enemy, returns an object of stats that includes
+ * points-based info such as killValue xp and credits.
+ */
+export function getEnemyStats(enemyData) {
+  const enemyStats = { ...enemyData }
+  enemyStats.points = getPointsValue(enemyStats)
+  enemyStats.killValue = enemyStats.killValue || {}
+
+  enemyStats.killValue.xp = enemyStats.killValue.xp || enemyStats.points
+  enemyStats.killValue.xp = Math.ceil(enemyStats.killValue.xp)
+
+  const newCredits = getCreditsValue(enemyStats.points)
+  enemyStats.killValue.credits = enemyStats.killValue.credits || newCredits
+  enemyStats.killValue.credits = Math.ceil(enemyStats.killValue.credits)
+  return enemyStats
+}
+
+/*
+ * Given some enemy data and an array of attributes, applies each attribute to
+ * the data as keys and values. Requires some small amount of intelligence to
+ * either set a new value or modify the existing value.
+ */
+export function applyAttributes(oldEnemyData, attributes) {
+  const enemyData = { ...oldEnemyData }
+  attributes.forEach((attribute) => {
+    Object.keys(attribute).forEach((key) => {
+      if (key === 'name') { return }
+      if (isNaN(enemyData[key])) {
+        enemyData[key] = attribute[key]
+      } else {
+        enemyData[key] *= attribute[key]
+      }
+    })
+  })
+  enemyData.attributes = attributes.map((attribute) => attribute.name)
+
+  delete enemyData.killValue // remove this so getEnemyStats will not ignore it // @FIXME Hacky!
+  return getEnemyStats(enemyData)
+}
+
+/*
+ * Finds that stats for a given enemy. Ensures they have a type, subtype, etc.
+ */
+export function getEnemyData(type, subtype, attributes = []) {
   if (!(type in enemies) || !(subtype in enemies[type])) {
     throw 'Must supply a valid enemy type and subtype.'
   }
-  const data = enemies[type][subtype]
+  const data = getEnemyStats(enemies[type][subtype])
+  // const finalEnemyData = applyAttributes(data, attributes)
+  const finalEnemyData = data
 
-  data.points = getPointsValue(data)
-  data.killValue = data.killValue || {}
-  data.killValue.xp = data.killValue.xp || data.points
-  const newCredits = getCreditsValue(data.points)
-  data.killValue.credits = data.killValue.credits || newCredits
+  finalEnemyData.enemyType = type
+  finalEnemyData.subtype = subtype
+  finalEnemyData.name = `${type} (${subtype})`
 
-  data.enemyType = type
-  data.subtype = subtype
-  data.name = `${type} (${subtype})`
-
-  return data
+  return finalEnemyData
 }
 
+/*
+ * Scales an enemy by the given game level.
+ * @TODO Enemies may only scale once every round (eg. 5 levels).
+ */
 export function scaleEnemy(enemyData, gameLevel) {
   const data = { ...enemyData } // copy original data
   // const scaleFactor = Math.pow(1.20, gameLevel) // exponential
@@ -36,6 +92,9 @@ export function scaleEnemy(enemyData, gameLevel) {
   return data
 }
 
+/*
+ * Return all subtypes (and their data) for a given type of enemy.
+ */
 export function getEnemySubtypes(type) {
   if (!(type in enemies)) {
     throw 'Must supply a valid enemy type.'
@@ -47,6 +106,9 @@ export function getEnemySubtypes(type) {
   return result
 }
 
+/*
+ * Return all types of enemies. Contains their subtypes and data.
+ */
 export function getEnemyTypes() {
   const result = {}
   for (const typeName in enemies) {
@@ -60,6 +122,25 @@ export function getEnemyTypes() {
  * NOTE: Can hardcode credits and xp by adding killValue object.
  */
 export const enemies = {
+  'Invader': {
+    'normal': {
+      width: GRID_SIZE * 1,
+      height: GRID_SIZE * 1,
+      speed: 20,
+      maxHitPoints: 20,
+      probability: 1,
+      priority: 0,
+    },
+    fast: {
+      width: GRID_SIZE * 0.75,
+      height: GRID_SIZE * 0.75,
+      speed: 30,
+      maxHitPoints: 20,
+      probability: 0.2,
+      priority: 20,
+    },
+  },
+
   'Swarm': {
     'normal': {
       width: GRID_SIZE * 0.5,
@@ -88,28 +169,7 @@ export const enemies = {
       height: GRID_SIZE * 4,
       speed: 10,
       maxHitPoints: 1000,
-      probability: 0.2,
-      priority: 100,
-      minWaveStart: 10,
-    },
-  },
-
-  'Invader': {
-    'normal': {
-      width: GRID_SIZE * 1,
-      height: GRID_SIZE * 1,
-      speed: 20,
-      maxHitPoints: 20,
-      probability: 1,
-      priority: 0,
-    },
-    fast: {
-      width: GRID_SIZE * 0.75,
-      height: GRID_SIZE * 0.75,
-      speed: 30,
-      maxHitPoints: 20,
-      probability: 0.2,
-      priority: 20,
+      probability: 0, // only spawns under specific circumstances
     },
   },
 

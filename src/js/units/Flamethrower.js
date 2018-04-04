@@ -27,20 +27,10 @@ export default class Flamethrower extends Tower {
     this.reloadTime = 2000
     this.killProfitMultiplier = 0.8
     this.purchaseCost = 30
+    this.ammoType = 'fire'
 
     this.width = GRID_SIZE * 3
     this.height = GRID_SIZE * 3
-  }
-
-  @action act() {
-    super.act()
-    this.firingTest += 1
-
-    if (this.targetIsValid() && this.canAttack()) {
-      this.isFiring = true
-    } else {
-      this.isFiring = false
-    }
   }
 
   @action attack() {

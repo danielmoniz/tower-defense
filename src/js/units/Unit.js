@@ -18,6 +18,7 @@ class Unit {
   @observable currentHitPoints
   @observable selected = false
   @observable burning = false
+  @observable hitBy = null
 
   constructor(game, options) {
     options = options || {}
@@ -103,15 +104,28 @@ class Unit {
    * Makes the unit take damage.
    * Returns true if the unit is killed.
    */
-  @action takeDamage(amount) {
+  @action takeDamage(amount, type) {
     if (this.currentHitPoints <= 0) {
       return
     }
+    this.takeHit(type)
     this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
     if (this.currentHitPoints <= 0) {
       this.kill()
       return true
     }
+  }
+
+  @action heal(amount) {
+    this.currentHitPoints = Math.min(this.currentHitPoints + amount, this.maxHitPoints)
+  }
+
+  @action takeHit(type) {
+    this.hitBy = type
+  }
+
+  @action clearHit() {
+    this.hitBy = null
   }
 
   @action kill() {

@@ -14,7 +14,7 @@ import Enemy from '../units/Enemy'
 import Pathing from '../map/Pathing'
 import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
-import { getEnemyData, scaleEnemy } from '../units/Enemies'
+import { scaleEnemy } from '../units/Enemies'
 
 
 export default class Game {
@@ -192,8 +192,7 @@ export default class Game {
     return newEnemies
   }
 
-  createEnemy(type, subtype) {
-    const enemyData = getEnemyData(type, subtype)
+  createEnemy(enemyData) {
     const scaledEnemyData = scaleEnemy(enemyData, this.wave.number)
     return new Enemy(this, scaledEnemyData)
   }

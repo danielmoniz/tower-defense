@@ -56,6 +56,8 @@ export default class BoardRenderer {
           .add('carrier', '/images/carrier.png')
           .add('exit', '/images/exit.png')
           .add('sell', '/images/sell.png')
+          .add('muzzleFlash', '/images/muzzle_flash.png')
+          .add('enemyExplosionBasic', '/images/enemy_explosion_basic.png')
     console.log("Loading images...");
     this.loader.on("progress", (loader, resource) => {
       const completion = `${Math.floor(loader.progress)}%`
@@ -95,10 +97,13 @@ export default class BoardRenderer {
   }
 
   // @TODO Consider using Vue.js for templating here
-  displayEnemy(infoPanelData, entity) {
-    infoPanelData.innerHTML = "Speed: " + entity.speed + "<br>" +
-        "Hit points: " + Math.ceil(entity.currentHitPoints) + "/" + entity.maxHitPoints + "<br>" +
-        "Value: $" + entity.killValue.credits + ", " + entity.killValue.xp + "xp<br>"
+  displayEnemy(infoPanelData, enemy) {
+    const attributesMessage = this.getEnemyAttributesMessage(enemy)
+
+    infoPanelData.innerHTML = "Speed: " + Math.ceil(enemy.speed) + "<br>" +
+        "Hit points: " + Math.ceil(enemy.currentHitPoints) + "/" + Math.ceil(enemy.maxHitPoints) + "<br>" +
+        "Value: $" + enemy.killValue.credits + ", " + enemy.killValue.xp + "xp<br>" +
+        attributesMessage + "<br>"
         // (we probably don't need size, as it has no in-game effect)
         // "Size: " + entity.width + "x" + entity.height
   }
@@ -183,6 +188,18 @@ export default class BoardRenderer {
     rightBackground.drawRect(deadZone.x + GRID_SIZE, deadZone.y, deadZone.width, deadZone.height + GRID_SIZE);
     rightBackground.endFill();
     this.app.stage.addChild(rightBackground)
+  }
+
+  // helper methods ---------------
+
+  getEnemyAttributesMessage(enemy) {
+    let attributesMessage = "Attributes: "
+    if (enemy.attributes.length === 0) {
+      attributesMessage += "none"
+    } else {
+      attributesMessage += enemy.attributes.join(", ")
+    }
+    return attributesMessage
   }
 
 }
