@@ -77,6 +77,7 @@ class Enemy extends Unit {
 
   handleEffects() {
     this.regenerate()
+    this.burn()
   }
 
   regenerate() {
@@ -84,6 +85,11 @@ class Enemy extends Unit {
     const ticksPerSecond = 1000 / GAME_REFRESH_RATE
     const hpToHeal = Math.sqrt(this.maxHitPoints) * this.regenerates / ticksPerSecond
     this.heal(hpToHeal)
+  }
+
+  burn() {
+    if (!this.burning) { return }
+    this.takeDamage(1) // @TODO this should be based on something!
   }
 
   @action complete() {
