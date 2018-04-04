@@ -47,6 +47,7 @@ class ClientGame extends Game {
   }
 
   sendPlaceTower(tower) {
+    console.log('sending placed tower');
     return this.placeTower(tower)
   }
 
@@ -106,7 +107,6 @@ class ClientGame extends Game {
 
     this.updateEnemies(data.enemies)
     this.removeEnemies(data.enemies)
-    // @TODO Remove enemies
 
     this.updateTowers(data.towers)
     this.removeTowers(data.towers, serverTime)
