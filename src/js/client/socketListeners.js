@@ -30,13 +30,18 @@ function setUpListeners(game, emitter) {
     game.placeTower(tower)
   })
 
+  socket.on('place tower failed', (tower) => {
+    console.log('Tower placement failed. Removing tower at:', tower.x, tower.y);
+    game.undoPlaceTower(tower)
+  })
+
   socket.on('sell tower', (towerId) => {
     console.log('selling tower with ID:', towerId);
     game.receiveSellTower(towerId)
   })
 
-  socket.on('update all', (data) => {
-    game.updateAll(data)
+  socket.on('update all', (data, time) => {
+    game.updateAll(data, time)
   })
 
   socket.on('join existing game', (gameData) => {

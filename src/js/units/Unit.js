@@ -23,6 +23,7 @@ class Unit {
   constructor(game, options) {
     options = options || {}
     this.id = getAltId()
+    this.createdAt = Date.now()
     this.type = 'Unit' // should be overwritten
 
     // add a reference to game which avoids circular referencing

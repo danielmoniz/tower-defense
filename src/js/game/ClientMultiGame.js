@@ -63,7 +63,7 @@ class ClientMultiGame extends ClientGame {
 
   acceptSpawnedWave(newEnemies) {
     this.wave.nextWave()
-    this.addEnemies(newEnemies)
+    this.updateEnemies(newEnemies)
   }
 
   spawnWaveEarly() {

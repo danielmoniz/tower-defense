@@ -99,8 +99,12 @@ export default class Tower extends Unit {
 
   @action selectTarget() {
     if (!this.target || !this.targetIsValid()) {
-      this.target = this.findNearestEnemyInRange()
+      this.setTarget(this.findNearestEnemyInRange())
     }
+  }
+
+  @action setTarget(target) {
+    this.target = target
   }
 
   /*

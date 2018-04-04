@@ -10,8 +10,8 @@ export default class UnitManager {
     this.byId[unit.id] = unit
   }
 
-  concat(enemies) {
-    enemies.forEach((unit) => {
+  concat(units) {
+    units.forEach((unit) => {
       this.add(unit)
     })
   }
@@ -20,6 +20,16 @@ export default class UnitManager {
     const unit = this.all[index]
     this.all.splice(index, 1)
     delete this.byId[unit.id]
+  }
+
+  removeByValue(unitToRemove) {
+    for (let i = this.all.length - 1; i >= 0; i--) {
+      const unit = this.all[i]
+      if (unit.id === unitToRemove.id) {
+        this.remove(i)
+        break
+      }
+    }
   }
 
   clear() {
