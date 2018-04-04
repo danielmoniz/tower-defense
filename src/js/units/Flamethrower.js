@@ -29,6 +29,8 @@ export default class Flamethrower extends Tower {
     this.purchaseCost = 30
     this.ammoType = 'fire'
 
+    this.coneWidth = 0.5 // radians
+
     this.width = GRID_SIZE * 3
     this.height = GRID_SIZE * 3
   }
@@ -46,13 +48,24 @@ export default class Flamethrower extends Tower {
   }
 
   findEnemiesInCone() {
+    // get tower's current facing angle
+    const towerFacingAngle = this.getAngleToPoint(this.target.xFloor, this.target.yFloor)
+    // const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
+    // unitElement.rotation = angle
+
     const enemies = []
     this.game.enemies.all.forEach((enemy) => {
+      if (!enemy.isAlive() || !this.unitInRange(enemy)) { return }
       // @TODO Calculate whether enemy is in cone
-      const enemyDistance = this.distanceToUnit(enemy)
-      if (enemy.isAlive() && this.unitInRange(enemy)) {
+      // get angle to enemy
+      const angleToEnemy = this.getAngleToPoint(enemy.xFloor, enemy.yFloor)
+      const minConeAngle = towerFacingAngle - (this.coneWidth / 2)
+      const maxConeAngle = towerFacingAngle + (this.coneWidth / 2)
+      if (angleToEnemy < maxConeAngle && angleToEnemy > minConeAngle) {
         enemies.push(enemy)
       }
+      // if enemy is in range and within a certain angle range, it's in the cone
+      // const enemyDistance = this.distanceToUnit(enemy)
     })
     return enemies
   }
