@@ -153,7 +153,7 @@ export default class TowerRenderer extends UnitRenderer {
     sellButton.interactive = true
     sellButton.buttonMode = true
     sellButton.on('click', () => {
-      tower.sell()
+      tower.game.sendSellTower(tower)
     })
 
     sellButton.parentLayer = board.menuLayer
