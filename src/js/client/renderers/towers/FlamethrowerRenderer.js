@@ -71,6 +71,9 @@ export default class FlamethrowerRenderer extends TowerRenderer {
   }
 
   getFlameEmitter(container, unit) {
+    // @TODO Base the width of particle spray on the tower's coneWidth property.
+    // The width of the flame image is also relevant to the size of the
+    // visible cone.
     return new PIXI.particles.Emitter(
       container,
       [PIXI.Texture.fromImage('/images/Fire.png')],
