@@ -34,10 +34,40 @@ export default class Flamethrower extends Tower {
   }
 
   @action attack() {
-    const target = super.attack()
-    if (target) {
-      target.ignite()
-    }
+    this.selectTarget()
+    if (!this.target) { return }
+    this.isFiring = true
+
+    const enemiesInCone = this.findEnemiesInCone()
+    enemiesInCone.forEach((enemy) => {
+      this.damageEnemy(enemy)
+      enemy.ignite()
+    })
+  }
+
+  findEnemiesInCone() {
+    const enemies = []
+    this.game.enemies.all.forEach((enemy) => {
+      // @TODO Calculate whether enemy is in cone
+      const enemyDistance = this.distanceToUnit(enemy)
+      if (enemy.isAlive() && this.unitInRange(enemy)) {
+        enemies.push(enemy)
+      }
+    })
+    return enemies
+  }
+
+  @action damageEnemy(enemy) {
+    var targetValue = enemy.killValue
+    const killedUnit = enemy.takeDamage(this.attackPower.current, this.ammoType)
+    if (!killedUnit) { return }
+
+    // @TODO move these state changes into separate method
+    this.game.profit(targetValue.credits * this.killProfitMultiplier)
+    this.kills++
+    this.xp += targetValue.xp
+    this.checkLevel()
+    return
   }
 
 }
