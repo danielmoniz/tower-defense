@@ -90,6 +90,7 @@ class Enemy extends Unit {
   burn() {
     if (!this.burning) { return }
     this.takeDamage(1) // @TODO this should be based on something!
+    this.takeHit('something') // @FIXME
   }
 
   @action complete() {
