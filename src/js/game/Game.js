@@ -142,15 +142,14 @@ export default class Game {
         continue
       }
       if (!unit.disabled && unit.act) {
-        // @TODO Get terrain type and pass it to unit (for speed/cover purposes)
         const nextTargetLocation = this.pathHelper.getDirection(unit.x, unit.y)
         const adjustedTargetLocation = {
           x: nextTargetLocation.x + Math.floor(GRID_SIZE / 2),
           y: nextTargetLocation.y + Math.floor(GRID_SIZE / 2),
         }
 
-        unit.act(adjustedTargetLocation)
-        // unit.jumpTo(0, 0)
+        const currentTerrain = this.pathHelper.getTerrainAt(unit.x, unit.y)
+        unit.act(adjustedTargetLocation, currentTerrain)
       }
     }
   }

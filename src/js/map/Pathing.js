@@ -29,6 +29,12 @@ export default class Pathing {
     this.compute()
   }
 
+  getTerrainAt(x, y) {
+    const location = { x: x, y: y}
+    const gridLocation = this.calculateGridLocation(location)
+    return this.weights.terrain.at(gridLocation.x, gridLocation.y)
+  }
+
   /*
    * Attempts to add an obstacle to the map. This involves updating both
    * the weights and pathLengths grids.
