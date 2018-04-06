@@ -220,41 +220,41 @@ describe('Pathing', function() {
 
   })
 
-  describe('addObstacle', function() {
+  describe('addTowerObstacle', function() {
 
-    it('should return true if an obstacle can be added', () => {
+    it('should return true if a tower obstacle can be added', () => {
       const dimensions = getDimensions(10, 10)
       const pathHelper = new Pathing(dimensions, 1)
 
-      const success = pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
+      const success = pathHelper.addTowerObstacle({ x: 1, y: 1}, 3, 2)
 
       expect(success).toBe(true)
     })
 
-    it('should update weights grid with a newly added obstacle', () => {
+    it('should update tower grid with a newly added tower obstacle', () => {
       const dimensions = getDimensions(5, 5)
       const pathHelper = new Pathing(dimensions, 1)
 
-      pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
+      pathHelper.addTowerObstacle({ x: 1, y: 1}, 3, 2)
 
-      expect(pathHelper.weights.at(1, 1)).toBe(0)
-      expect(pathHelper.weights.at(1, 2)).toBe(0)
-      expect(pathHelper.weights.at(2, 1)).toBe(0)
-      expect(pathHelper.weights.at(2, 2)).toBe(0)
-      expect(pathHelper.weights.at(3, 1)).toBe(0)
-      expect(pathHelper.weights.at(3, 2)).toBe(0)
+      expect(pathHelper.weights.tower.at(1, 1)).toBe(0)
+      expect(pathHelper.weights.tower.at(1, 2)).toBe(0)
+      expect(pathHelper.weights.tower.at(2, 1)).toBe(0)
+      expect(pathHelper.weights.tower.at(2, 2)).toBe(0)
+      expect(pathHelper.weights.tower.at(3, 1)).toBe(0)
+      expect(pathHelper.weights.tower.at(3, 2)).toBe(0)
 
-      expect(pathHelper.weights.at(0, 0)).toBe(1)
-      expect(pathHelper.weights.at(0, 3)).toBe(1)
-      expect(pathHelper.weights.at(3, 0)).toBe(1)
-      expect(pathHelper.weights.at(3, 3)).toBe(1)
+      expect(pathHelper.weights.tower.at(0, 0)).toBe(1)
+      expect(pathHelper.weights.tower.at(0, 3)).toBe(1)
+      expect(pathHelper.weights.tower.at(3, 0)).toBe(1)
+      expect(pathHelper.weights.tower.at(3, 3)).toBe(1)
     })
 
-    it('should update pathLengths grid to account for a new obstacle', () => {
+    it('should update pathLengths grid to account for a new tower obstacle', () => {
         const dimensions = getDimensions(5, 5)
         const pathHelper = new Pathing(dimensions, 1)
 
-        pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
+        pathHelper.addTowerObstacle({ x: 1, y: 1}, 3, 2)
 
         expect(pathHelper.pathLengths.at(1, 1)).toBe(-1)
         expect(pathHelper.pathLengths.at(1, 2)).toBe(-1)
@@ -274,12 +274,12 @@ describe('Pathing', function() {
         expect(pathHelper.pathLengths.at(0, 0)).toBe(8)
     })
 
-    it('should update pathLengths as a maze to account for multiple obstacles', () => {
+    it('should update pathLengths as a maze to account for multiple tower obstacles', () => {
       const dimensions = getDimensions(2, 5)
       const pathHelper = new Pathing(dimensions, 1)
 
-      pathHelper.addObstacle({ x: 0, y: 1}, 1, 1)
-      pathHelper.addObstacle({ x: 1, y: 3}, 1, 1)
+      pathHelper.addTowerObstacle({ x: 0, y: 1}, 1, 1)
+      pathHelper.addTowerObstacle({ x: 1, y: 3}, 1, 1)
 
       assertPath(pathHelper, [
         [0, 0],
@@ -293,41 +293,41 @@ describe('Pathing', function() {
       ])
     })
 
-    it('should return false if a single obstacle blocks the goal', () => {
+    it('should return false if a single tower obstacle blocks the goal', () => {
       const dimensions = getDimensions(2, 2)
       const pathHelper = new Pathing(dimensions, 1)
 
-      const success = pathHelper.addObstacle({x: 1, y: 1}, 1, 1)
+      const success = pathHelper.addTowerObstacle({x: 1, y: 1}, 1, 1)
       expect(success).toBe(false)
     })
 
-    it('should return false if a set of obstacles wall off a tile from the goal', () => {
+    it('should return false if a set of tower obstacles wall off a tile from the goal', () => {
       const dimensions = getDimensions(3, 3)
       const pathHelper = new Pathing(dimensions, 1)
 
-      pathHelper.addObstacle({x: 0, y: 1}, 1, 1)
-      pathHelper.addObstacle({x: 1, y: 1}, 1, 1)
-      const success = pathHelper.addObstacle({x: 1, y: 0}, 1, 1)
+      pathHelper.addTowerObstacle({x: 0, y: 1}, 1, 1)
+      pathHelper.addTowerObstacle({x: 1, y: 1}, 1, 1)
+      const success = pathHelper.addTowerObstacle({x: 1, y: 0}, 1, 1)
       expect(success).toBe(false)
     })
 
-    it('should not update map weights if an obstacle blocks the goal', () => {
+    it('should not update map weights if a tower obstacle blocks the goal', () => {
       const dimensions = getDimensions(2, 2)
       const pathHelper = new Pathing(dimensions, 1)
 
-      expect(pathHelper.weights.at(1, 1)).toBe(1)
-      pathHelper.addObstacle({x: 1, y: 1}, 1, 1)
-      expect(pathHelper.weights.at(1, 1)).toBe(1)
+      expect(pathHelper.weights.tower.at(1, 1)).toBe(1)
+      pathHelper.addTowerObstacle({x: 1, y: 1}, 1, 1)
+      expect(pathHelper.weights.tower.at(1, 1)).toBe(1)
     })
 
-    it('should not update map pathLengths if an obstacle blocks the goal', () => {
+    it('should not update map pathLengths if a tower obstacle blocks the goal', () => {
       const dimensions = getDimensions(2, 2)
       const pathHelper = new Pathing(dimensions, 1)
       pathHelper.compute()
 
       expect(pathHelper.pathLengths.at(0, 0)).toBe(2)
 
-      pathHelper.addObstacle({x: 1, y: 1}, 1, 1)
+      pathHelper.addTowerObstacle({x: 1, y: 1}, 1, 1)
       expect(pathHelper.pathLengths.at(0, 0)).toBe(2)
     })
   })
@@ -338,7 +338,7 @@ describe('Pathing', function() {
       const dimensions = getDimensions(10, 10)
       const pathHelper = new Pathing(dimensions, 1)
 
-      pathHelper.addObstacle({ x: 0, y: 0 }, 3, 2)
+      pathHelper.addTowerObstacle({ x: 0, y: 0 }, 3, 2)
       const areaFree = pathHelper.isAreaFree({ x: 3, y: 0 }, 2, 2)
       expect(areaFree).toBe(true)
     })
@@ -347,7 +347,7 @@ describe('Pathing', function() {
       const dimensions = getDimensions(10, 10)
       const pathHelper = new Pathing(dimensions, 1)
 
-      pathHelper.addObstacle({ x: 1, y: 1}, 3, 2)
+      pathHelper.addTowerObstacle({ x: 1, y: 1}, 3, 2)
       const areaFree = pathHelper.isAreaFree({ x: 2, y: 2 }, 2, 2)
       expect(areaFree).toBe(false)
     })
@@ -356,7 +356,7 @@ describe('Pathing', function() {
       const dimensions = getDimensions(10, 10)
       const pathHelper = new Pathing(dimensions, 2)
 
-      pathHelper.addObstacle({ x: 0, y: 0 }, 4, 4)
+      pathHelper.addTowerObstacle({ x: 0, y: 0 }, 4, 4)
       const areaFree = pathHelper.isAreaFree({ x: 4, y: 4 }, 4, 4)
       expect(areaFree).toBe(true)
     })
@@ -365,7 +365,7 @@ describe('Pathing', function() {
       const dimensions = getDimensions(10, 10)
       const pathHelper = new Pathing(dimensions, 2)
 
-      pathHelper.addObstacle({ x: 0, y: 0}, 4, 4)
+      pathHelper.addTowerObstacle({ x: 0, y: 0}, 4, 4)
       const areaFree = pathHelper.isAreaFree({ x: 3, y: 3 }, 4, 4)
       expect(areaFree).toBe(false)
     })
