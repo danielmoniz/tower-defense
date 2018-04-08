@@ -62,6 +62,7 @@ export default class Tower extends Unit {
   }
 
   act() {
+    super.act()
     this.resetFiring()
     this.firingTimeCooldown.tick()
     if (this.canAttack()) {

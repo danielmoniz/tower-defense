@@ -100,6 +100,10 @@ class Unit {
     this.y = newY
   }
 
+  // handle any actions that are global to all unit types
+  @action act() {
+  }
+
   /*
    * Makes the unit take damage.
    * Returns true if the unit is killed.
