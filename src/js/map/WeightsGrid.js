@@ -8,6 +8,7 @@ export default class WeightsGrid extends Grid {
     this.terrain = new TerrainGrid(tilesWide, tilesHigh)
     this.tower = new TowerGrid(tilesWide, tilesHigh)
     this.initialize()
+    console.log(this)
   }
 
   initialize() {
@@ -34,9 +35,10 @@ export default class WeightsGrid extends Grid {
   recalculate(gridLocation, gridWidth, gridHeight) {
     for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
       for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        this.values[x][y] = this.tower.values[x][y] === 0 ?
-                            0 :
-                            this.terrain.values[x][y]
+        this.set(x, y, this.tower.at(x, y) && this.terrain.difficultyAt(x, y))
+        // this.values[x][y] = this.tower.values[x][y] === 0 ?
+        //                     0 :
+        //                     this.terrain.values[x][y]
       }
     }
   }

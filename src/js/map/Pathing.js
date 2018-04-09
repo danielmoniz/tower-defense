@@ -32,7 +32,7 @@ export default class Pathing {
   getTerrainAt(x, y) {
     const location = { x: x, y: y}
     const gridLocation = this.calculateGridLocation(location)
-    return this.weights.terrain.at(gridLocation.x, gridLocation.y)
+    return this.weights.terrain.difficultyAt(gridLocation.x, gridLocation.y)
   }
 
   /*

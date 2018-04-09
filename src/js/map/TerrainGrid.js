@@ -3,27 +3,41 @@ import Grid from './Grid'
 export default class TerrainGrid extends Grid {
   constructor(tilesWide, tilesHigh) {
     super(tilesWide, tilesHigh, 1)
-    this.generateTerrain()
+    this.setTerrainProperties()
+    this.reset()
+  }
+
+  setTerrainProperties() {
+    this.terrainProperties = {
+      normal: { type: "normal", difficulty: 1 },
+      crater: { type: "crater", difficulty: 3 },
+      obstacle: { type: "obstacle", difficulty: 0 },
+    }
+  }
+
+  getTerrainProperties(type) {
+    return this.terrainProperties[type] || this.terrainProperties["normal"]
   }
 
   reset() {
+    this.initialValue = this.getTerrainProperties("normal")
     super.reset()
     this.generateTerrain()
   }
 
   generateTerrain() {
     // TODO: Simple randomizer for terrain features
-    this.addTestCrater({x:17,y:17}, 3, 4)
-    this.addTestCrater({x:30,y:30}, 3, 4)
-    this.addTestCrater({x:30,y:4}, 3, 4)
+    this.addTestCrater({x:17,y:17}, 4)
+    this.addTestCrater({x:30,y:30}, 4)
+    this.addTestCrater({x:30,y:4}, 4)
   }
 
-  addTestCrater(gridLocation, weight, size) {
+  addTestCrater(gridLocation, size) {
     // square crater
     for (let x = gridLocation.x - size; x <= gridLocation.x + size; x++) {
       for (let y = gridLocation.y - size; y <= gridLocation.y + size; y++) {
         if (this.coordinateIsValid(x, y)) {
-          this.values[x][y] = weight
+          this.set(x, y, this.getTerrainProperties("crater"))
         }
       }
     }
@@ -34,9 +48,9 @@ export default class TerrainGrid extends Grid {
       for (let j = 0; j < this.tilesHigh; j++) {
         let random = Math.random()
         if (random < wallProbability) {
-          this.set(i, j, 0)
+          this.set(i, j, this.getTerrainProperties("obstacle"))
         } else {
-          this.set(i, j, 1)
+          this.set(i, j, this.getTerrainProperties("normal"))
         }
       }
     }
@@ -49,7 +63,7 @@ export default class TerrainGrid extends Grid {
   addObstacle(gridLocation, gridWidth, gridHeight) {
     for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
       for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        this.set(x, y, 0)
+        this.set(x, y, this.getTerrainProperties("obstacle"))
       }
     }
   }
@@ -60,7 +74,7 @@ export default class TerrainGrid extends Grid {
     }
     for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
       for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        if (this.at(x, y) === 0) {
+        if (this.difficultyAt(x, y) === 0) {
           return false
         }
       }
@@ -78,7 +92,15 @@ export default class TerrainGrid extends Grid {
     const endY = Math.floor(this.tilesHigh * (3 / 4))
 
     for (let y = startY; y < endY; y++) {
-      this.set(x, y, 0)
+      this.set(x, y, this.getTerrainProperties("obstacle"))
     }
+  }
+
+  typeAt(x, y) {
+    return this.at(x, y).type
+  }
+
+  difficultyAt(x, y) {
+    return this.at(x, y).difficulty
   }
 }
