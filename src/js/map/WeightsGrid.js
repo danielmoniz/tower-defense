@@ -8,7 +8,6 @@ export default class WeightsGrid extends Grid {
     this.terrain = new TerrainGrid(tilesWide, tilesHigh)
     this.tower = new TowerGrid(tilesWide, tilesHigh)
     this.initialize()
-    console.log(this)
   }
 
   initialize() {

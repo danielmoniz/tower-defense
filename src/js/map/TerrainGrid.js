@@ -9,14 +9,24 @@ export default class TerrainGrid extends Grid {
 
   setTerrainProperties() {
     this.terrainProperties = {
-      normal: { type: "normal", difficulty: 1 },
-      crater: { type: "crater", difficulty: 3 },
-      obstacle: { type: "obstacle", difficulty: 0 },
+      normal: 1,
+      crater: 5,
+      ridge: 3,
+      obstacle: 0,
     }
   }
 
   getTerrainProperties(type) {
-    return this.terrainProperties[type] || this.terrainProperties["normal"]
+    if (this.terrainProperties.hasOwnProperty(type)) {
+      return {
+        type: type,
+        difficulty: this.terrainProperties[type],
+      }
+    return {
+      type: "normal",
+      difficulty: 1,
+    }
+    }
   }
 
   reset() {
