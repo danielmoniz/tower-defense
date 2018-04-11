@@ -105,6 +105,8 @@ class Unit {
 
   // handle any actions that are global to all unit types
   @action act() {
+    this.clearHit()
+    this.handleEffects()
   }
 
   /*
@@ -125,6 +127,24 @@ class Unit {
       }
       return true
     }
+  }
+
+  handleEffects() {
+    this.regenerate()
+    this.burn()
+  }
+
+  regenerate() {
+    if (!this.regenerates) { return }
+    const ticksPerSecond = 1000 / GAME_REFRESH_RATE
+    const hpToHeal = Math.sqrt(this.maxHitPoints) * this.regenerates / ticksPerSecond
+    this.heal(hpToHeal)
+  }
+
+  burn() {
+    if (!this.burning) { return }
+    this.takeDamage(1, 'burning') // @TODO damage should be based on something!
+    this.takeHit('something') // @FIXME
   }
 
   @action heal(amount) {

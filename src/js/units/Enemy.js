@@ -41,9 +41,7 @@ class Enemy extends Unit {
   @action setMoveTarget() {
     this.act = (nextLocation) => {
       super.act()
-      this.clearHit()
       this.moveXAndY(nextLocation.x, nextLocation.y)
-      this.handleEffects()
     }
     if (this.movementId) { // if already moving, continue in a new direction
       this.startMovement()
@@ -74,24 +72,6 @@ class Enemy extends Unit {
     // round current position coordinate to two decimals
     this.x = Math.round((this.x + xMovement) * 100) / 100
     this.y = Math.round((this.y + yMovement) * 100) / 100
-  }
-
-  handleEffects() {
-    this.regenerate()
-    this.burn()
-  }
-
-  regenerate() {
-    if (!this.regenerates) { return }
-    const ticksPerSecond = 1000 / GAME_REFRESH_RATE
-    const hpToHeal = Math.sqrt(this.maxHitPoints) * this.regenerates / ticksPerSecond
-    this.heal(hpToHeal)
-  }
-
-  burn() {
-    if (!this.burning) { return }
-    this.takeDamage(1, 'burning') // @TODO damage should be based on something!
-    this.takeHit('something') // @FIXME
   }
 
   @action complete() {
