@@ -60,7 +60,13 @@ export default class TerrainGrid extends Grid {
     // square crater
     for (let x = gridLocation.x - size; x <= gridLocation.x + size; x++) {
       for (let y = gridLocation.y - size; y <= gridLocation.y + size; y++) {
-        if (this.coordinateIsValid(x, y)) {
+        if (!this.coordinateIsValid(x, y)) { continue }
+        if (x == gridLocation.x - size || x == gridLocation.x + size ||
+            y == gridLocation.y - size || y == gridLocation.y + size) {
+          this.set(x, y, this.getTerrainProperties("ridge"))
+        } else if (x == gridLocation.x && y == gridLocation.y) {
+          this.set(x, y, this.getTerrainProperties("obstacle"))
+        } else {
           this.set(x, y, this.getTerrainProperties("crater"))
         }
       }
