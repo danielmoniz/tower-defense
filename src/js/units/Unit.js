@@ -19,7 +19,6 @@ class Unit {
   @observable selected = false
   @observable burning = false
   @observable burningInfo = {
-    burning: false,
     killProfitMultiplier: 1,
   }
   @observable hitBy = null
@@ -146,16 +145,12 @@ class Unit {
   }
 
   @action ignite(killProfitMultiplier) {
-    // @TODO Use either burning or burningInfo.burning (but not both)
     this.burning = true
-    this.burningInfo.burning = true
     this.burningInfo.killProfitMultiplier = killProfitMultiplier
   }
 
   @action extinguish() {
-    // @TODO Use either burning or burningInfo.burning (but not both)
     this.burning = false
-    this.burningInfo.burning = false
     this.burningInfo.killProfitMultiplier = 1 // reset just in case
   }
 
