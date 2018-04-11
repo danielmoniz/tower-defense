@@ -18,6 +18,10 @@ class Unit {
   @observable currentHitPoints
   @observable selected = false
   @observable burning = false
+  @observable burningInfo = {
+    burning: false,
+    killProfitMultiplier: 1,
+  }
   @observable hitBy = null
 
   constructor(game, options) {
@@ -116,6 +120,10 @@ class Unit {
     this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
     if (this.currentHitPoints <= 0) {
       this.kill()
+      if (type === 'burning') {
+        const multiplier = this.burningInfo.killProfitMultiplier
+        this.game.profit(this.killValue.credits * multiplier)
+      }
       return true
     }
   }
@@ -137,12 +145,18 @@ class Unit {
     this.destroy()
   }
 
-  @action ignite() {
+  @action ignite(killProfitMultiplier) {
+    // @TODO Use either burning or burningInfo.burning (but not both)
     this.burning = true
+    this.burningInfo.burning = true
+    this.burningInfo.killProfitMultiplier = killProfitMultiplier
   }
 
   @action extinguish() {
+    // @TODO Use either burning or burningInfo.burning (but not both)
     this.burning = false
+    this.burningInfo.burning = false
+    this.burningInfo.killProfitMultiplier = 1 // reset just in case
   }
 
   isAlive() {

@@ -43,7 +43,7 @@ export default class Flamethrower extends Tower {
     const enemiesInCone = this.findEnemiesInCone()
     enemiesInCone.forEach((enemy) => {
       this.damageEnemy(enemy)
-      enemy.ignite()
+      enemy.ignite(this.killProfitMultiplier)
     })
   }
 
