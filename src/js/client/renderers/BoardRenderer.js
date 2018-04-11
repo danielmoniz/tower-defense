@@ -26,6 +26,7 @@ export default class BoardRenderer {
     this.loadUnitAssets(() => {
       this.renderMap(game)
     })
+    this.renderTerrain(game)
     this.setupGameStateDisplay(game)
     this.setupInfoPanel(game)
   }
@@ -136,6 +137,24 @@ export default class BoardRenderer {
     this.addEntrance(game)
   }
 
+  renderTerrain(game) {
+    let terrainContainer = new PIXI.Container()
+    for (let x = 0; x < game.width / GRID_SIZE; x++) {
+      for (let y = 0; y < game.height / GRID_SIZE; y++) {
+        let terrainBackground = new PIXI.Graphics()
+        terrainBackground.position = {
+          x: GRID_SIZE * x,
+          y: GRID_SIZE * y,
+        }
+        terrainBackground.beginFill(game.pathHelper.weights.terrain.colorAt(x, y))
+        terrainBackground.drawRect(0, 0, GRID_SIZE, GRID_SIZE)
+        terrainBackground.endFill()
+        terrainContainer.addChild(terrainBackground)
+      }
+    }
+    this.app.stage.addChild(terrainContainer)
+  }
+
   addExit(game) {
     let exitContainer = new PIXI.Container()
     exitContainer.position = game.getEndGoal()
@@ -146,7 +165,7 @@ export default class BoardRenderer {
     const exitBackground = new PIXI.Graphics()
     exitBackground.beginFill(0xCCCCCC)
     exitBackground.drawRect(0, 0, GRID_SIZE, GRID_SIZE);
-    exitBackground.endFill();
+    exitBackground.endFill()
     exitContainer.addChild(exitBackground)
 
     const exitImage = new PIXI.Sprite(PIXI.utils.TextureCache["exit"])
