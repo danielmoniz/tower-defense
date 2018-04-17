@@ -23,15 +23,17 @@ export default class BoardRenderer {
     this.app.renderer.backgroundColor = 0xFFFFFF
     this.app.renderer.view.style.border = '2px solid black'
 
-    this.loadUnitAssets(() => {
-      this.renderMap(game)
-    })
-    this.renderTerrain(game)
+    this.loadUnitAssets()
     this.setupGameStateDisplay(game)
     this.setupInfoPanel(game)
   }
 
-  loadUnitAssets(onCompletion) {
+  startGame() {
+    this.renderTerrain(game)
+    this.renderMap(game)
+  }
+
+  loadUnitAssets() {
     // @TODO Move this into another file
     // load assets into PIXI
     this.loader = new PIXI.loaders.Loader()
@@ -49,7 +51,6 @@ export default class BoardRenderer {
     this.loader.load((loader, resources) => {
       console.log("All images loaded!");
       this.assetsReady = true
-      onCompletion()
     })
   }
 

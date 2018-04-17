@@ -23,6 +23,7 @@ class ClientGame extends Game {
   start() {
     super.start()
     this.renderer.tick()
+    this.renderer.board.startGame()
   }
 
   /*

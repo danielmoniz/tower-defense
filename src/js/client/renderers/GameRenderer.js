@@ -47,6 +47,10 @@ export default class GameRenderer {
     this.board.setupGameBox(game)
   }
 
+  startGame() {
+    this.board.startGame()
+  }
+
   queueRender(entity) {
     if (!entity) { return false }
     this.renderStack.push(entity)

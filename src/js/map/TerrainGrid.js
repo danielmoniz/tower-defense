@@ -3,11 +3,10 @@ import Grid from './Grid'
 export default class TerrainGrid extends Grid {
   constructor(tilesWide, tilesHigh) {
     super(tilesWide, tilesHigh, 1)
-    this.setTerrainProperties()
-    this.reset()
+    this.initialize()
   }
 
-  setTerrainProperties() {
+  initialize() {
     this.terrainProperties = {
       normal: {
         difficulty: 1,
@@ -26,6 +25,8 @@ export default class TerrainGrid extends Grid {
         color: 0x000000,
       },
     }
+    this.initialValue = this.getTerrainProperties("normal")
+    super.reset()
   }
 
   getTerrainProperties(type) {
@@ -50,17 +51,25 @@ export default class TerrainGrid extends Grid {
   }
 
   generateTerrain() {
-    // TODO: Simple randomizer for terrain features
-    this.addTestCrater({x:17,y:17}, 4)
-    this.addTestCrater({x:30,y:30}, 4)
-    this.addTestCrater({x:30,y:4}, 4)
+    // Minimum crater size 1, maximum 3
+    const totalGridSpaces = this.tilesWide * this.tilesHigh
+    const defaultTerrainCoverage = 0.2
+    const targetTerrainCoverage = totalGridSpaces * defaultTerrainCoverage
+    let terrainCoverage = 0
+
+    do {
+      terrainCoverage +=
+          this.addTestCrater(this.getRandomGridLocation(),
+                             Math.floor(3 * Math.random()) + 1)
+    } while (terrainCoverage < targetTerrainCoverage)
   }
 
   addTestCrater(gridLocation, size) {
     // square crater
+    let tilesChanged = 0
     for (let x = gridLocation.x - size; x <= gridLocation.x + size; x++) {
       for (let y = gridLocation.y - size; y <= gridLocation.y + size; y++) {
-        if (!this.coordinateIsValid(x, y)) { continue }
+        if (!this.coordinateIsValid(x, y) || this.typeAt(x, y) != "normal") { continue }
         if (x == gridLocation.x - size || x == gridLocation.x + size ||
             y == gridLocation.y - size || y == gridLocation.y + size) {
           this.set(x, y, this.getTerrainProperties("ridge"))
@@ -69,20 +78,16 @@ export default class TerrainGrid extends Grid {
         } else {
           this.set(x, y, this.getTerrainProperties("crater"))
         }
+        tilesChanged++
       }
     }
+    return tilesChanged
   }
 
-  randomize(wallProbability = 0.1) {
-    for (let i = 0; i < this.tilesWide; i++) {
-      for (let j = 0; j < this.tilesHigh; j++) {
-        let random = Math.random()
-        if (random < wallProbability) {
-          this.set(i, j, this.getTerrainProperties("obstacle"))
-        } else {
-          this.set(i, j, this.getTerrainProperties("normal"))
-        }
-      }
+  getRandomGridLocation() {
+    return {
+      x: Math.floor(this.tilesWide * Math.random()),
+      y: Math.floor(this.tilesHigh * Math.random()),
     }
   }
 
