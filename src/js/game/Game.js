@@ -9,6 +9,7 @@ import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Flamethrower from '../units/Flamethrower'
 import MachineGun from '../units/MachineGun'
+import PlasmaBattery from '../units/PlasmaBattery'
 import Enemy from '../units/Enemy'
 
 import Pathing from '../map/Pathing'
@@ -44,7 +45,7 @@ export default class Game {
     this.emitter = emitter
 
 
-    this.TOWER_TYPES = { Cannon, Flamethrower, MachineGun }
+    this.TOWER_TYPES = { Cannon, Flamethrower, MachineGun, PlasmaBattery }
 
     this.enemies = new UnitManager()
     this.towers = new UnitManager()

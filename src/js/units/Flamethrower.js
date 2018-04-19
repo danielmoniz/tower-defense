@@ -7,8 +7,6 @@ import Cooldown from '../Cooldown'
 
 export default class Flamethrower extends Tower {
 
-  @observable isFiring = false
-
   constructor(game, options) {
     super(game, options)
 
@@ -56,7 +54,7 @@ export default class Flamethrower extends Tower {
     const enemies = []
     this.game.enemies.all.forEach((enemy) => {
       if (!enemy.isAlive() || !this.unitInRange(enemy)) { return }
-      // @TODO Calculate whether enemy is in cone
+
       // get angle to enemy
       const angleToEnemy = this.getAngleToPoint(enemy.xFloor, enemy.yFloor)
       const minConeAngle = towerFacingAngle - (this.coneWidth / 2)
