@@ -48,10 +48,8 @@ export default class Flamethrower extends Tower {
   findEnemiesInCone() {
     // get tower's current facing angle
     const towerFacingAngle = this.getAngleToPoint(this.target.xFloor, this.target.yFloor)
-    // const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
-    // unitElement.rotation = angle
-
     const enemies = []
+
     this.game.enemies.all.forEach((enemy) => {
       if (!enemy.isAlive() || !this.unitInRange(enemy)) { return }
 
@@ -62,23 +60,8 @@ export default class Flamethrower extends Tower {
       if (angleToEnemy < maxConeAngle && angleToEnemy > minConeAngle) {
         enemies.push(enemy)
       }
-      // if enemy is in range and within a certain angle range, it's in the cone
-      // const enemyDistance = this.distanceToUnit(enemy)
     })
     return enemies
-  }
-
-  @action damageEnemy(enemy) {
-    var targetValue = enemy.killValue
-    const killedUnit = enemy.takeDamage(this.attackPower.current, this.ammoType)
-    if (!killedUnit) { return }
-
-    // @TODO move these state changes into separate method
-    this.game.profit(targetValue.credits * this.killProfitMultiplier)
-    this.kills++
-    this.xp += targetValue.xp
-    this.checkLevel()
-    return
   }
 
 }
