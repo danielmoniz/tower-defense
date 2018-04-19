@@ -20,7 +20,7 @@ export default class PlasmaBattery extends Tower {
       base: 300,
       current: 300,
     }
-    this.firingTime = 1000
+    this.firingTime = 2000
     this.clipSize = 2
     this.reloadTime = 5000
     this.killProfitMultiplier = 1
@@ -40,33 +40,25 @@ export default class PlasmaBattery extends Tower {
     this.isFiring = true
 
     // damage enemies around target within this.explosionRadius
-    const enemiesInExplosion = this.findEnemiesInRadius(this.explosionRadius, this.target)
-    enemiesInExplosion.forEach((enemy) => {
-      this.damageEnemy(enemy)
+    const enemiesInExplosionData = this.findEnemiesInRadius(this.explosionRadius, this.target)
+    enemiesInExplosionData.forEach((enemyData) => {
+      this.damageEnemyWithExplosion(enemyData.enemy, enemyData.distance)
       // enemy.ignite()
     })
 
     // @TODO Should damage units decreasingly by distance from explosion
-
-
-    // this.selectTarget()
-    // if (!this.target) { return }
-    // this.isFiring = true
-    //
-    // const enemiesInCone = this.findEnemiesInCone()
-    // enemiesInCone.forEach((enemy) => {
-    //   this.damageEnemy(enemy)
-    //   enemy.ignite()
-    // })
   }
 
   findEnemiesInRadius(radius, location) {
     const enemies = []
     this.game.enemies.all.forEach((enemy) => {
       if (!enemy.isAlive()) { return }
-      console.log(location.x);
-      if (Math.abs(location.x - enemy.x) < radius && Math.abs(location.y - enemy.y) < radius) {
-        enemies.push(enemy)
+
+      const xDistance = Math.abs(location.x - enemy.x)
+      const yDistance = Math.abs(location.y - enemy.y)
+      const distance = Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
+      if (distance < radius) {
+        enemies.push({ enemy, distance })
       }
     })
     return enemies
@@ -83,6 +75,33 @@ export default class PlasmaBattery extends Tower {
     this.xp += targetValue.xp
     this.checkLevel()
     return
+  }
+
+  @action damageEnemyWithExplosion(enemy, distance) {
+    var targetValue = enemy.killValue
+    const damage = this.calculateExplosionDamage(
+      this.attackPower.current,
+      distance,
+      this.explosionRadius,
+    )
+    const killedUnit = enemy.takeDamage(damage, this.ammoType)
+    if (!killedUnit) { return }
+
+    // @TODO move these state changes into separate method
+    this.game.profit(targetValue.credits * this.killProfitMultiplier)
+    this.kills++
+    this.xp += targetValue.xp
+    this.checkLevel()
+    return
+  }
+
+  calculateExplosionDamage(maxDamage, distance, radius) {
+    if (distance <= radius / 5) {
+      console.log(maxDamage);
+      return maxDamage
+    }
+    const ratio = radius / distance
+    return maxDamage * ratio / 5
   }
 
 }
