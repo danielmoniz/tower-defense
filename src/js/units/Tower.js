@@ -125,12 +125,15 @@ export default class Tower extends Unit {
     const killedUnit = enemy.takeDamage(this.attackPower.current, this.ammoType)
     if (!killedUnit) { return enemy }
 
-    // @TODO move these state changes into separate method
-    this.game.profit(targetValue.credits * this.killProfitMultiplier)
-    this.kills++
-    this.xp += targetValue.xp
-    this.checkLevel()
+    this.killEnemy(targetValue)
     return
+  }
+
+  @action killEnemy(enemyValue) {
+    this.game.profit(enemyValue.credits * this.killProfitMultiplier)
+    this.kills++
+    this.xp += enemyValue.xp
+    this.checkLevel()
   }
 
   @action checkLevel() {
