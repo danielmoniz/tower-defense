@@ -34,7 +34,9 @@ export default class EnemyRenderer extends UnitRenderer {
     container.addChild(explosion)
 
     autorun(() => {
-      if (unit.hitBy && unit.hitBy !== 'fire') {
+      if (unit.hitBy && unit.hitBy === 'shell') {
+        console.log('Hit by shell!');
+      } else if (unit.hitBy && unit.hitBy !== 'fire') {
         explosion.visible = true
         setTimeout(() => {
           explosion.visible = false
