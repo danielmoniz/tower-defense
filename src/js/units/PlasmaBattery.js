@@ -34,6 +34,12 @@ export default class PlasmaBattery extends Tower {
   }
 
   @action attack() {
+    // @TODO
+     // Separate direct hit damage from explosion damage.
+     // That is, the target should receive both, and all other enemies within
+     // the explosion radius are hit only with the explosion.
+
+
     // super.attack()
     this.selectTarget()
     if (!this.target) { return }
@@ -42,7 +48,12 @@ export default class PlasmaBattery extends Tower {
     // damage enemies around target within this.explosionRadius
     const enemiesInExplosionData = this.findEnemiesInRadius(this.explosionRadius, this.target)
     enemiesInExplosionData.forEach((enemyData) => {
-      this.damageEnemyWithExplosion(enemyData.enemy, enemyData.distance)
+      // target hit by 'shell', others hit by 'explosion'
+      if (enemyData.enemy === this.target) {
+        this.damageEnemy(this.target)
+      } else {
+        this.damageEnemyWithExplosion(enemyData.enemy, enemyData.distance)
+      }
       // enemy.ignite()
     })
 
@@ -71,7 +82,7 @@ export default class PlasmaBattery extends Tower {
       distance,
       this.explosionRadius,
     )
-    const killedUnit = enemy.takeDamage(damage, this.ammoType)
+    const killedUnit = enemy.takeDamage(damage, 'explosion')
     if (!killedUnit) { return }
 
     this.killEnemy(targetValue)
