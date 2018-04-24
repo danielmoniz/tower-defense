@@ -174,8 +174,13 @@ class Unit {
     this.burningInfo.killProfitMultiplier = 1 // reset just in case
   }
 
+  /*
+   * The additional logic may have twisted the purpose of this method.
+   * 'Alive' is defined as: has hit points, hasn't reached the exit, and
+   * doesn't want to be removed.
+   */
   isAlive() {
-    return this.currentHitPoints > 0
+    return this.currentHitPoints > 0 && !this.completed && !this.removeMe
   }
 
   getAngleToPoint(x, y) {
