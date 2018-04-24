@@ -81,10 +81,10 @@ export default class EnemyRenderer extends UnitRenderer {
       {
         "alpha": {
 					"start": 0.74,
-					"end": 0
+					"end": 0.4
 				},
 				"scale": {
-					"start": 5,
+					"start": 3,
 					"end": 1.2
 				},
 				"color": {
@@ -104,8 +104,8 @@ export default class EnemyRenderer extends UnitRenderer {
 					"max": 200
 				},
 				"lifetime": {
-					"min": 0.5,
-					"max": 1
+					"min": 0.1,
+					"max": 0.3
 				},
 				"blendMode": "normal",
 				"ease": [
