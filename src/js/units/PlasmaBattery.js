@@ -13,8 +13,8 @@ export default class PlasmaBattery extends Tower {
     this.name = 'PlasmaBattery'
 
     this.attackPower = {
-      base: 500,
-      current: 500,
+      base: 5,
+      current: 5,
     }
     this.range = {
       base: 300,

@@ -30,7 +30,7 @@ export default class FlamethrowerRenderer extends TowerRenderer {
     const { container, unitContainer } = super.startRender(unit, board)
     const gunOptions = this.getGunOptions(unit)
 
-    let flameEmitter = this.getFlameEmitter(container, unit, 0, 0)
+    let flameEmitter = this.getFlameEmitter(container, unit)
     flameEmitter.updateOwnerPos(unit.width / 2, unit.height / 2)
     flameEmitter.updateSpawnPos(gunOptions.gunLength, gunOptions.gunHeight / 2)
 
