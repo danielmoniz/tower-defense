@@ -104,6 +104,7 @@ export default class GameRenderer {
     })
   }
 
+  // @TODO Have a way of removing emitters for (say) removed enemies
   registerEmitter(emitterCallback) {
     this.emitterCallbacks.push(emitterCallback)
   }

@@ -33,9 +33,17 @@ export default class EnemyRenderer extends UnitRenderer {
     explosion.y = unit.height * 1 / 3
     container.addChild(explosion)
 
+
+
+
     autorun(() => {
       if (unit.hitBy && unit.hitBy === 'shell') {
-        console.log('Hit by shell!');
+        console.log('Hit by shell!'); // Leave this in until "firing at completed units" bug is fixed
+        let shellExplosion = this.getShellExplosionEmitter(unit, { x: unit.x, y: unit.y })
+        this.registerEmitterCallback(() => {
+          shellExplosion.update(0.005) // higher numbers mean more/faster fire
+        })
+        // shellExplosion.emit = true
       } else if (unit.hitBy && unit.hitBy !== 'fire') {
         explosion.visible = true
         setTimeout(() => {
@@ -64,6 +72,70 @@ export default class EnemyRenderer extends UnitRenderer {
     autorun(() => {
       renderHitPointsBar(unit, healthBar, healthBarBackground)
     })
+  }
+
+  getShellExplosionEmitter(unit, position) {
+    return new PIXI.particles.Emitter(
+      this.board.effectsLayer,
+      [PIXI.Texture.fromImage('/images/particle.png')],
+      {
+        "alpha": {
+					"start": 0.74,
+					"end": 0
+				},
+				"scale": {
+					"start": 5,
+					"end": 1.2
+				},
+				"color": {
+					"start": "ffdfa0",
+					"end": "100f0c"
+				},
+				"speed": {
+					"start": 700,
+					"end": 0
+				},
+				"startRotation": {
+					"min": 0,
+					"max": 360
+				},
+				"rotationSpeed": {
+					"min": 0,
+					"max": 200
+				},
+				"lifetime": {
+					"min": 0.5,
+					"max": 1
+				},
+				"blendMode": "normal",
+				"ease": [
+					{
+						"s": 0,
+						"cp": 0.329,
+						"e": 0.548
+					},
+					{
+						"s": 0.548,
+						"cp": 0.767,
+						"e": 0.876
+					},
+					{
+						"s": 0.876,
+						"cp": 0.985,
+						"e": 1
+					}
+				],
+				"frequency": 0.001,
+				"emitterLifetime": 0.1,
+				"maxParticles": 100,
+				"pos": {
+					"x": position.x,
+					"y": position.y
+				},
+				"addAtBack": true,
+				"spawnType": "point",
+      }
+    )
   }
 
 }
