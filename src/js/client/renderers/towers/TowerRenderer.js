@@ -35,7 +35,8 @@ export default class TowerRenderer extends UnitRenderer {
     const sellButton = this.setSellButton(board, container, unitContainer, unit)
 
     if (this.useMuzzleFlash) {
-      const muzzleFlash = this.setMuzzleFlash(gunContainer, gunOptions)
+      const muzzleFlashSize = this.muzzleFlashSize || { width: 20, height: 20 }
+      const muzzleFlash = this.setMuzzleFlash(gunContainer, gunOptions, muzzleFlashSize)
       autorun(() => {
         performMuzzleFlash(unit, muzzleFlash)
       })
@@ -186,10 +187,10 @@ export default class TowerRenderer extends UnitRenderer {
     return unit.width * 0.6
   }
 
-  setMuzzleFlash(gunContainer, gunOptions) {
+  setMuzzleFlash(gunContainer, gunOptions, size) {
     const muzzleFlash = new PIXI.Sprite(PIXI.utils.TextureCache["muzzleFlash"])
-    muzzleFlash.height = 20
-    muzzleFlash.width = 20
+    muzzleFlash.height = size.height
+    muzzleFlash.width = size.width
     muzzleFlash.position = { x: gunOptions.gunLength + muzzleFlash.width, y: -muzzleFlash.height / 2 }
     muzzleFlash.rotation = Math.PI / 2
     muzzleFlash.visible = false // defaults to invisible
