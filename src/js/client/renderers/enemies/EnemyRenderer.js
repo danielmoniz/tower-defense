@@ -33,9 +33,6 @@ export default class EnemyRenderer extends UnitRenderer {
     explosion.y = unit.height * 1 / 3
     container.addChild(explosion)
 
-
-
-
     autorun(() => {
       if (unit.hitBy && unit.hitBy === 'shell') {
         console.log('Hit by shell!'); // Leave this in until "firing at completed units" bug is fixed
