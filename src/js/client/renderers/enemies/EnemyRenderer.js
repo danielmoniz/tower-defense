@@ -52,23 +52,22 @@ export default class EnemyRenderer extends UnitRenderer {
     return explosion
   }
 
+/*
+ * This method needs to create an autorun function. That function should
+ * trigger a burning animation when the unit is burning and remove it otherwise.
+ * It is also responsible for making sure the emitter is cleaned up on unit
+ * removal.
+ */
   createBurning(unit, container) {
     let burningEmitter
     autorun(() => {
-      if (unit.burning) {
-        if (burningEmitter) {
-          burningEmitter.emit = true
-        } else {
-          let burningEmitter = this.getBurningEmitter(unit, container)
-          this.registerEmitterCallback(() => {
-            burningEmitter.update(0.005)
-          })
-        }
+      // only allow burning if unit is still alive
+      if (unit.burning && !unit.removeMe) {
+        burningEmitter = this.getBurningEmitter(unit, container)
+        this.registerOneTimeEmitterCallback(burningEmitter)
       } else {
-        // @TODO stop burning animation
-        if (burningEmitter) {
-          burningEmitter.emit = false
-        }
+        if (!burningEmitter) { return }
+        burningEmitter.emit = false
       }
     })
   }
