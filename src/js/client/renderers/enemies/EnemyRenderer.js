@@ -36,7 +36,7 @@ export default class EnemyRenderer extends UnitRenderer {
     autorun(() => {
       if (unit.hitBy && unit.hitBy === 'shell') {
         let shellExplosion = this.getShellExplosionEmitter(unit, { x: unit.x, y: unit.y })
-        this.registerOneTimeEmitterCallback(shellExplosion, 0.005)
+        this.registerOneTimeEmitterCallback(shellExplosion)
 
       } else if (unit.hitBy && unit.hitBy !== 'fire') {
         explosion.visible = true
@@ -86,7 +86,7 @@ export default class EnemyRenderer extends UnitRenderer {
 					"end": "100f0c"
 				},
 				"speed": {
-					"start": 700,
+					"start": 200,
 					"end": 0
 				},
 				"startRotation": {
@@ -98,8 +98,8 @@ export default class EnemyRenderer extends UnitRenderer {
 					"max": 200
 				},
 				"lifetime": {
-					"min": 0.1,
-					"max": 0.3
+					"min": 0.3,
+					"max": 0.9
 				},
 				"blendMode": "normal",
 				"ease": [
