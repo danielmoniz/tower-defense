@@ -70,8 +70,8 @@ export default class GameRenderer {
     return this.board.assetsReady
   }
 
-  tick() {
-    window.requestAnimationFrame(() => {
+  tick(lastTime = 0) {
+    window.requestAnimationFrame((time) => {
       if (!this.assetsLoaded()) { // only start rendering once assets are loaded
         return this.tick();
       }
@@ -79,9 +79,10 @@ export default class GameRenderer {
       if (this.render) {
         this.renderEntities(this.renderStack)
         this.emit(this.emitterCallbacks)
-        this.emitOnce(this.oneTimeEmitterCallbacks)
+        this.emitOnce(this.oneTimeEmitterCallbacks, time - lastTime)
       }
-      this.tick()
+
+      this.tick(time)
     })
   }
 
@@ -128,14 +129,22 @@ export default class GameRenderer {
   /*
    * Iterates over an object of emitters intended to be removed after one play.
    * Destroy them and delete them from the object once finished.
+   * Handling emitter updating manually allows for graphics to be properly
+   * paused when pausing the game. Otherwise they will play through as long as
+   * the renderer is ticking.
+   * timeElapsed is in milliseconds.
    */
-  emitOnce(emitterInfo) {
+  emitOnce(emitterInfo, timeElapsed = 5) {
     for (let key in emitterInfo) {
       const emitter = emitterInfo[key]
       if (!emitter.__playing) {
-        emitter.playOnceAndDestroy(() => {
+        emitter.playOnce(() => { // use playOnce to get the callback feature
+          emitter.destroy()
           delete emitterInfo[key]
         })
+        emitter.autoUpdate = false // ensure we can update it manually
+      } else {
+        emitter.update(timeElapsed / 1000) // convert to seconds
       }
       emitter.__playing = true
     }

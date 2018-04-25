@@ -91,7 +91,6 @@ export default class PlasmaBattery extends Tower {
 
   calculateExplosionDamage(maxDamage, distance, radius) {
     if (distance <= radius / 5) {
-      console.log(maxDamage);
       return maxDamage
     }
     const ratio = radius / distance
