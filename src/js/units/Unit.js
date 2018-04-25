@@ -20,7 +20,7 @@ class Unit {
   @observable burning = false
   @observable burningInfo = {
     killProfitMultiplier: 1,
-    dps: 1,
+    dps: 0,
   }
   @observable hitBy = null
 
@@ -172,15 +172,18 @@ class Unit {
     this.destroy()
   }
 
-  @action ignite(attacker, killProfitMultiplier) {
+  @action ignite(attacker, killProfitMultiplier, dps) {
     this.burning = true
     this.burningInfo.killProfitMultiplier = killProfitMultiplier
+    if (dps > this.burningInfo.dps) {
+      this.burningInfo.dps = dps // override only if higher dps
+    }
     this.burningInfo.attacker = attacker
   }
 
   @action extinguish() {
     this.burning = false
-    this.burningInfo.killProfitMultiplier = 1 // reset just in case
+    this.burningInfo.killProfitMultiplier = 0 // reset just in case
   }
 
   /*
