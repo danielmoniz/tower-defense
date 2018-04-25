@@ -121,11 +121,18 @@ class Unit {
     this.takeHit(type)
     this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
     if (this.currentHitPoints <= 0) {
-      this.kill()
       if (type === 'burning') { // handle profit in case of passive damage
-        const multiplier = this.burningInfo.killProfitMultiplier
-        this.game.profit(this.killValue.credits * multiplier)
+        const attacker = this.burningInfo.attacker
+        if (attacker) {
+          console.log(attacker);
+          attacker.killEnemy(this.killValue)
+        } else {
+          // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold. So else never fires!
+          const multiplier = this.burningInfo.killProfitMultiplier
+          this.game.profit(this.killValue.credits * multiplier)
+        }
       }
+      this.kill()
       return true
     }
   }
@@ -165,9 +172,10 @@ class Unit {
     this.destroy()
   }
 
-  @action ignite(killProfitMultiplier) {
+  @action ignite(attacker, killProfitMultiplier) {
     this.burning = true
     this.burningInfo.killProfitMultiplier = killProfitMultiplier
+    this.burningInfo.attacker = attacker
   }
 
   @action extinguish() {
