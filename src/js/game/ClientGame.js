@@ -39,8 +39,20 @@ class ClientGame extends Game {
     return this.placingTower
   }
 
+  pause() {
+    super.pause()
+    this.renderer.pause()
+  }
+
   sendPause() {
     this.pause()
+  }
+
+  play() {
+    const play = super.play()
+    if (!play) { return }
+    console.log(this.renderer);
+    this.renderer.play()
   }
 
   sendPlay() {
