@@ -15,6 +15,10 @@ export default class Flamethrower extends Tower {
     this.attackPower = {
       base: 1,
       current: 1,
+      burning: {
+        base: 1,
+        current: 1,
+      }
     }
     this.range = {
       base: 200,
@@ -41,7 +45,7 @@ export default class Flamethrower extends Tower {
     const enemiesInCone = this.findEnemiesInCone()
     enemiesInCone.forEach((enemy) => {
       this.damageEnemy(enemy)
-      enemy.ignite(this, this.killProfitMultiplier)
+      enemy.ignite(this, this.killProfitMultiplier, this.attackPower.burning.current)
     })
   }
 

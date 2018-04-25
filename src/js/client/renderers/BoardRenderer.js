@@ -122,6 +122,11 @@ export default class BoardRenderer {
         "Kills: " + entity.kills + "<br>" +
         "Experience: " + entity.xp + "<br>" +
         "Level: " + entity.level
+
+    if (entity.attackPower.burning) {
+      infoPanelData.innerHTML += "<br>"
+      infoPanelData.innerHTML += "Burning DPS: " + entity.attackPower.burning.current
+    }
   }
 
   setupGameStateDisplay(game) {
