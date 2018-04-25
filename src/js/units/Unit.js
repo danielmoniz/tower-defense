@@ -121,7 +121,7 @@ class Unit {
     this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
     if (this.currentHitPoints <= 0) {
       this.kill()
-      if (type === 'burning') {
+      if (type === 'burning') { // handle profit in case of passive damage
         const multiplier = this.burningInfo.killProfitMultiplier
         this.game.profit(this.killValue.credits * multiplier)
       }
@@ -144,7 +144,7 @@ class Unit {
   burn() {
     if (!this.burning) { return }
     this.takeDamage(1, 'burning') // @TODO damage should be based on something!
-    this.takeHit('something') // @FIXME
+    // this.takeHit('burning')
   }
 
   @action heal(amount) {
