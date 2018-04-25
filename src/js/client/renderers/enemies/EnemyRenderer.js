@@ -35,12 +35,14 @@ export default class EnemyRenderer extends UnitRenderer {
 
     autorun(() => {
       if (unit.hitBy && unit.hitBy === 'shell') {
-        console.log('Hit by shell!'); // Leave this in until "firing at completed units" bug is fixed
         let shellExplosion = this.getShellExplosionEmitter(unit, { x: unit.x, y: unit.y })
-        this.registerEmitterCallback(() => {
-          shellExplosion.update(0.005) // higher numbers mean more/faster fire
+        // const emitterCallback = () => {
+        //   shellExplosion.update(0.005) // higher numbers mean more/faster fire
+        // }
+        shellExplosion.playOnceAndDestroy(() => {
+          console.log("Shell explosion emitter destroyed!");
         })
-        // shellExplosion.emit = true
+        // this.registerEmitterCallback(emitterCallback)
       } else if (unit.hitBy && unit.hitBy !== 'fire') {
         explosion.visible = true
         setTimeout(() => {
