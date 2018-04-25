@@ -11,6 +11,7 @@ export default class EnemyRenderer extends UnitRenderer {
     const unitBase = this.createUnitBase(unit, container)
     this.createHealthBar(unit, container)
     const explosion = this.createExplosion(unit, container)
+    const burnAnimation = this.createBurning(unit, container)
 
     return container
   }
@@ -34,11 +35,13 @@ export default class EnemyRenderer extends UnitRenderer {
     container.addChild(explosion)
 
     autorun(() => {
-      if (unit.hitBy && unit.hitBy === 'shell') {
+      if (!unit.hitBy) { return }
+      if (unit.hitBy === 'shell') {
         let shellExplosion = this.getShellExplosionEmitter(unit, { x: unit.x, y: unit.y })
         this.registerOneTimeEmitterCallback(shellExplosion)
-
-      } else if (unit.hitBy && unit.hitBy !== 'fire') {
+      } else if (unit.hitBy === 'fire') { // do nothing, because burning will trigger
+      } else if (unit.hitBy === 'burning') { // do nothing, because burning will trigger
+      } else {
         explosion.visible = true
         setTimeout(() => {
           explosion.visible = false
@@ -47,6 +50,27 @@ export default class EnemyRenderer extends UnitRenderer {
     })
 
     return explosion
+  }
+
+  createBurning(unit, container) {
+    let burningEmitter
+    autorun(() => {
+      if (unit.burning) {
+        if (burningEmitter) {
+          burningEmitter.emit = true
+        } else {
+          let burningEmitter = this.getBurningEmitter(unit, container)
+          this.registerEmitterCallback(() => {
+            burningEmitter.update(0.005)
+          })
+        }
+      } else {
+        // @TODO stop burning animation
+        if (burningEmitter) {
+          burningEmitter.emit = false
+        }
+      }
+    })
   }
 
   createHealthBar(unit, container) {
@@ -66,6 +90,70 @@ export default class EnemyRenderer extends UnitRenderer {
     autorun(() => {
       renderHitPointsBar(unit, healthBar, healthBarBackground)
     })
+  }
+
+  getBurningEmitter(unit, container) {
+    return new PIXI.particles.Emitter(
+      container,
+      [PIXI.Texture.fromImage('/images/particle.png')],
+      {
+        "alpha": {
+					"start": 0.74,
+					"end": 0.4
+				},
+				"scale": {
+					"start": 0.3,
+					"end": 0.4
+				},
+				"color": {
+					"start": "ffdfa0",
+					"end": "100f0c"
+				},
+				"speed": {
+					"start": 110,
+					"end": 55
+				},
+				"startRotation": {
+					"min": 280,
+					"max": 300
+				},
+				"rotationSpeed": {
+					"min": 0,
+					"max": 200
+				},
+				"lifetime": {
+					"min": 0.3,
+					"max": 0.9
+				},
+				"blendMode": "normal",
+				"ease": [
+					{
+						"s": 0,
+						"cp": 0.329,
+						"e": 0.548
+					},
+					{
+						"s": 0.548,
+						"cp": 0.767,
+						"e": 0.876
+					},
+					{
+						"s": 0.876,
+						"cp": 0.985,
+						"e": 1
+					}
+				],
+				"frequency": 0.001,
+				"emitterLifetime": 0,
+				"maxParticles": 100,
+				"pos": {
+					"x": unit.width / 2,
+					"y": unit.height / 4
+				},
+				"addAtBack": true,
+				"spawnType": "point",
+      }
+    )
   }
 
   getShellExplosionEmitter(unit, position) {
