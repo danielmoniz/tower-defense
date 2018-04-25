@@ -103,6 +103,9 @@ export default class GameRenderer {
 
   /*
    * Iterates over a list of emitter callbacks and calls them.
+   * NOTE: There may be the odd emitter that should be removed, eg. a
+   * Flamethrower that has been sold. But the array of callbacks will currently
+   * not grow too large.
    */
   emit(emitterCallbacks) {
     emitterCallbacks.forEach((emitter) => {
