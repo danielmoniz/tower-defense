@@ -20,6 +20,7 @@ class Unit {
   @observable burning = false
   @observable burningInfo = {
     killProfitMultiplier: 1,
+    dps: 1,
   }
   @observable hitBy = null
 
@@ -143,7 +144,7 @@ class Unit {
 
   burn() {
     if (!this.burning) { return }
-    this.takeDamage(1, 'burning') // @TODO damage should be based on something!
+    this.takeDamage(this.burningInfo.dps, 'burning')
     // this.takeHit('burning')
   }
 
