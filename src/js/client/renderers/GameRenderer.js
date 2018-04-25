@@ -70,11 +70,20 @@ export default class GameRenderer {
         return this.tick();
       }
 
-      this.renderEntities(this.renderStack)
-      this.emit(this.emitterCallbacks)
-
+      if (this.render) {
+        this.renderEntities(this.renderStack)
+        this.emit(this.emitterCallbacks)
+      }
       this.tick()
     })
+  }
+
+  pause() {
+    this.render = false
+  }
+
+  play() {
+    this.render = true
   }
 
   /*

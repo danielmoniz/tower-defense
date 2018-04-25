@@ -90,6 +90,7 @@ export default class Game {
     if (this.control.run) { return }
     this.control.run = true
     this.initializeLoop()
+    return true
   }
 
   @action pause() {
