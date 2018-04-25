@@ -36,13 +36,8 @@ export default class EnemyRenderer extends UnitRenderer {
     autorun(() => {
       if (unit.hitBy && unit.hitBy === 'shell') {
         let shellExplosion = this.getShellExplosionEmitter(unit, { x: unit.x, y: unit.y })
-        // const emitterCallback = () => {
-        //   shellExplosion.update(0.005) // higher numbers mean more/faster fire
-        // }
-        shellExplosion.playOnceAndDestroy(() => {
-          console.log("Shell explosion emitter destroyed!");
-        })
-        // this.registerEmitterCallback(emitterCallback)
+        this.registerOneTimeEmitterCallback(shellExplosion)
+
       } else if (unit.hitBy && unit.hitBy !== 'fire') {
         explosion.visible = true
         setTimeout(() => {

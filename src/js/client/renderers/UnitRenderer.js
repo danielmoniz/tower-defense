@@ -5,10 +5,11 @@ import { GRID_SIZE } from '../../appConstants'
 
 export default class UnitRenderer {
 
-  constructor(board, gameActions, registerEmitterCallback) {
+  constructor(board, gameActions, registerEmitterCallback, registerOneTimeEmitterCallback) {
     this.board = board
     this.actions = gameActions
     this.registerEmitterCallback = registerEmitterCallback
+    this.registerOneTimeEmitterCallback = registerOneTimeEmitterCallback
   }
 
   render(unit) {

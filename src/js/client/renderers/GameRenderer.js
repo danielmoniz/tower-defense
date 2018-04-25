@@ -7,6 +7,7 @@ import UnitRenderer from './UnitRenderer'
 import EnemyRenderer from './enemies/EnemyRenderer'
 import TowerRenderer from './towers/TowerRenderer'
 import { CannonRenderer, FlamethrowerRenderer, MachineGunRenderer, PlasmaBatteryRenderer } from './towers'
+import getAltId from '../../utility/altId'
 
 
 export default class GameRenderer {
@@ -21,13 +22,13 @@ export default class GameRenderer {
     this.events = new GameEvents()
 
     // @TODO This system is clearly horrendous. Find a way to do this dynamically.
-    this.unitRenderer = new UnitRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.towerRenderer = new TowerRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.enemyRenderer = new EnemyRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.cannonRenderer = new CannonRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.machineGunRenderer = new MachineGunRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.plasmaBatteryRenderer = new PlasmaBatteryRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.unitRenderer = new UnitRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
+    this.towerRenderer = new TowerRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
+    this.enemyRenderer = new EnemyRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
+    this.cannonRenderer = new CannonRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
+    this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
+    this.machineGunRenderer = new MachineGunRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
+    this.plasmaBatteryRenderer = new PlasmaBatteryRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
 
     this.towerRenderers = {
       Tower: this.towerRenderer, // default?
@@ -38,6 +39,7 @@ export default class GameRenderer {
     }
 
     this.emitterCallbacks = []
+    this.oneTimeEmitterCallbacks = {}
     this.renderStack = []
 
     this.createGameBoard(game)
@@ -73,6 +75,7 @@ export default class GameRenderer {
       if (this.render) {
         this.renderEntities(this.renderStack)
         this.emit(this.emitterCallbacks)
+        this.emitOnce(this.oneTimeEmitterCallbacks)
       }
       this.tick()
     })
@@ -118,9 +121,30 @@ export default class GameRenderer {
     })
   }
 
-  // @TODO Have a way of removing emitters for (say) removed enemies
+  /*
+   * Iterates over an object of emitters intended to be removed after one play.
+   * Destroy them and delete them from the object once finished.
+   */
+  emitOnce(emitterInfo) {
+    for (let key in emitterInfo) {
+      const emitter = emitterInfo[key]
+      if (!emitter.__playing) {
+        emitter.playOnceAndDestroy(() => {
+          delete emitterInfo[key]
+        })
+      }
+      emitter.__playing = true
+    }
+  }
+
+  // @TODO Have a way of removing emitters for (say) removed towers
   registerEmitter(emitterCallback) {
     this.emitterCallbacks.push(emitterCallback)
+  }
+
+  registerOneTimeEmitter(emitter, updateFrequency) {
+    const key = getAltId()
+    this.oneTimeEmitterCallbacks[getAltId()] = emitter
   }
 
   setUpEvents(game, board) {
