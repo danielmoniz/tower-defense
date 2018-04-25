@@ -50,7 +50,6 @@ class ClientGame extends Game {
   play() {
     const play = super.play()
     if (!play) { return }
-    console.log(this.renderer);
     this.renderer.play()
   }
 

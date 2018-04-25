@@ -36,7 +36,7 @@ export default class EnemyRenderer extends UnitRenderer {
     autorun(() => {
       if (unit.hitBy && unit.hitBy === 'shell') {
         let shellExplosion = this.getShellExplosionEmitter(unit, { x: unit.x, y: unit.y })
-        this.registerOneTimeEmitterCallback(shellExplosion)
+        this.registerOneTimeEmitterCallback(shellExplosion, 0.005)
 
       } else if (unit.hitBy && unit.hitBy !== 'fire') {
         explosion.visible = true
