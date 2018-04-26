@@ -127,7 +127,9 @@ export default class BoardRenderer {
 
     if (entity.attackPower.burning) {
       infoPanelData.innerHTML += "<br>"
-      infoPanelData.innerHTML += "Burning DPS: " + entity.attackPower.burning.current
+      infoPanelData.innerHTML +=
+        "Burning DPS: " + entity.attackPower.burning.current + "<br>" +
+        "Burning length: " + (entity.burningLength.current / 1000).toFixed(2) + " seconds"
     }
   }
 
