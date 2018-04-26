@@ -3,6 +3,7 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../appConstants'
 import getAltId from '../utility/altId'
+import Cooldown from '../Cooldown'
 
 class Unit {
   // defaults (observables)
@@ -124,7 +125,6 @@ class Unit {
       if (type === 'burning') { // handle profit in case of passive damage
         const attacker = this.burningInfo.attacker
         if (attacker) {
-          console.log(attacker);
           attacker.killEnemy(this.killValue)
         } else {
           // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold. So else never fires!
@@ -152,6 +152,7 @@ class Unit {
   burn() {
     if (!this.burning) { return }
     this.takeDamage(this.burningInfo.dps, 'burning')
+    this.burningInfo.cooldown.tick()
     // this.takeHit('burning')
   }
 
@@ -172,7 +173,20 @@ class Unit {
     this.destroy()
   }
 
-  @action ignite(attacker, killProfitMultiplier, dps) {
+  @action ignite(attacker, killProfitMultiplier, dps, time = 8000) {
+    if (this.burningInfo.cooldown) {
+      this.burningInfo.cooldown.reset()
+    } else {
+      this.burningInfo.cooldown = Cooldown.createTimeBased(time, GAME_REFRESH_RATE, {
+        callback: function() {
+          this.extinguish()
+          delete this.burningInfo.cooldown
+        }.bind(this),
+        autoActivate: true,
+        delayActivation: true,
+      })
+    }
+
     this.burning = true
     this.burningInfo.killProfitMultiplier = killProfitMultiplier
     if (dps > this.burningInfo.dps) {
@@ -184,6 +198,8 @@ class Unit {
   @action extinguish() {
     this.burning = false
     this.burningInfo.killProfitMultiplier = 0 // reset just in case
+    this.burningInfo.dps = 0 // reset just in case
+    this.burningInfo.attacker = undefined
   }
 
   /*
