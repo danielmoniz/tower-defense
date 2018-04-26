@@ -26,8 +26,8 @@ export default class Flamethrower extends Tower {
     }
 
     this.burningLength = {
-      base: 8000,
-      current: 8000,
+      base: 0,
+      current: 0,
     }
 
     this.firingTime = 0

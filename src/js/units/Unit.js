@@ -152,7 +152,7 @@ class Unit {
   burn() {
     if (!this.burning) { return }
     this.takeDamage(this.burningInfo.dps, 'burning')
-    this.burningInfo.cooldown.tick()
+    this.burningInfo.cooldown && this.burningInfo.cooldown.tick()
     // this.takeHit('burning')
   }
 
@@ -173,7 +173,19 @@ class Unit {
     this.destroy()
   }
 
-  @action ignite(attacker, killProfitMultiplier, dps, time = 8000) {
+  @action ignite(attacker, killProfitMultiplier, dps, time) {
+    this.setBurningCooldown(time)
+
+    this.burning = true
+    this.burningInfo.killProfitMultiplier = killProfitMultiplier
+    if (dps > this.burningInfo.dps) {
+      this.burningInfo.dps = dps // override only if higher dps
+    }
+    this.burningInfo.attacker = attacker
+  }
+
+  setBurningCooldown(time = 0) {
+    if (time === 0) { return }
     if (this.burningInfo.cooldown) {
       this.burningInfo.cooldown.reset()
     } else {
@@ -186,13 +198,6 @@ class Unit {
         delayActivation: true,
       })
     }
-
-    this.burning = true
-    this.burningInfo.killProfitMultiplier = killProfitMultiplier
-    if (dps > this.burningInfo.dps) {
-      this.burningInfo.dps = dps // override only if higher dps
-    }
-    this.burningInfo.attacker = attacker
   }
 
   @action extinguish() {
