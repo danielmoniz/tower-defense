@@ -24,6 +24,12 @@ export default class Flamethrower extends Tower {
       base: 200,
       current: 200,
     }
+
+    this.burningLength = {
+      base: 8000,
+      current: 8000,
+    }
+
     this.firingTime = 0
     this.clipSize = 30
     this.reloadTime = 2000
@@ -45,7 +51,11 @@ export default class Flamethrower extends Tower {
     const enemiesInCone = this.findEnemiesInCone()
     enemiesInCone.forEach((enemy) => {
       this.damageEnemy(enemy)
-      enemy.ignite(this, this.killProfitMultiplier, this.attackPower.burning.current)
+      enemy.ignite(this,
+        this.killProfitMultiplier,
+        this.attackPower.burning.current,
+        this.burningLength.current,
+      )
     })
   }
 
