@@ -10,19 +10,15 @@ export default class TerrainGrid extends Grid {
     this.terrainProperties = {
       normal: {
         difficulty: 1,
-        color: 0xFFFFFF,
       },
       crater: {
         difficulty: 3,
-        color: 0xCECECE,
       },
       ridge: {
         difficulty: 2,
-        color: 0xE5E5E5,
       },
       obstacle: {
         difficulty: 0,
-        color: 0x000000,
       },
     }
     this.initialValue = this.getTerrainProperties("normal")
@@ -34,13 +30,11 @@ export default class TerrainGrid extends Grid {
       return {
         type: type,
         difficulty: this.terrainProperties[type].difficulty,
-        color: this.terrainProperties[type].color,
       }
     }
     return {
       type: "normal",
       difficulty: this.terrainProperties.normal.difficulty,
-      color: this.terrainProperties.normal.color,
     }
   }
 
@@ -137,9 +131,5 @@ export default class TerrainGrid extends Grid {
 
   difficultyAt(x, y) {
     return this.at(x, y).difficulty
-  }
-
-  colorAt(x, y) {
-    return this.at(x, y).color
   }
 }

@@ -139,6 +139,12 @@ export default class BoardRenderer {
   }
 
   renderTerrain(game) {
+    const terrainColor = {
+      normal: 0xFFFFFF,
+      crater: 0xCECECE,
+      ridge: 0xE5E5E5,
+      obstacle: 0x000000,
+    }
     let terrainContainer = new PIXI.Container()
     for (let x = 0; x < game.width / GRID_SIZE; x++) {
       for (let y = 0; y < game.height / GRID_SIZE; y++) {
@@ -147,7 +153,8 @@ export default class BoardRenderer {
           x: GRID_SIZE * x,
           y: GRID_SIZE * y,
         }
-        terrainBackground.beginFill(game.pathHelper.weights.terrain.colorAt(x, y))
+        terrainBackground.beginFill(
+          terrainColor[game.pathHelper.weights.terrain.typeAt(x, y)])
         terrainBackground.drawRect(0, 0, GRID_SIZE, GRID_SIZE)
         terrainBackground.endFill()
         terrainContainer.addChild(terrainBackground)
