@@ -31,6 +31,7 @@ class Cooldown {
   toJSON() {
     return {
       ticksPassed: this.ticksPassed,
+      cooldownLength: this.cooldownLength,
     }
   }
 
