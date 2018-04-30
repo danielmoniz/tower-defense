@@ -125,9 +125,13 @@ export default class BoardRenderer {
 
     if (entity.attackPower.burning) {
       infoPanelData.innerHTML += "<br>"
+      let burningLength = "unlimited"
+      if (entity.burningLength.current && entity.burningLength.current > 0) {
+        burningLength = (entity.burningLength.current / 1000).toFixed(2) + " seconds"
+      }
       infoPanelData.innerHTML +=
         "Burning DPS: " + entity.attackPower.burning.current + "<br>" +
-        "Burning length: " + (entity.burningLength.current / 1000).toFixed(2) + " seconds"
+        "Burning length: " + burningLength
     }
   }
 
