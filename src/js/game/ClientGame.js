@@ -154,6 +154,19 @@ class ClientGame extends Game {
       enemy = this.createEnemy(enemyData.enemyType, enemyData.subtype)
     }
 
+    // @TODO Refactor this.
+    // @TODO Move to general unit updating, since towers can also burn
+    if (enemyData.burningInfo.cooldown) {
+      if (enemy.burningInfo.cooldown) {
+        // @TODO Update cooldown
+        enemy.burningInfo.cooldown.setTicksPassed(enemyData.burningInfo.cooldown.ticksPassed)
+      } else {
+        // @TODO Create new cooldown with correct ticks
+        enemy.setBurningCooldown(enemyData.burningInfo.cooldown.cooldownLength)
+        enemy.burningInfo.cooldown.setTicksPassed(enemyData.burningInfo.cooldown.ticksPassed)
+      }
+    }
+
     this.buildEntityFromData(enemy, enemyData)
 
     if (enemyIsNew) {

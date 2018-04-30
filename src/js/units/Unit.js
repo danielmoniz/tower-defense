@@ -125,7 +125,9 @@ class Unit {
       if (type === 'burning') { // handle profit in case of passive damage
         const attacker = this.burningInfo.attacker
         if (attacker) {
-          attacker.killEnemy(this.killValue)
+          // @TODO This hardcodes attackers being towers. Ideally this is more generic.
+          const tower = this.game.towers.byId[attacker]
+          tower.killEnemy(this.killValue)
         } else {
           // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold. So else never fires!
           const multiplier = this.burningInfo.killProfitMultiplier
@@ -181,7 +183,7 @@ class Unit {
     if (dps > this.burningInfo.dps) {
       this.burningInfo.dps = dps // override only if higher dps
     }
-    this.burningInfo.attacker = attacker
+    this.burningInfo.attacker = attacker.id
   }
 
   setBurningCooldown(time = 0) {
