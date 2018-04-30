@@ -153,20 +153,8 @@ class ClientGame extends Game {
       enemy = this.createEnemy(enemyData.enemyType, enemyData.subtype)
     }
 
-    // @TODO Refactor this.
-    // @TODO Move to general unit updating, since towers can also burn
-    if (enemyData.burningInfo.cooldown) {
-      if (enemy.burningInfo.cooldown) {
-        // @TODO Update cooldown
-        enemy.burningInfo.cooldown.setTicksPassed(enemyData.burningInfo.cooldown.ticksPassed)
-      } else {
-        // @TODO Create new cooldown with correct ticks
-        enemy.setBurningCooldown(enemyData.burningInfo.cooldown.cooldownLength)
-        enemy.burningInfo.cooldown.setTicksPassed(enemyData.burningInfo.cooldown.ticksPassed)
-      }
-    }
-
     this.buildEntityFromData(enemy, enemyData)
+    this.updateBurningCooldown(enemy, enemyData)
 
     if (enemyIsNew) {
       this.enemies.add(enemy)
@@ -203,7 +191,7 @@ class ClientGame extends Game {
       const TowerType = this.TOWER_TYPES[towerData.name]
       tower = new TowerType(this, towerData.name)
     }
-    // console.log(towerData);
+
     this.buildEntityFromData(tower, towerData)
 
     if (towerIsNew) {
@@ -227,6 +215,22 @@ class ClientGame extends Game {
     tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
     tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
     tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
+    this.updateBurningCooldown(tower, towerData)
+  }
+
+  /*
+   * Updates the burning cooldown for a unit.
+   */
+  updateBurningCooldown(unit, data) {
+    // @TODO Refactor this.
+    if (!data.burningInfo.cooldown) { return }
+
+    if (unit.burningInfo.cooldown) {
+      unit.burningInfo.cooldown.setTicksPassed(data.burningInfo.cooldown.ticksPassed)
+    } else {
+      unit.setBurningCooldown(data.burningInfo.cooldown.cooldownLength)
+      unit.burningInfo.cooldown.setTicksPassed(data.burningInfo.cooldown.ticksPassed)
+    }
   }
 
   setTowerTarget(tower) {
