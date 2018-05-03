@@ -61,6 +61,11 @@ class ClientMultiGame extends ClientGame {
     this.addEnemies(newEnemies)
   }
 
+  setTerrain(terrainData) {
+    // @TERRAIN @TODO call something on pathHelper to set terrain
+    this.pathHelper.setTerrain(terrainData)
+  }
+
   spawnWaveEarly() {
     if (!this.inProgress) { return }
     this.emitter.spawnWaveEarly()

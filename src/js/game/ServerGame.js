@@ -26,6 +26,11 @@ class ServerGame extends Game {
     return newEnemies
   }
 
+  sendTerrain() {
+    // @TERRAIN @TODO Grab terrain data
+    this.emitter.sendTerrain(terrainData)
+  }
+
   sendPerformance() {
     this.actions.updatePerformance(
       this.serverInfo.gameNumber,

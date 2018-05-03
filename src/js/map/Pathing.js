@@ -29,6 +29,11 @@ export default class Pathing {
     this.compute()
   }
 
+  // @TERRAIN
+  setTerrain(terrainData) {
+    this.weights.terrain.setTerrain(terrainData)
+  }
+
   getTerrainAt(x, y) {
     const location = { x: x, y: y}
     const gridLocation = this.calculateGridLocation(location)

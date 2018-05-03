@@ -58,6 +58,11 @@ export default class TerrainGrid extends Grid {
     } while (terrainCoverage < targetTerrainCoverage)
   }
 
+  // @TERRAIN
+  setTerrain(terrainData) {
+    // @TODO take terrain data and jam 'er in
+  }
+
   addTestCrater(gridLocation, size) {
     // square crater
     let tilesChanged = 0
