@@ -22,7 +22,12 @@ export default class TerrainGrid extends Grid {
       },
     }
     this.initialValue = this.getTerrainProperties("normal")
+    this.reset()
+  }
+
+  reset() {
     super.reset()
+    this.generated = false;
   }
 
   getTerrainProperties(type) {
@@ -38,13 +43,8 @@ export default class TerrainGrid extends Grid {
     }
   }
 
-  reset() {
-    this.initialValue = this.getTerrainProperties("normal")
-    super.reset()
-    this.generateTerrain()
-  }
-
   generateTerrain() {
+    if (this.generated) { return }
     // Minimum crater size 1, maximum 3
     const totalGridSpaces = this.tilesWide * this.tilesHigh
     const defaultTerrainCoverage = 0.2
@@ -56,11 +56,13 @@ export default class TerrainGrid extends Grid {
           this.addTestCrater(this.getRandomGridLocation(),
                              Math.floor(3 * Math.random()) + 1)
     } while (terrainCoverage < targetTerrainCoverage)
+    this.generated = true;
   }
 
   // @TERRAIN
   setTerrain(terrainData) {
     // @TODO take terrain data and jam 'er in
+    this.values = terrainData
   }
 
   addTestCrater(gridLocation, size) {

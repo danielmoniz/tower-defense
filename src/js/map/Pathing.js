@@ -26,12 +26,24 @@ export default class Pathing {
 
   reset() {
     this.weights.reset()
-    this.compute()
+    // this.compute()
   }
 
   // @TERRAIN
+  generateTerrain() {
+    this.weights.terrain.generateTerrain()
+    this.weights.compute()
+    this.compute()
+  }
+
   setTerrain(terrainData) {
     this.weights.terrain.setTerrain(terrainData)
+    this.weights.compute()
+    this.compute()
+  }
+
+  getTerrain() {
+    return this.weights.terrain.values
   }
 
   getTerrainAt(x, y) {

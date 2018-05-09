@@ -28,8 +28,7 @@ export default class BoardRenderer {
     this.setupInfoPanel(game)
   }
 
-  startGame() {
-    this.renderTerrain(game)
+  startGame(game) {
     this.renderMap(game)
   }
 
@@ -139,6 +138,7 @@ export default class BoardRenderer {
   }
 
   renderTerrain(game) {
+    console.log("rendering terrain")
     const terrainColor = {
       normal: 0xFFFFFF,
       crater: 0xCECECE,

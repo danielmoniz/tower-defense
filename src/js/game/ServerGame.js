@@ -28,7 +28,10 @@ class ServerGame extends Game {
 
   sendTerrain() {
     // @TERRAIN @TODO Grab terrain data
-    this.emitter.sendTerrain(terrainData)
+    const terrainData = this.pathHelper.getTerrain()
+    console.log("Sending terrain");
+    console.log(terrainData);
+    this.emitter.sendTerrain(this.serverInfo.gameNumber, terrainData)
   }
 
   sendPerformance() {
@@ -42,6 +45,12 @@ class ServerGame extends Game {
   gameLogic() {
     super.gameLogic()
     this.checkPerformance()
+  }
+
+  start() {
+    super.start()
+    this.pathHelper.generateTerrain()
+    this.sendTerrain()
   }
 
   pause() {

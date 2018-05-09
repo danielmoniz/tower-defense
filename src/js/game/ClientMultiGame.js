@@ -64,6 +64,8 @@ class ClientMultiGame extends ClientGame {
   setTerrain(terrainData) {
     // @TERRAIN @TODO call something on pathHelper to set terrain
     this.pathHelper.setTerrain(terrainData)
+    console.log("Terrain set");
+    console.log(this.pathHelper.weights.terrain.values);
   }
 
   spawnWaveEarly() {

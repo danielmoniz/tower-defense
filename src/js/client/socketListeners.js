@@ -47,6 +47,7 @@ function setUpListeners(game, emitter) {
   // @TERRAIN @TODO
   socket.on('send terrain', (terrainData) => {
     game.setTerrain(terrainData)
+    game.renderer.board.renderTerrain(game)
   })
 
   socket.on('poll for game number', () => {

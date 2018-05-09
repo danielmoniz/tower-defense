@@ -7,10 +7,10 @@ export default class WeightsGrid extends Grid {
     super(tilesWide, tilesHigh, 1)
     this.terrain = new TerrainGrid(tilesWide, tilesHigh)
     this.tower = new TowerGrid(tilesWide, tilesHigh)
-    this.initialize()
+    this.compute()
   }
 
-  initialize() {
+  compute() {
     this.recalculate({x: 0, y: 0}, this.tilesWide, this.tilesHigh)
   }
 
@@ -18,7 +18,7 @@ export default class WeightsGrid extends Grid {
     super.reset()
     this.terrain.reset()
     this.tower.reset()
-    this.initialize()
+    this.compute()
   }
 
   addTerrainObstacle(gridLocation, gridWidth, gridHeight) {

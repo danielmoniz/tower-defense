@@ -1,6 +1,8 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
+import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
+
 import ClientGame from './ClientGame'
 import WaveSpawnerLocal from '../WaveSpawnerLocal'
 
@@ -8,6 +10,21 @@ class SoloGame extends ClientGame {
 
   constructor(emitter, actions) {
     super(emitter, actions)
+  }
+
+  start() {
+    // Duplicated from Game.js @TODO set this up properly
+    if (this.inProgress) { return }
+    this.inProgress = true
+    this.reset()
+    this.play()
+    this.wave.initializeWaveTimer(GAME_REFRESH_RATE)
+    //
+
+    this.pathHelper.generateTerrain()
+    this.renderer.tick()
+    this.renderer.board.renderTerrain(this)
+    this.renderer.board.startGame(this)
   }
 
   setUpWaveSpawner() {
