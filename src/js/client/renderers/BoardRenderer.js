@@ -75,16 +75,18 @@ export default class BoardRenderer {
   setupInfoPanel(game) {
     const infoPanelName = document.getElementById("info-panel-name")
     const infoPanelData = document.getElementById("info-panel-data")
+    const towerActionsPanel = document.getElementById("tower-actions")
 
     autorun(() => {
-      this.updateInfoPanel(game, infoPanelName, infoPanelData)
+      this.updateInfoPanel(game, infoPanelName, infoPanelData, towerActionsPanel)
     })
   }
 
-  updateInfoPanel(game, infoPanelName, infoPanelData) {
+  updateInfoPanel(game, infoPanelName, infoPanelData, towerActionsPanel) {
     if (game.selectedEntity === null) {
       infoPanelName.innerHTML = ""
       infoPanelData.innerHTML = ""
+      this.hideTowerActions(towerActionsPanel)
       return;
     }
 
@@ -92,7 +94,10 @@ export default class BoardRenderer {
     infoPanelName.innerHTML = entity.name
 
     if (entity.type == "Tower") {
-      this.displayTower(infoPanelData, entity)
+      this.displayTowerInfo(infoPanelData, entity)
+      if (entity.placed) {
+        this.showTowerActions(towerActionsPanel)
+      }
     } else if (entity.type == "Enemy") {
       this.displayEnemy(infoPanelData, entity)
     }
@@ -111,17 +116,17 @@ export default class BoardRenderer {
   }
 
   // @TODO Consider using Vue.js for templating here
-  displayTower(infoPanelData, entity) {
-    infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br>" +
-        "Damage: " + entity.attackPower.current.toFixed(2) + "<br>" +
-        "Range: " + entity.range.current.toFixed(0) + "<br>" +
-        "Clip size: " + entity.clipSize + "<br>" +
-        "Firing time: " + entity.firingTime + "ms" + "<br>" +
-        "Reload time: " + entity.reloadTime + "ms" + "<br>" +
-        "Profit multiplier: "  + entity.killProfitMultiplier + "<br>" +
-        "Kills: " + entity.kills + "<br>" +
-        "Experience: " + entity.xp + "<br>" +
-        "Level: " + entity.level
+  displayTowerInfo(infoPanelData, tower) {
+    infoPanelData.innerHTML = "Price: $" + tower.purchaseCost + "<br>" +
+        "Damage: " + tower.attackPower.current.toFixed(2) + "<br>" +
+        "Range: " + tower.range.current.toFixed(0) + "<br>" +
+        "Clip size: " + tower.clipSize + "<br>" +
+        "Firing time: " + tower.firingTime + "ms" + "<br>" +
+        "Reload time: " + tower.reloadTime + "ms" + "<br>" +
+        "Profit multiplier: "  + tower.killProfitMultiplier + "<br>" +
+        "Kills: " + tower.kills + "<br>" +
+        "Experience: " + tower.xp + "<br>" +
+        "Level: " + tower.level
 
     if (entity.attackPower.burning) {
       infoPanelData.innerHTML += "<br>"
@@ -133,6 +138,14 @@ export default class BoardRenderer {
         "Burning DPS: " + entity.attackPower.burning.current + "<br>" +
         "Burning length: " + burningLength
     }
+  }
+
+  hideTowerActions(towerActionsPanel) {
+    towerActionsPanel.classList.remove('tower-selected')
+  }
+
+  showTowerActions(towerActionsPanel) {
+    towerActionsPanel.classList.add('tower-selected')
   }
 
   setupGameStateDisplay(game) {

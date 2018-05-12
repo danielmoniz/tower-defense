@@ -54,12 +54,17 @@ a {
 }
 
 .tower-actions {
+  visibility: hidden;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(3, 1fr);
   grid-gap: 5px 5px;
   padding: 5px;
   background-color: black;
+}
+
+.tower-actions.tower-selected {
+  visibility: visible;
 }
 
 .tower-actions img.option {
