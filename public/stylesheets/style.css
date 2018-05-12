@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -27,8 +31,11 @@ a {
   flex-direction: row;
 }
 
-.info-panel {
+#info-box {
   width: 200px;
+}
+
+#info-panel {
   height: 300px;
   background-color: #cccccc;
   vertical-align: top;
@@ -50,9 +57,7 @@ a {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  /* border: 5px black solid; */
   grid-gap: 5px 5px;
-  width: 165px;
   padding: 5px;
   background-color: black;
 }
