@@ -22,8 +22,12 @@ a {
   width: 120px;
 }
 
+.game-display {
+  display: flex;
+  flex-direction: row;
+}
+
 .info-panel {
-  display: inline-block;
   width: 200px;
   height: 300px;
   background-color: #cccccc;
@@ -44,8 +48,8 @@ a {
 
 .tower-actions {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
   /* border: 5px black solid; */
   grid-gap: 5px 5px;
   width: 165px;
