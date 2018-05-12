@@ -42,6 +42,27 @@ a {
   padding: 5px;
 }
 
+.tower-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  /* border: 5px black solid; */
+  grid-gap: 5px 5px;
+  width: 165px;
+  padding: 5px;
+  background-color: black;
+}
+
+.tower-actions img.option {
+  width: 100%;
+  background-color: white;
+}
+
+.tower-actions img.option.sell {
+  grid-column: 2 / 3;
+  grid-row: 3;
+}
+
 .disabled {
   pointer-events: none;
   opacity: 0.3;
