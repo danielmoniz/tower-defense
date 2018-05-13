@@ -132,20 +132,59 @@ export default class Tower extends Unit {
   @action killEnemy(enemyValue) {
     this.game.profit(enemyValue.credits * this.killProfitMultiplier)
     this.kills++
-    this.xp += enemyValue.xp
+    this.gainXp(targetValue.xp)
+  }
+
+  /*
+   * Delegates upgrading the tower to the relevant method.
+   */
+  @action upgrade(upgradeType) {
+    if (upgradeType === 'generic') {
+      this.upgradeGeneric()
+    }
+  }
+
+  /*
+   * Add a full level to the given tower.
+   * That is, if the tower is 20% through level 5, then make it be 20% through level 6.
+   */
+  @action upgradeGeneric() {
+    const xpForLevelFromZero = this.getXpInterval(this.level)
+    const xpForNextLevelFromZero = this.getXpInterval(this.level + 1)
+
+    let fractionOfLevel = this.getPartialLevel(this.xp) % 1
+    let totalXpGained = (1 - fractionOfLevel) * xpForLevelFromZero + fractionOfLevel * xpForNextLevelFromZero
+
+    this.gainXp(totalXpGained)
+  }
+
+  gainXp(newXp) {
+    this.xp += Math.floor(newXp)
     this.checkLevel()
   }
 
+  getLevel(xp) {
+    return Math.floor(this.getPartialLevel(xp))
+  }
+
+  getPartialLevel(xp) {
+    return 1 + Math.log(1 + 0.0015 * xp) / Math.log(1.15)
+  }
+
+  getXpInterval(currentLevel) {
+    return 100 * Math.pow(1.15, currentLevel - 1)
+  }
+
+  /*
+  * Calculations based on 100xp for level 1 -> 2, each subsequent level
+  * requiring 1.15x the xp of the previous level (115, 132, etc.)
+  *
+  * Cumulative xp = (1st level xp) * (1 - (1+r) ^ (level - 1)) / (-r)
+  * Re-arranged to convert xp --> level, as below
+  */
   @action checkLevel() {
-    /**
-     * Calculations based on 100xp for level 1 -> 2, each subsequent level
-     * requiring 1.15x the xp of the previous level (115, 132, etc.)
-     *
-     * Cumulative xp = (1st level xp) * (1 - (1+r) ^ (level - 1)) / (-r)
-     * Re-arranged to convert xp --> level, as below
-     */
     const currentLevel = this.Level
-    this.level = Math.floor(1 + Math.log(1 + 0.0015 * this.xp) / Math.log(1.15))
+    this.level = this.getLevel(this.xp)
     if (currentLevel !== this.level) {
       this.updateStats()
     }

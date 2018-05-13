@@ -292,7 +292,7 @@ export default class Game {
     }
     console.log('Upgrading selected tower!');
     const tower = this.selectedEntity
-    // tower.upgrade(upgradeType)
+    tower.upgrade(upgradeType)
   }
 
   getEnemyGoal(enemy) {
