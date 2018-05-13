@@ -17,6 +17,17 @@ export default class GameEvents {
     this.addPlaceTowerOnMap(game, gameBox)
     this.addSpawnWave(game)
     this.addNewGame(game)
+    this.setUpTowerUpgrades(game)
+  }
+
+  setUpTowerUpgrades(game) {
+    const elements = document.querySelectorAll(".tower-actions .upgrade")
+    elements.forEach((element) => {
+      element.addEventListener('click', () => {
+        console.log(element.dataset.upgrade);
+        game.upgradeSelectedTower(element.dataset.upgrade)
+      })
+    })
   }
 
   addNewGame(game) {

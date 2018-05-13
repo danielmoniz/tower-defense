@@ -67,12 +67,17 @@ a {
   visibility: visible;
 }
 
-.tower-actions img.option {
+.tower-actions .option {
   width: 100%;
   background-color: white;
+  cursor: pointer;
 }
 
-.tower-actions img.option.sell {
+.tower-actions .option img {
+  width: 100%;
+}
+
+.tower-actions .option.sell {
   grid-column: 2 / 3;
   grid-row: 3;
 }

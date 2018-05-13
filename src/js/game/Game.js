@@ -279,6 +279,16 @@ export default class Game {
     this.inProgress = false
   }
 
+  upgradeSelectedTower(upgradeType) {
+    if (!(this.selectedEntity && this.selectedEntity.type === 'Tower')) {
+      console.log('Not a tower!');
+      return
+    }
+    console.log('Upgrading selected tower!');
+    const tower = this.selectedEntity
+    // tower.upgrade(upgradeType)
+  }
+
   getEnemyGoal(enemy) {
     return this.getEndGoal()
   }
