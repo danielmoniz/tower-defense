@@ -265,6 +265,12 @@ export default class Game {
     return tower
   }
 
+  @action sellSelectedTower() {
+    const entity = this.selectedEntity;
+    if (entity.type !== 'Tower' || !entity.placed) { return }
+    this.sellTower(entity)
+  }
+
   @action sellTower(tower) {
     this.profit(tower.getSellValue())
     this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)

@@ -82,13 +82,14 @@ export default class BoardRenderer {
     })
   }
 
-  // @TODO @BUG Tower actions panel doesn't disappear when selected an enemy
   updateInfoPanel(game, infoPanelName, infoPanelData, towerActionsPanel) {
-    if (game.selectedEntity === null) {
+    if (!game.selectedEntity) {
       infoPanelName.innerHTML = ""
       infoPanelData.innerHTML = ""
-      this.hideTowerActions(towerActionsPanel)
       return;
+    }
+    if (game.selectedEntity.type !== 'Tower') {
+      this.hideTowerActions(towerActionsPanel)
     }
 
     const entity = game.selectedEntity

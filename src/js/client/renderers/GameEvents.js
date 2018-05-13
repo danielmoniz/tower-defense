@@ -18,14 +18,24 @@ export default class GameEvents {
     this.addSpawnWave(game)
     this.addNewGame(game)
     this.setUpTowerUpgrades(game)
+    this.setUpTowerMenuSell(game)
   }
 
   setUpTowerUpgrades(game) {
     const elements = document.querySelectorAll(".tower-actions .upgrade")
     elements.forEach((element) => {
       element.addEventListener('click', () => {
-        console.log(element.dataset.upgrade);
         game.upgradeSelectedTower(element.dataset.upgrade)
+      })
+    })
+  }
+
+  setUpTowerMenuSell(game) {
+    const elements = document.querySelectorAll(".tower-actions .sell")
+    elements.forEach((element) => {
+      element.addEventListener('click', () => {
+        console.log('Selling tower!');
+        game.sellSelectedTower()
       })
     })
   }
