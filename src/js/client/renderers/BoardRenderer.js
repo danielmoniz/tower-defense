@@ -102,18 +102,16 @@ export default class BoardRenderer {
       if (entity.placed) {
         this.showTowerActions(towerActionsPanel)
         const upgrades = towerActionsPanel.querySelectorAll('.option.upgrade')
-        this.updateTowerUpgrades(entity, upgrades)
+        this.updateTowerUpgrades(upgrades, entity)
         const sellButton = towerActionsPanel.querySelector('.option.sell')
-        const profitDisplay = sellButton.querySelector('.profit')
-        const profit = entity.getSellValue()
-        profitDisplay.innerText = profit
+        this.updateSellButton(sellButton, entity)
       }
     } else if (entity.type === "Enemy") {
       this.displayEnemy(infoPanelData, entity)
     }
   }
 
-  updateTowerUpgrades(tower, upgrades) {
+  updateTowerUpgrades(upgrades, tower) {
     upgrades.forEach((upgrade) => {
       const costDisplay = upgrade.querySelector('.value')
       const upgradeName = upgrade.dataset.upgrade
@@ -121,6 +119,12 @@ export default class BoardRenderer {
       if (!costDisplay || !upgradeCost) { return }
       costDisplay.innerText = upgradeCost
     })
+  }
+
+  updateSellButton(sellButton, tower) {
+    const profitDisplay = sellButton.querySelector('.profit')
+    const profit = tower.getSellValue()
+    profitDisplay.innerText = profit
   }
 
   // @TODO Consider using Vue.js for templating here
