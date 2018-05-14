@@ -221,12 +221,16 @@ export default class Game {
     if (!this.canAfford(tower)) {
       return false
     }
-    this.credits.current -= tower.purchaseCost
+    this.spend(tower.purchaseCost)
     return true
   }
 
   @action profit(amount) {
     this.credits.current += amount
+  }
+
+  @action spend(amount) {
+    this.credits.current -= amount
   }
 
   placeTower(tower) {
@@ -292,6 +296,9 @@ export default class Game {
     }
     console.log('Upgrading selected tower!');
     const tower = this.selectedEntity
+    const cost = tower.getUpgradeCost(upgradeType)
+    if (cost === undefined || cost > this.credits.current) { return }
+    this.spend(cost)
     tower.upgrade(upgradeType)
   }
 

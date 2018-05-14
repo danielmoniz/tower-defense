@@ -33,6 +33,10 @@ export default class Tower extends Unit {
   @observable width = GRID_SIZE
   @observable height = GRID_SIZE
 
+  upgradeCosts = {
+    'generic': 25,
+  }
+
   constructor(game, options) {
     super(game, options)
 
@@ -133,6 +137,10 @@ export default class Tower extends Unit {
     this.game.profit(enemyValue.credits * this.killProfitMultiplier)
     this.kills++
     this.gainXp(targetValue.xp)
+  }
+
+  getUpgradeCost(upgradeType) {
+    return this.upgradeCosts[upgradeType]
   }
 
   /*
