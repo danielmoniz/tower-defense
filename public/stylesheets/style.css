@@ -71,6 +71,7 @@ a {
   width: 100%;
   background-color: white;
   cursor: pointer;
+  position: relative;
 }
 
 .tower-actions .option img {
@@ -80,6 +81,16 @@ a {
 .tower-actions .option.sell {
   grid-column: 2 / 3;
   grid-row: 3;
+}
+
+.tower-actions .upgrade-cost {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  background-color: red;
+  color: white;
+  border: 1px solid black;
 }
 
 .disabled {

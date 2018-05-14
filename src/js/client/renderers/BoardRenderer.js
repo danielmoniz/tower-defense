@@ -97,8 +97,17 @@ export default class BoardRenderer {
 
     if (entity.type === "Tower") {
       this.displayTowerInfo(infoPanelData, entity)
+      // @TODO Show upgrade options if not placed, but grey them out
       if (entity.placed) {
         this.showTowerActions(towerActionsPanel)
+        const upgrades = towerActionsPanel.querySelectorAll('.option.upgrade')
+        upgrades.forEach((upgrade) => {
+          const costDisplay = upgrade.querySelector('.upgrade-cost')
+          const upgradeName = upgrade.dataset.upgrade
+          const upgradeCost = entity.upgradeCosts[upgradeName]
+          if (!costDisplay || !upgradeCost) { return }
+          costDisplay.innerText = upgradeCost
+        })
       }
     } else if (entity.type === "Enemy") {
       this.displayEnemy(infoPanelData, entity)
