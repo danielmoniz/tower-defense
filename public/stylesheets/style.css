@@ -83,14 +83,22 @@ a {
   grid-row: 3;
 }
 
-.tower-actions .upgrade-cost {
+.tower-actions .option .value {
   position: absolute;
   left: 0;
   top: 0;
   z-index: 5;
+  border: 1px solid black;
+}
+
+.tower-actions .upgrade .value {
   background-color: red;
   color: white;
-  border: 1px solid black;
+}
+
+.tower-actions .sell .value {
+  background-color: lightgreen;
+  color: black;
 }
 
 .disabled {
