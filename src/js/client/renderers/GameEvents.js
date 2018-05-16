@@ -35,7 +35,7 @@ export default class GameEvents {
     elements.forEach((element) => {
       element.addEventListener('click', () => {
         console.log('Selling tower!');
-        game.sellSelectedTower()
+        game.sendSellSelectedTower()
       })
     })
   }

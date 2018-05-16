@@ -49,6 +49,14 @@ class ClientMultiGame extends ClientGame {
     this.emitter.sellTower(tower)
   }
 
+  sendSellSelectedTower() {
+    const tower = this.selectedEntity
+    if (tower.type !== 'Tower') {
+      return
+    }
+    this.sendSellTower(tower)
+  }
+
   sendUpgradeSelectedTower(upgradeType) {
     const tower = super.sendUpgradeSelectedTower(upgradeType)
     this.emitter.upgradeTower(tower, upgradeType)

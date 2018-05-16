@@ -20,7 +20,7 @@ export default function socketListeners(socket, emitter, serverFunctions) {
         console.log('Sell tower success on server side!');
         socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
       } else {
-        // @TODO Inform client that the tower sale failed (for rollback)
+        emitActionFailed('sell tower')
       }
     }
   })
