@@ -23,6 +23,7 @@ class GameServer {
       socketListeners(socket, this.emitter, {
         joinGame: this.joinGame.bind(this),
         updatePerformance: this.updatePerformance.bind(this),
+        getGameData: this.getGameData.bind(this),
       })
 
       this.emitter.pollForGameNumber(socket)

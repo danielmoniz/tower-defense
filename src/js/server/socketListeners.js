@@ -25,17 +25,6 @@ export default function socketListeners(socket, emitter, serverFunctions) {
     }
   })
 
-  socket.on('sell tower', (towerId) => {
-    console.log('selling tower with ID:', towerId);
-    if (socket.gameManager && socket.gameManager.game) {
-      const sellSuccess = socket.gameManager.game.receiveSellTower(towerId)
-      if (sellSuccess) {
-        console.log('Sell tower success on server side!');
-        socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
-      }
-    }
-  })
-
   socket.on('upgrade tower', (towerId, upgradeType) => {
     console.log('Upgrading tower with ID', towerId, 'with upgrade type', upgradeType);
     if (socket.gameManager && socket.gameManager.game) {
@@ -44,10 +33,16 @@ export default function socketListeners(socket, emitter, serverFunctions) {
         console.log('Upgrade tower success on server side!');
         socket.broadcast.to(socket.roomId).emit('upgrade tower', towerId, upgradeType)
       } else {
-        // @TODO Inform client of failed tower upgrade (for rollback)
+        emitActionFailed('upgrade tower')
       }
     }
   })
+
+  function emitActionFailed(action) {
+    console.log(`NOTE: ${action} failed on server side.`);
+    const gameData = serverFunctions.getGameData(socket.gameManager.game)
+    socket.emit('failed action', action, gameData, Date.now())
+  }
 
   socket.on('spawn wave early', () => {
     if (socket.gameManager && socket.gameManager.game) {

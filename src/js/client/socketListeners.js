@@ -35,6 +35,12 @@ function setUpListeners(game, emitter) {
     game.undoPlaceTower(tower)
   })
 
+  socket.on('failed action', (action, gameData, time) => {
+    console.log('WARNING: action failed! Action type:' + action);
+    console.log('Updating game as a result.');
+    game.updateAll(gameData, time)
+  })
+
   socket.on('sell tower', (towerId) => {
     console.log('selling tower with ID:', towerId);
     game.receiveSellTower(towerId)
