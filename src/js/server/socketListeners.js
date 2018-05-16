@@ -20,7 +20,7 @@ export default function socketListeners(socket, emitter, serverFunctions) {
         console.log('Sell tower success on server side!');
         socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
       } else {
-        // @TODO Inform client that the tower sale failed
+        // @TODO Inform client that the tower sale failed (for rollback)
       }
     }
   })
@@ -32,6 +32,19 @@ export default function socketListeners(socket, emitter, serverFunctions) {
       if (sellSuccess) {
         console.log('Sell tower success on server side!');
         socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
+      }
+    }
+  })
+
+  socket.on('upgrade tower', (towerId, upgradeType) => {
+    console.log('Upgrading tower with ID', towerId, 'with upgrade type', upgradeType);
+    if (socket.gameManager && socket.gameManager.game) {
+      const upgradeSuccess = socket.gameManager.game.receiveUpgradeTower(towerId, upgradeType)
+      if (upgradeSuccess) {
+        console.log('Upgrade tower success on server side!');
+        socket.broadcast.to(socket.roomId).emit('upgrade tower', towerId, upgradeType)
+      } else {
+        // @TODO Inform client of failed tower upgrade (for rollback)
       }
     }
   })

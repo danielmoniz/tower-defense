@@ -40,6 +40,11 @@ function setUpListeners(game, emitter) {
     game.receiveSellTower(towerId)
   })
 
+  socket.on('upgrade tower', (towerId, upgradeType) => {
+    console.log('upgrading tower with ID:', towerId, 'to type', upgradeType);
+    game.receiveUpgradeTower(towerId, upgradeType)
+  })
+
   socket.on('update all', (data, time) => {
     game.updateAll(data, time)
   })

@@ -296,10 +296,16 @@ export default class Game {
     }
     console.log('Upgrading selected tower!');
     const tower = this.selectedEntity
+    this.upgradeTower(tower, upgradeType)
+    return tower
+  }
+
+  upgradeTower(tower, upgradeType) {
     const cost = tower.getUpgradeCost(upgradeType)
     if (cost === undefined || cost > this.credits.current) { return }
     this.spend(cost)
     tower.upgrade(upgradeType)
+    return tower
   }
 
   getEnemyGoal(enemy) {
@@ -371,6 +377,16 @@ export default class Game {
       return
     }
     this.sellTower(tower)
+    return true
+  }
+
+  @action receiveUpgradeTower(towerId, upgradeType) {
+    const tower = this.towers.byId[towerId]
+    if (!tower) {
+      console.log("No tower with id", towerId);
+      return
+    }
+    this.upgradeTower(tower, upgradeType)
     return true
   }
 

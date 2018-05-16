@@ -44,6 +44,11 @@ class GameEmitter {
     console.log('EMITTED SELL TOWER');
   }
 
+  upgradeTower(tower, upgradeType) {
+    this.emit('upgrade tower', tower.id, upgradeType)
+    console.log('EMITTED UPGRADE TOWER', tower.id, upgradeType);
+  }
+
   sendPerformance(data) {
     this.emit('send performance', data)
   }

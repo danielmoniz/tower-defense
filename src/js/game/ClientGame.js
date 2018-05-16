@@ -83,6 +83,10 @@ class ClientGame extends Game {
     this.sellTower(tower)
   }
 
+  sendUpgradeSelectedTower(upgradeType) {
+    return this.upgradeSelectedTower(upgradeType)
+  }
+
   spawnWaveEarly() {}
 
   @action deselectPlacingTower() {

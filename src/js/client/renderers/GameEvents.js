@@ -25,7 +25,7 @@ export default class GameEvents {
     const elements = document.querySelectorAll(".tower-actions .upgrade")
     elements.forEach((element) => {
       element.addEventListener('click', () => {
-        game.upgradeSelectedTower(element.dataset.upgrade)
+        game.sendUpgradeSelectedTower(element.dataset.upgrade)
       })
     })
   }
