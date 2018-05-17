@@ -138,7 +138,7 @@ export default class Tower extends Unit {
   @action killEnemy(enemyValue) {
     this.game.profit(enemyValue.credits * this.killProfitMultiplier)
     this.kills++
-    this.gainXp(targetValue.xp)
+    this.gainXp(enemyValue.xp)
   }
 
   getUpgradeCost(upgradeType) {

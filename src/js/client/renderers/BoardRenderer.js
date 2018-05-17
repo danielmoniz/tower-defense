@@ -152,14 +152,14 @@ export default class BoardRenderer {
         "Experience: " + tower.xp + "<br>" +
         "Level: " + tower.level
 
-    if (entity.attackPower.burning) {
+    if (tower.attackPower.burning) {
       infoPanelData.innerHTML += "<br>"
       let burningLength = "unlimited"
-      if (entity.burningLength.current && entity.burningLength.current > 0) {
-        burningLength = (entity.burningLength.current / 1000).toFixed(2) + " seconds"
+      if (tower.burningLength.current && tower.burningLength.current > 0) {
+        burningLength = (tower.burningLength.current / 1000).toFixed(2) + " seconds"
       }
       infoPanelData.innerHTML +=
-        "Burning DPS: " + entity.attackPower.burning.current + "<br>" +
+        "Burning DPS: " + tower.attackPower.burning.current + "<br>" +
         "Burning length: " + burningLength
     }
   }
