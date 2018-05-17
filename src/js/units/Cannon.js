@@ -29,6 +29,8 @@ export default class Cannon extends Tower {
       cost: 5,
       type: 'towerToTower',
       newTowerType: 'PlasmaBattery',
+      // @TODO This information is display related and should probably be elsewhere.
+      description: 'Plas. Battery',
     }
 
     this.width = GRID_SIZE * 3

@@ -91,6 +91,13 @@ a {
   border: 1px solid black;
 }
 
+.tower-actions .option .description {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: 5;
+}
+
 .tower-actions .upgrade .value {
   background-color: red;
   color: white;

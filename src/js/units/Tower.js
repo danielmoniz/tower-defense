@@ -36,6 +36,8 @@ export default class Tower extends Unit {
   @observable upgrades = {
     generic: {
       cost: 25,
+      // @TODO This information is display related and should probably be elsewhere.
+      description: 'Level up',
     },
   }
 

@@ -114,10 +114,12 @@ export default class BoardRenderer {
   updateTowerUpgrades(upgrades, tower) {
     upgrades.forEach((upgrade) => {
       const costDisplay = upgrade.querySelector('.value')
+      const descriptionDisplay = upgrade.querySelector('.description')
       const upgradeName = upgrade.dataset.upgrade
       const upgradeCost = tower.getUpgradeCost(upgradeName)
-      if (!costDisplay || !upgradeCost) { return }
+      if (!costDisplay || !upgradeCost || !descriptionDisplay) { return }
       costDisplay.innerText = upgradeCost
+      descriptionDisplay.innerText = tower.getUpgradeInfo(upgradeName).description
     })
   }
 
