@@ -87,6 +87,11 @@ class ClientGame extends Game {
     return this.upgradeSelectedTower(upgradeType)
   }
 
+  changeTower(tower, upgradeInfo) {
+    const newTower = super.changeTower(tower, upgradeInfo)
+    this.selectEntity(newTower)
+  }
+
   spawnWaveEarly() {}
 
   @action deselectPlacingTower() {

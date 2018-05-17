@@ -303,9 +303,41 @@ export default class Game {
   upgradeTower(tower, upgradeType) {
     const cost = tower.getUpgradeCost(upgradeType)
     if (cost === undefined || cost > this.credits.current) { return }
+    const upgradeInfo = tower.getUpgradeInfo(upgradeType)
+    if (upgradeInfo.type === 'towerToTower') {
+      return this.changeTower(tower, upgradeInfo)
+    }
     this.spend(cost)
     tower.upgrade(upgradeType)
     return tower
+  }
+
+  changeTower(tower, upgradeInfo) {
+    // create new tower of correct type - upgradeInfo.newTowerType
+    const TowerType = this.TOWER_TYPES[upgradeInfo.newTowerType]
+    const newTower = new TowerType(this)
+    // copy important carry-over stats from old tower to new tower (including ID, xp, etc.)
+    newTower.x = tower.x
+    newTower.y = tower.y
+    newTower.id = tower.id
+    newTower.xp = tower.xp
+    newTower.kills = tower.kills
+    newTower.checkLevel()
+    // remove old tower
+    tower.destroy()
+    // update pathing - is this necessary if tower is simply replacing it? - allows for new tower placement
+    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+    // place new tower
+    // @TODO Below code is duplicated from Game.addTower()
+    this.addTower(newTower)
+    // newTower.place()
+    // newTower.show()
+    // this.towers.add(newTower)
+
+    // subtract cost
+    this.spend(upgradeInfo.cost)
+    console.log(newTower);
+    return newTower
   }
 
   getEnemyGoal(enemy) {

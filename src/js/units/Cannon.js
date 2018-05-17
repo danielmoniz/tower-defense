@@ -25,6 +25,11 @@ export default class Cannon extends Tower {
     this.clipSize = 1
     this.reloadTime = 1000
     this.killProfitMultiplier = 1
+    this.upgrades['PlasmaBattery'] = {
+      cost: 5,
+      type: 'towerToTower',
+      newTowerType: 'PlasmaBattery',
+    }
 
     this.width = GRID_SIZE * 3
     this.height = GRID_SIZE * 3

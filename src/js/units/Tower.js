@@ -146,6 +146,11 @@ export default class Tower extends Unit {
     return this.upgrades[upgradeType].cost
   }
 
+  getUpgradeInfo(upgradeType) {
+    if (!this.upgrades[upgradeType]) { return {} }
+    return this.upgrades[upgradeType]
+  }
+
   /*
    * Delegates upgrading the tower to the relevant method.
    */
