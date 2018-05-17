@@ -33,8 +33,10 @@ export default class Tower extends Unit {
   @observable width = GRID_SIZE
   @observable height = GRID_SIZE
 
-  upgradeCosts = {
-    'generic': 25,
+  @observable upgrades = {
+    generic: {
+      cost: 25,
+    },
   }
 
   constructor(game, options) {
@@ -140,7 +142,8 @@ export default class Tower extends Unit {
   }
 
   getUpgradeCost(upgradeType) {
-    return this.upgradeCosts[upgradeType]
+    if (!this.upgrades[upgradeType]) { return }
+    return this.upgrades[upgradeType].cost
   }
 
   /*
