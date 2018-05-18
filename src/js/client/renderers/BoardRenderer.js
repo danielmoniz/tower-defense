@@ -121,10 +121,25 @@ export default class BoardRenderer {
       const upgradeTile = document.createElement('div')
       upgradeTile.classList.add('option', 'upgrade')
       upgradeTile.dataset.upgrade = upgradeKey
-      upgradeTile.innerText = upgrade.description
+      // upgradeTile.innerText = upgrade.description
       upgradeTile.addEventListener('click', () => {
         game.sendUpgradeSelectedTower(upgradeKey)
       })
+
+      const valueDisplay = document.createElement('span')
+      valueDisplay.classList.add('upgrade-cost', 'value')
+      valueDisplay.innerText = upgrade.cost
+      upgradeTile.appendChild(valueDisplay)
+
+      const descriptionDisplay = document.createElement('span')
+      descriptionDisplay.classList.add('description')
+      descriptionDisplay.innerText = upgrade.description
+      upgradeTile.appendChild(descriptionDisplay)
+
+      const icon = document.createElement('img')
+      icon.setAttribute('src', `/images/${upgradeKey}UpgradeIcon.png`)
+      upgradeTile.appendChild(icon)
+
       // const costDisplay = upgrade.querySelector('.value')
       // const descriptionDisplay = upgrade.querySelector('.description')
       // const upgradeName = upgrade.dataset.upgrade
