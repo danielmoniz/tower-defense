@@ -102,10 +102,8 @@ export default class BoardRenderer {
       if (entity.placed) {
         towerActionsPanel.innerHTML = ''
         this.showTowerActions(towerActionsPanel)
-        // const upgrades = towerActionsPanel.querySelectorAll('.option.upgrade')
         this.updateTowerUpgrades(game, entity, towerActionsPanel)
-        // const sellButton = towerActionsPanel.querySelector('.option.sell')
-        // this.updateSellButton(sellButton, entity)
+        this.updateSellButton(game, entity, towerActionsPanel)
       }
     } else if (entity.type === "Enemy") {
       this.displayEnemy(infoPanelData, entity)
@@ -115,16 +113,14 @@ export default class BoardRenderer {
   updateTowerUpgrades(game, tower, towerActionsPanel) {
     const upgradeKeys = Object.keys(tower.upgrades)
     upgradeKeys.forEach((upgradeKey) => {
-      console.log(upgradeKey);
       const upgrade = tower.upgrades[upgradeKey]
-      console.log(upgrade);
       const upgradeTile = document.createElement('div')
       upgradeTile.classList.add('option', 'upgrade')
       upgradeTile.dataset.upgrade = upgradeKey
-      // upgradeTile.innerText = upgrade.description
       upgradeTile.addEventListener('click', () => {
         game.sendUpgradeSelectedTower(upgradeKey)
       })
+      towerActionsPanel.appendChild(upgradeTile)
 
       const valueDisplay = document.createElement('span')
       valueDisplay.classList.add('upgrade-cost', 'value')
@@ -139,29 +135,32 @@ export default class BoardRenderer {
       const icon = document.createElement('img')
       icon.setAttribute('src', `/images/${upgradeKey}UpgradeIcon.png`)
       upgradeTile.appendChild(icon)
-
-      // const costDisplay = upgrade.querySelector('.value')
-      // const descriptionDisplay = upgrade.querySelector('.description')
-      // const upgradeName = upgrade.dataset.upgrade
-      // const upgradeCost = tower.getUpgradeCost(upgradeName)
-      // if (!costDisplay || !upgradeCost || !descriptionDisplay) { return }
-      // costDisplay.innerText = upgradeCost
-      // descriptionDisplay.innerText = tower.getUpgradeInfo(upgradeName).description
-
-      towerActionsPanel.appendChild(upgradeTile)
     })
   }
 
-  // <div class="option upgrade" data-upgrade="generic">
-  //   <span class="upgrade-cost value"></span>
-  //   <img src="/images/upgrade01.png" alt="">
-  //   <span class="description">Generic (test)</span>
-  // </div>
+  // @TODO Refactor to share code with updateTowerUpgrades()
+  updateSellButton(game, tower, towerActionsPanel) {
+    const sellTile = document.createElement('div')
+    sellTile.classList.add('option', 'sell')
+    sellTile.dataset.upgrade = 'sell'
+    sellTile.addEventListener('click', () => {
+      game.sendSellSelectedTower()
+    })
+    towerActionsPanel.appendChild(sellTile)
 
-  updateSellButton(sellButton, tower) {
-    const profitDisplay = sellButton.querySelector('.profit')
-    const profit = tower.getSellValue()
-    profitDisplay.innerText = profit
+    const valueDisplay = document.createElement('span')
+    valueDisplay.classList.add('profit', 'value')
+    valueDisplay.innerText = tower.getSellValue()
+    sellTile.appendChild(valueDisplay)
+
+    const descriptionDisplay = document.createElement('span')
+    descriptionDisplay.classList.add('description')
+    descriptionDisplay.innerText = 'Sell'
+    sellTile.appendChild(descriptionDisplay)
+
+    const icon = document.createElement('img')
+    icon.setAttribute('src', `/images/sell.png`)
+    sellTile.appendChild(icon)
   }
 
   // @TODO Consider using Vue.js for templating here

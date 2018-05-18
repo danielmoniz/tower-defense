@@ -79,6 +79,14 @@ class ClientGame extends Game {
     console.log("Refunded", refund, "for undoing tower placement.");
   }
 
+  sendSellSelectedTower() {
+    const tower = this.selectedEntity
+    if (tower.type !== 'Tower') {
+      return
+    }
+    this.sendSellTower(tower)
+  }
+
   sendSellTower(tower) {
     this.sellTower(tower)
   }
