@@ -246,6 +246,18 @@ export default class Tower extends Unit {
   }
 
   /*
+   * Copies only relevant stats for tower upgrades. Eg. id, xp, and kills.
+   */
+  copyUpgradeStats(oldTower) {
+    this.x = oldTower.x
+    this.y = oldTower.y
+    this.id = oldTower.id
+    this.xp = oldTower.xp
+    this.kills = oldTower.kills
+    this.checkLevel()
+  }
+
+  /*
    * Returns the top-left coordinate of the tower.
    * Needed because coordinates are based on the centre point.
    * Note that towers can only be on grid lines.
