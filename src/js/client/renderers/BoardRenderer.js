@@ -100,28 +100,48 @@ export default class BoardRenderer {
       this.displayTowerInfo(infoPanelData, entity)
       // @TODO Show upgrade options if not placed, but grey them out
       if (entity.placed) {
+        towerActionsPanel.innerHTML = ''
         this.showTowerActions(towerActionsPanel)
-        const upgrades = towerActionsPanel.querySelectorAll('.option.upgrade')
-        this.updateTowerUpgrades(upgrades, entity)
-        const sellButton = towerActionsPanel.querySelector('.option.sell')
-        this.updateSellButton(sellButton, entity)
+        // const upgrades = towerActionsPanel.querySelectorAll('.option.upgrade')
+        this.updateTowerUpgrades(game, entity, towerActionsPanel)
+        // const sellButton = towerActionsPanel.querySelector('.option.sell')
+        // this.updateSellButton(sellButton, entity)
       }
     } else if (entity.type === "Enemy") {
       this.displayEnemy(infoPanelData, entity)
     }
   }
 
-  updateTowerUpgrades(upgrades, tower) {
-    upgrades.forEach((upgrade) => {
-      const costDisplay = upgrade.querySelector('.value')
-      const descriptionDisplay = upgrade.querySelector('.description')
-      const upgradeName = upgrade.dataset.upgrade
-      const upgradeCost = tower.getUpgradeCost(upgradeName)
-      if (!costDisplay || !upgradeCost || !descriptionDisplay) { return }
-      costDisplay.innerText = upgradeCost
-      descriptionDisplay.innerText = tower.getUpgradeInfo(upgradeName).description
+  updateTowerUpgrades(game, tower, towerActionsPanel) {
+    const upgradeKeys = Object.keys(tower.upgrades)
+    upgradeKeys.forEach((upgradeKey) => {
+      console.log(upgradeKey);
+      const upgrade = tower.upgrades[upgradeKey]
+      console.log(upgrade);
+      const upgradeTile = document.createElement('div')
+      upgradeTile.classList.add('option', 'upgrade')
+      upgradeTile.dataset.upgrade = upgradeKey
+      upgradeTile.innerText = upgrade.description
+      upgradeTile.addEventListener('click', () => {
+        game.sendUpgradeSelectedTower(upgradeKey)
+      })
+      // const costDisplay = upgrade.querySelector('.value')
+      // const descriptionDisplay = upgrade.querySelector('.description')
+      // const upgradeName = upgrade.dataset.upgrade
+      // const upgradeCost = tower.getUpgradeCost(upgradeName)
+      // if (!costDisplay || !upgradeCost || !descriptionDisplay) { return }
+      // costDisplay.innerText = upgradeCost
+      // descriptionDisplay.innerText = tower.getUpgradeInfo(upgradeName).description
+
+      towerActionsPanel.appendChild(upgradeTile)
     })
   }
+
+  // <div class="option upgrade" data-upgrade="generic">
+  //   <span class="upgrade-cost value"></span>
+  //   <img src="/images/upgrade01.png" alt="">
+  //   <span class="description">Generic (test)</span>
+  // </div>
 
   updateSellButton(sellButton, tower) {
     const profitDisplay = sellButton.querySelector('.profit')
