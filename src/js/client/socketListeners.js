@@ -44,10 +44,8 @@ function setUpListeners(game, emitter) {
     game.acceptSpawnedWave(newEnemies)
   })
 
-  // @TERRAIN @TODO
   socket.on('send terrain', (terrainData) => {
     game.setTerrain(terrainData)
-    game.renderer.board.renderTerrain(game)
   })
 
   socket.on('poll for game number', () => {

@@ -27,10 +27,7 @@ class ServerGame extends Game {
   }
 
   sendTerrain() {
-    // @TERRAIN @TODO Grab terrain data
     const terrainData = this.pathHelper.getTerrain()
-    console.log("Sending terrain");
-    console.log(terrainData);
     this.emitter.sendTerrain(this.serverInfo.gameNumber, terrainData)
   }
 

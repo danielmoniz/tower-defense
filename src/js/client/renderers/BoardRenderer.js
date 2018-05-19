@@ -138,7 +138,6 @@ export default class BoardRenderer {
   }
 
   renderTerrain(game) {
-    console.log("rendering terrain")
     const terrainColor = {
       normal: 0xFFFFFF,
       crater: 0xCECECE,
