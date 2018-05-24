@@ -13,18 +13,12 @@ class SoloGame extends ClientGame {
   }
 
   start() {
-    // Duplicated from Game.js @TODO set this up properly
-    if (this.inProgress) { return }
-    this.inProgress = true
-    this.reset()
-    this.play()
-    this.wave.initializeWaveTimer(GAME_REFRESH_RATE)
-    //
+    this.startSolo()
+  }
 
-    this.pathHelper.generateTerrain()
-    this.renderer.tick()
-    this.renderer.board.renderTerrain(this)
-    this.renderer.board.startGame(this)
+  reset() {
+    super.reset()
+    this.pathHelper.reset()
   }
 
   setUpWaveSpawner() {

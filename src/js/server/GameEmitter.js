@@ -20,7 +20,6 @@ class GameEmitter {
   }
 
   sendTerrain(gameNumber, terrainData) {
-    // @TERRAIN
     this.io.to(gameNumber).emit('send terrain', terrainData)
   }
 

@@ -1,3 +1,6 @@
+// Binary Heap courtesy of Brian Grinstead's JS A* library
+// http://github.com/bgrins/javascript-astar
+
 export default class BinaryHeap {
   constructor(scoreFunction) {
     this.content = [];

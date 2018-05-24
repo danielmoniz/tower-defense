@@ -26,7 +26,7 @@ export default class Pathing {
 
   reset() {
     this.weights.reset()
-    // this.compute()
+    this.compute()
   }
 
   // @TERRAIN

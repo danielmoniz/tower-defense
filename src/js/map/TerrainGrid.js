@@ -53,19 +53,17 @@ export default class TerrainGrid extends Grid {
 
     do {
       terrainCoverage +=
-          this.addTestCrater(this.getRandomGridLocation(),
+          this.addCrater(this.getRandomGridLocation(),
                              Math.floor(3 * Math.random()) + 1)
     } while (terrainCoverage < targetTerrainCoverage)
     this.generated = true;
   }
 
-  // @TERRAIN
   setTerrain(terrainData) {
-    // @TODO take terrain data and jam 'er in
     this.values = terrainData
   }
 
-  addTestCrater(gridLocation, size) {
+  addCrater(gridLocation, size) {
     // square crater
     let tilesChanged = 0
     for (let x = gridLocation.x - size; x <= gridLocation.x + size; x++) {
@@ -116,20 +114,6 @@ export default class TerrainGrid extends Grid {
       }
     }
     return true
-  }
-
-  /*
-   * Adds invisible wall in the middle of the map. Enemies have to go above
-   * or below it.
-   */
-  testTerrainWall() {
-    const x = Math.floor(this.tilesWide / 2)
-    const startY = Math.floor(this.tilesHigh * (1 / 4))
-    const endY = Math.floor(this.tilesHigh * (3 / 4))
-
-    for (let y = startY; y < endY; y++) {
-      this.set(x, y, this.getTerrainProperties("obstacle"))
-    }
   }
 
   typeAt(x, y) {
