@@ -8,7 +8,7 @@ import Cooldown from './Cooldown'
  */
 class WaveSpawner {
   @observable number = 0
-  @observable timeBetweenWaves = 7000
+  @observable timeBetweenWaves = 20000
 
   constructor() {
     this.cooldown = null

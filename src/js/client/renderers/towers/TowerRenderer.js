@@ -19,6 +19,8 @@ export default class TowerRenderer extends UnitRenderer {
       disableBackgroundColor: 0xFF4444,
       lineStyle: { width: 1, color: 0x000000, alpha: 0.5, },
     }
+
+    this.useMuzzleFlash = true
   }
 
   startRender(unit, board) {
@@ -29,7 +31,15 @@ export default class TowerRenderer extends UnitRenderer {
     const { disableBackground, background } = this.setBackground(unit, unitContainer, this.backgroundOptions)
     this.setTowerBase(unitContainer, circleRadius, this.towerBaseOptions)
     const gunContainer = this.setGun(unit, unitContainer, gunOptions)
-    const maxRange = this.setMaxRange(container)
+    const maxRange = this.setMaxRange(container, this.board.backgroundLayer)
+    const sellButton = this.setSellButton(board, container, unitContainer, unit)
+
+    if (this.useMuzzleFlash) {
+      const muzzleFlash = this.setMuzzleFlash(gunContainer, gunOptions)
+      autorun(() => {
+        performMuzzleFlash(unit, muzzleFlash)
+      })
+    }
 
     // @TODO This should probably be done in UnitRenderer
     board.app.stage.addChild(container)
@@ -52,7 +62,11 @@ export default class TowerRenderer extends UnitRenderer {
       ghostUnit(unit, unitContainer)
     })
 
-    return { container, unitContainer, maxRange }
+    autorun(() => {
+      toggleSellButton(unit, sellButton)
+    })
+
+    return { container, unitContainer, maxRange, gunContainer }
   }
 
   getContainer(unit, board) {
@@ -115,9 +129,44 @@ export default class TowerRenderer extends UnitRenderer {
     return gunContainer
   }
 
-  setMaxRange(container) {
+  setSellButton(board, container, unitContainer, tower) {
+    const buttonHeight = 40,
+          buttonWidth = 40,
+          buttonX = 30,
+          buttonY = 50
+
+    const sellButton = new PIXI.Sprite(PIXI.utils.TextureCache["sell"])
+
+    // adjust sell button as needed to render regardless of tower position
+    sellButton.x = -buttonX
+    if (tower.x <= buttonX) {
+      sellButton.x = unitContainer.width + buttonX - buttonWidth
+    }
+    sellButton.y = -buttonY
+    if (tower.y <= buttonY) {
+      sellButton.y = unitContainer.height + buttonY - buttonHeight
+    }
+
+    sellButton.width = buttonWidth
+    sellButton.height = buttonHeight
+    sellButton.alpha = 0.75
+    sellButton.interactive = true
+    sellButton.buttonMode = true
+    sellButton.on('click', () => {
+      tower.game.sendSellTower(tower)
+    })
+
+    sellButton.parentLayer = board.menuLayer
+
+    container.addChild(sellButton)
+    return sellButton
+  }
+
+  setMaxRange(container, layer) {
     const maxRange = new PIXI.Graphics()
-    container.addChildAt(maxRange, 0) // add to bottom of container
+    container.addChild(maxRange)
+    maxRange.parentLayer = layer
+    // maxRange.zIndex = -5 // can use z-index to adjust height within layer
     return maxRange
   }
 
@@ -135,6 +184,17 @@ export default class TowerRenderer extends UnitRenderer {
 
   getGunLength(unit) {
     return unit.width * 0.6
+  }
+
+  setMuzzleFlash(gunContainer, gunOptions) {
+    const muzzleFlash = new PIXI.Sprite(PIXI.utils.TextureCache["muzzleFlash"])
+    muzzleFlash.height = 20
+    muzzleFlash.width = 20
+    muzzleFlash.position = { x: gunOptions.gunLength + muzzleFlash.width, y: -muzzleFlash.height / 2 }
+    muzzleFlash.rotation = Math.PI / 2
+    muzzleFlash.visible = false // defaults to invisible
+    gunContainer.addChild(muzzleFlash)
+    return muzzleFlash
   }
 
 }
@@ -173,5 +233,22 @@ function disable(unit, background, disableBackground) {
   } else {
     background.alpha = 0
     disableBackground.alpha = 1
+  }
+}
+
+function toggleSellButton(unit, sellButton) {
+  if (unit.selected) {
+    sellButton.visible = true
+  } else {
+    sellButton.visible = false
+  }
+}
+
+function performMuzzleFlash(unit, muzzleFlash) {
+  if (unit.isFiring) {
+    muzzleFlash.visible = true
+    setTimeout(() => {
+      muzzleFlash.visible = false
+    }, 50)
   }
 }

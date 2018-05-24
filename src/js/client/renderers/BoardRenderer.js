@@ -17,12 +17,25 @@ export default class BoardRenderer {
       transparent: false,
       resolution: 1,
     })
+
     this.app.view.id = "game-viewport"
     const displayBox = document.querySelector("#display-box")
     displayBox.appendChild(this.app.view)
     this.app.renderer.backgroundColor = 0xFFFFFF
     this.app.renderer.view.style.border = '2px solid black'
 
+    this.app.stage = new PIXI.display.Stage(); // necessary for layers to work
+
+    this.mapLayer = new PIXI.display.Layer()
+    this.backgroundLayer = new PIXI.display.Layer()
+    this.unitsLayer = new PIXI.display.Layer()
+    this.menuLayer = new PIXI.display.Layer()
+
+    this.app.stage.addChild(this.mapLayer)
+    this.app.stage.addChild(this.backgroundLayer)
+    this.app.stage.addChild(this.unitsLayer)
+    this.app.stage.addChild(this.menuLayer)
+    
     this.loadUnitAssets()
     this.setupGameStateDisplay(game)
     this.setupInfoPanel(game)
@@ -39,9 +52,14 @@ export default class BoardRenderer {
     this.loader.add('healthBar', '/images/healthBar.png')
           .add('healthBarBackground', '/images/healthBarBackground.png')
           .add('tank', '/images/tank.png')
-          .add('tank_normal', '/images/normal.png')
-          .add('tank_fast', '/images/fast.png')
+          .add('invader', '/images/invader.png')
+          .add('swarm', '/images/swarm.png')
+          .add('scout', '/images/scout.png')
+          .add('carrier', '/images/carrier.png')
           .add('exit', '/images/exit.png')
+          .add('sell', '/images/sell.png')
+          .add('muzzleFlash', '/images/muzzle_flash.png')
+          .add('enemyExplosionBasic', '/images/enemy_explosion_basic.png')
     console.log("Loading images...");
     this.loader.on("progress", (loader, resource) => {
       const completion = `${Math.floor(loader.progress)}%`
@@ -80,11 +98,15 @@ export default class BoardRenderer {
   }
 
   // @TODO Consider using Vue.js for templating here
-  displayEnemy(infoPanelData, entity) {
-    infoPanelData.innerHTML = "Speed: " + entity.speed + "<br>" +
-        "Hit points: " + entity.currentHitPoints + "/" + entity.maxHitPoints + "<br>" +
-        "Value: $" + entity.killValue.credits + ", " + entity.killValue.xp + "xp<br>" +
-        "Size: " + entity.width + "x" + entity.height
+  displayEnemy(infoPanelData, enemy) {
+    const attributesMessage = this.getEnemyAttributesMessage(enemy)
+
+    infoPanelData.innerHTML = "Speed: " + Math.ceil(enemy.speed) + "<br>" +
+        "Hit points: " + Math.ceil(enemy.currentHitPoints) + "/" + Math.ceil(enemy.maxHitPoints) + "<br>" +
+        "Value: $" + enemy.killValue.credits + ", " + enemy.killValue.xp + "xp<br>" +
+        attributesMessage + "<br>"
+        // (we probably don't need size, as it has no in-game effect)
+        // "Size: " + entity.width + "x" + entity.height
   }
 
   // @TODO Consider using Vue.js for templating here
@@ -180,6 +202,8 @@ export default class BoardRenderer {
     exitImage.height = GRID_SIZE
     exitContainer.addChild(exitImage)
 
+    exitContainer.parentLayer = this.mapLayer
+
     this.app.stage.addChild(exitContainer)
   }
 
@@ -190,6 +214,18 @@ export default class BoardRenderer {
     rightBackground.drawRect(deadZone.x + GRID_SIZE, deadZone.y, deadZone.width, deadZone.height + GRID_SIZE);
     rightBackground.endFill();
     this.app.stage.addChild(rightBackground)
+  }
+
+  // helper methods ---------------
+
+  getEnemyAttributesMessage(enemy) {
+    let attributesMessage = "Attributes: "
+    if (enemy.attributes.length === 0) {
+      attributesMessage += "none"
+    } else {
+      attributesMessage += enemy.attributes.join(", ")
+    }
+    return attributesMessage
   }
 
 }

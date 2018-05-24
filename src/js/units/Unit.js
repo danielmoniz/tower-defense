@@ -2,8 +2,7 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../appConstants'
-
-let ID = 1
+import getAltId from '../utility/altId'
 
 class Unit {
   // defaults (observables)
@@ -19,11 +18,12 @@ class Unit {
   @observable currentHitPoints
   @observable selected = false
   @observable burning = false
+  @observable hitBy = null
 
   constructor(game, options) {
     options = options || {}
-    this.id = ID
-    ID += 1
+    this.id = getAltId()
+    this.createdAt = Date.now()
     this.type = 'Unit' // should be overwritten
 
     // add a reference to game which avoids circular referencing
@@ -104,15 +104,28 @@ class Unit {
    * Makes the unit take damage.
    * Returns true if the unit is killed.
    */
-  @action takeDamage(amount) {
+  @action takeDamage(amount, type) {
     if (this.currentHitPoints <= 0) {
       return
     }
+    this.takeHit(type)
     this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
     if (this.currentHitPoints <= 0) {
       this.kill()
       return true
     }
+  }
+
+  @action heal(amount) {
+    this.currentHitPoints = Math.min(this.currentHitPoints + amount, this.maxHitPoints)
+  }
+
+  @action takeHit(type) {
+    this.hitBy = type
+  }
+
+  @action clearHit() {
+    this.hitBy = null
   }
 
   @action kill() {

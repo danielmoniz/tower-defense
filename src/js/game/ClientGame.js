@@ -31,7 +31,8 @@ class ClientGame extends Game {
    */
   @action selectNewTower(towerType) {
     if (!this.inProgress) { return }
-    const TowerType = this.UNIT_TYPES[towerType]
+    this.deselectAll()
+    const TowerType = this.TOWER_TYPES[towerType]
     this.placingTower = new TowerType(this)
     this.selectedEntity = this.placingTower
     this.renderer.queueRender(this.placingTower)
@@ -47,6 +48,7 @@ class ClientGame extends Game {
   }
 
   sendPlaceTower(tower) {
+    console.log('sending placed tower');
     return this.placeTower(tower)
   }
 
@@ -59,46 +61,19 @@ class ClientGame extends Game {
     return tower
   }
 
+  undoPlaceTower(tower) {
+    const refund = tower.purchaseCost
+    const success = this.removeTower(tower)
+    if (!success) { return false }
+    this.profit(refund)
+    console.log("Refunded", refund, "for undoing tower placement.");
+  }
+
+  sendSellTower(tower) {
+    this.sellTower(tower)
+  }
+
   spawnWaveEarly() {}
-
-
-  @action updateAll(data) {
-    console.log('Updating all');
-    this.enemies.clear()
-    this.addEnemies(data.enemies)
-    // Below is an attempt to update existing enemies instead of rebuilding them
-    // data.enemies.forEach((enemy) => {
-    //   if (enemy.id in this.enemiesById) {
-    //     this.buildEntityFromData(this.enemiesById[enemy.id], enemy)
-    //   } else {
-    //     this.addEnemy(enemy)
-    //   }
-    // })
-    // @TODO Handle case where the game has extra enemies the server did not?
-    // --> May not need to because enemies are spawned via waves (not player actions)
-
-    this.towers.clear()
-    this.addTowers(data.towers)
-
-    this.credits.current = data.credits
-    this.wave.setNumber(data.waveNumber)
-    this.inProgress = data.inProgress
-    this.control.run = data.control.run
-    if (this.inProgress && this.control.run) {
-      this.play()
-    } else {
-      this.pause()
-    }
-  }
-
-  /*
-   * Add and render enemies to the game given data describing those enemies.
-   */
-  addEnemies(enemies) {
-    enemies.forEach((enemyData) => {
-      this.addEnemy(enemyData)
-    })
-  }
 
   @action deselectPlacingTower() {
     if (this.placingTower) {
@@ -128,39 +103,164 @@ class ClientGame extends Game {
     this.selectedEntity = entity
   }
 
-  addEnemy(enemyData) {
-    if (enemyData.currentHitPoints <= 0) { return }
-    // @TODO Allow for other unit types\
-    const EnemyType = this.UNIT_TYPES['Tank']
-    let enemy = new EnemyType(this, enemyData.name)
-    this.buildEntityFromData(enemy, enemyData)
+  @action updateAll(data, serverTime) {
+    console.log('Updating all');
 
-    this.enemies.add(enemy)
-    const enemyTarget = this.getEnemyGoal(enemy)
-    enemy.setMoveTarget()
+    this.updateEnemies(data.enemies)
+    this.removeEnemies(data.enemies)
 
-    this.renderer.queueRender(enemy)
-    return enemy
+    this.updateTowers(data.towers)
+    this.removeTowers(data.towers, serverTime)
+
+    this.credits.current = data.credits
+    this.wave.setNumber(data.waveNumber)
+    this.inProgress = data.inProgress
+    this.control.run = data.control.run
+    if (this.inProgress && this.control.run) {
+      this.play()
+    } else {
+      this.pause()
+    }
   }
 
   /*
-   * Add and render towers to the game given data describing those enemies.
+   * Update existing enemies given data describing those enemies.
    */
-  addTowers(towers) {
-    towers.forEach((towerData) => {
-      const TowerType = this.UNIT_TYPES[towerData.name]
-      let tower = new TowerType(this, towerData.name)
-      this.buildEntityFromData(tower, towerData)
+  updateEnemies(enemiesData) {
+    enemiesData.forEach(this.updateEnemy.bind(this))
+  }
 
-      // @TODO Refactor setting of cooldown ticksPassed
-      tower.setCooldowns()
-      tower.selectTarget() // makes towers pick a (new) target, making it look more continuous
-      tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
-      tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
-      tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
-      this.towers.add(tower)
-      this.renderer.queueRender(tower)
+  /*
+   * Update/creates a single tower given data about that tower.
+   * Useful for when the game updates and wave spawning.
+   */
+  updateEnemy(enemyData) {
+    let enemy = this.enemies.byId[enemyData.id]
+
+    let enemyIsNew = false
+    if (!enemy) { // Create enemy if needed
+      enemyIsNew = true
+      enemy = this.createEnemy(enemyData.enemyType, enemyData.subtype)
+    }
+
+    this.buildEntityFromData(enemy, enemyData)
+
+    if (enemyIsNew) {
+      this.enemies.add(enemy)
+      enemy.setMoveTarget()
+      this.renderer.queueRender(enemy)
+    }
+  }
+
+  removeEnemies(enemiesData) {
+    const enemiesToRemove = this.getRemovableUnits(enemiesData, this.enemies)
+    enemiesToRemove.forEach((enemy, i) => {
+      enemy.destroy()
+      // NOTE: Do NOT remove enemy from this.enemies. It will not derender.
     })
+  }
+
+  /*
+   * Update existing towers given data describing those towers.
+   */
+  updateTowers(towersData) {
+    towersData.forEach(this.updateTower.bind(this))
+  }
+
+  /*
+   * Update/creates a single tower given data about that tower.
+   */
+  updateTower(towerData) {
+    let tower = this.towers.byId[towerData.id]
+
+    let towerIsNew = false
+    if (!tower) { // Create tower if needed
+      // console.log('Tower is new. It has ID', towerData.id);
+      towerIsNew = true
+      const TowerType = this.TOWER_TYPES[towerData.name]
+      tower = new TowerType(this, towerData.name)
+    }
+    // console.log(towerData);
+    this.buildEntityFromData(tower, towerData)
+
+    if (towerIsNew) {
+      this.addTower(tower)
+    }
+
+    this.updateTowerCooldowns(tower, towerData)
+    this.setTowerTarget(tower)
+  }
+
+  addTower(tower) {
+    const placed = super.addTower(tower)
+    if (!placed) { return false }
+    this.renderer.queueRender(tower)
+    return tower
+  }
+
+  updateTowerCooldowns(tower, towerData) {
+    // @TODO Refactor setting of cooldown ticksPassed
+    tower.setCooldowns()
+    tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
+    tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
+    tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
+  }
+
+  setTowerTarget(tower) {
+    if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
+      tower.setTarget(this.enemies.byId[tower.target.id])
+    } else {
+      tower.selectTarget()
+    }
+  }
+
+  removeTowers(towersData, serverTime) {
+    const clientTime = Date.now()
+    const towersToRemove = this.getRemovableUnits(towersData, this.towers)
+    towersToRemove.forEach((tower, i) => {
+      const towerIsNew = tower.createdAt > serverTime
+      if (towerIsNew) {
+        console.log('Tower is new! Cannot remove. ID:', tower.id);
+        return
+      }
+      this.removeTower(tower, i)
+    })
+  }
+
+  removeTower(towerData, towerIndex) {
+    const tower = this.towers.byId[towerData.id]
+    if (!tower) { return }
+    // @FIXME @TODO Recalculate pathing - there should be a reset/recalculate weights function (at least for a specific area)
+    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+    if (towerIndex !== undefined) {
+      this.towers.remove(towerIndex)
+    } else {
+      this.towers.removeByValue(tower)
+    }
+    tower.destroy()
+    return true
+  }
+
+  /*
+   * Returns an array of units (ie. enemies or towers) whose IDs are
+   * not in the provided unitsData. That is, they should be removed.
+   */
+  getRemovableUnits(unitsData, units) {
+    const removableUnits = []
+
+    const serverUnitsById = {}
+    unitsData.forEach((unitData) => {
+      serverUnitsById[unitData.id] = unitData
+    })
+
+    for (let i = units.all.length - 1; i >= 0; i--) {
+      const unit = units.all[i]
+      if (!(unit.id in serverUnitsById)) {
+        removableUnits.push(unit)
+      }
+    }
+
+    return removableUnits
   }
 
 }

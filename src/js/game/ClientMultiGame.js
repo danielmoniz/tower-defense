@@ -44,6 +44,11 @@ class ClientMultiGame extends ClientGame {
     this.emitter.placeTower(placedTower)
   }
 
+  sendSellTower(tower) {
+    super.sendSellTower(tower)
+    this.emitter.sellTower(tower)
+  }
+
   newGame() {
     this.emitter.addNewGame()
   }
@@ -58,7 +63,7 @@ class ClientMultiGame extends ClientGame {
 
   acceptSpawnedWave(newEnemies) {
     this.wave.nextWave()
-    this.addEnemies(newEnemies)
+    this.updateEnemies(newEnemies)
   }
 
   setTerrain(terrainData) {

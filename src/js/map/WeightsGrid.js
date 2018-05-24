@@ -31,6 +31,20 @@ export default class WeightsGrid extends Grid {
     this.recalculate(gridLocation, gridWidth, gridHeight)
   }
 
+  /*
+   * Removes an obstacle from the weights grid. Simply sets relevant values to 0.
+   * Takes a position, a width, and a height.
+   * @NOTE This method is very naive and simply resets the weights to ones.
+   * @TODO Will need to be updated (or removed) for soft terrain.
+   */
+  removeObstacle(gridLocation, gridWidth, gridHeight) {
+    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
+      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
+        this.set(x, y, 1)
+      }
+    }
+  }
+
   recalculate(gridLocation, gridWidth, gridHeight) {
     for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
       for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
@@ -40,6 +54,9 @@ export default class WeightsGrid extends Grid {
   }
 
   isAreaFree(gridLocation, gridWidth, gridHeight) {
+    if ([gridLocation, gridWidth, gridHeight].indexOf(undefined) !== -1) {
+      throw TypeError('Must supply real values to isAreaFree().')
+    }
     return this.terrain.isAreaFree(gridLocation, gridWidth, gridHeight) &&
            this.tower.isAreaFree(gridLocation, gridWidth, gridHeight)
   }

@@ -5,15 +5,25 @@ import Unit from './Unit'
 import { GAME_REFRESH_RATE } from '../appConstants'
 
 class Enemy extends Unit {
-  // defaults (observables)
+  // default observables
   @observable speed = 100 // pixels per second
   @observable completed = false
   @observable killValue // should be overridden
 
-  constructor(game, options) {
+  constructor(game, enemyData, gameLevel, options) {
     super(game, options)
     this.movementId = undefined
     this.type = 'Enemy'
+    this.gameLevel = gameLevel
+
+    this.setAttributes(enemyData)
+    this.currentHitPoints = this.maxHitPoints
+  }
+
+  setAttributes(enemyAttributes) {
+    for (let attribute of Object.keys(enemyAttributes)) {
+      this[attribute] = enemyAttributes[attribute]
+    }
   }
 
   /*
@@ -30,7 +40,9 @@ class Enemy extends Unit {
    */
   @action setMoveTarget() {
     this.act = (nextLocation, terrainDifficulty) => {
+      this.clearHit()
       this.moveXAndY(nextLocation.x, nextLocation.y, terrainDifficulty)
+      this.handleEffects()
     }
     if (this.movementId) { // if already moving, continue in a new direction
       this.startMovement()
@@ -61,6 +73,17 @@ class Enemy extends Unit {
     // round current position coordinate to two decimals
     this.x = Math.round((this.x + xMovement) * 100) / 100
     this.y = Math.round((this.y + yMovement) * 100) / 100
+  }
+
+  handleEffects() {
+    this.regenerate()
+  }
+
+  regenerate() {
+    if (!this.regenerates) { return }
+    const ticksPerSecond = 1000 / GAME_REFRESH_RATE
+    const hpToHeal = Math.sqrt(this.maxHitPoints) * this.regenerates / ticksPerSecond
+    this.heal(hpToHeal)
   }
 
   @action complete() {

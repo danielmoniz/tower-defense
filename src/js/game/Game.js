@@ -9,11 +9,12 @@ import Unit from '../units/Unit'
 import Cannon from '../units/Cannon'
 import Flamethrower from '../units/Flamethrower'
 import MachineGun from '../units/MachineGun'
-import Tank from '../units/Tank'
+import Enemy from '../units/Enemy'
 
 import Pathing from '../map/Pathing'
 import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
 import { setCorrectingInterval } from '../utility/time'
+import { scaleEnemy } from '../units/Enemies'
 
 
 export default class Game {
@@ -43,7 +44,7 @@ export default class Game {
     this.emitter = emitter
 
 
-    this.UNIT_TYPES = { Tank, Cannon, Flamethrower, MachineGun }
+    this.TOWER_TYPES = { Cannon, Flamethrower, MachineGun }
 
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
@@ -202,9 +203,9 @@ export default class Game {
     return newEnemies
   }
 
-  createEnemy(type, subtype) {
-    const UnitClass = this.UNIT_TYPES[type]
-    return new UnitClass(this, subtype)
+  createEnemy(enemyData) {
+    const scaledEnemyData = scaleEnemy(enemyData, this.wave.number)
+    return new Enemy(this, scaledEnemyData)
   }
 
   placeWaveEnemies(newEnemies) {
@@ -242,13 +243,14 @@ export default class Game {
     const placingTower = tower || this.placingTower
     if (!placingTower) { return }
 
-    const TowerType = this.UNIT_TYPES[placingTower.name]
+    const TowerType = this.TOWER_TYPES[placingTower.name]
     const finalTower = new TowerType(this)
     finalTower.jumpTo(placingTower.x, placingTower.y)
+    if (tower && tower.id) { finalTower.id = tower.id }
+    // @TODO Should probably be copying over all stats, not just id and location
 
     if (finalTower && this.canAfford(finalTower)) {
-      const placed = this.pathHelper.addTowerObstacle(
-        finalTower.getTopLeft(), finalTower.width, finalTower.height)
+      const placed = this.addTower(finalTower)
       if (!placed) {
         // @TODO Add message that says tower cannot be placed to block enemies
         console.log("Tower placement not allowed! You cannot block the goal or place on top of existing towers.");
@@ -256,11 +258,26 @@ export default class Game {
       }
 
       this.buyTower(finalTower)
-      finalTower.place()
-      finalTower.show()
-      this.towers.add(finalTower)
       return finalTower
     }
+    console.log("Tower not placed - can't afford or no finalTower exists.");
+  }
+
+  addTower(tower) {
+    const placed = this.pathHelper.addTowerObstacle(
+      tower.getTopLeft(), tower.width, tower.height)
+    if (!placed) { return false }
+
+    tower.place()
+    tower.show()
+    this.towers.add(tower)
+    return tower
+  }
+
+  @action sellTower(tower) {
+    this.profit(tower.getSellValue())
+    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+    tower.destroy()
   }
 
   endGame() {
@@ -322,8 +339,9 @@ export default class Game {
   // GAME UPDATE METHODS ---------------------
 
   buildEntityFromData(entity, data) {
+    const attrsToIgnore = ['target', 'cooldown', 'selected']
     Object.keys(data).forEach((datum) => {
-      if (['target', 'cooldown'].indexOf(datum) !== -1) { return } // ignore certain keys
+      if (attrsToIgnore.indexOf(datum) !== -1) { return } // ignore certain keys
       entity.setAttr(datum, data[datum])
     })
     return entity
@@ -331,6 +349,16 @@ export default class Game {
 
   // WEB FUNCTIONS --------------------------
   // These functions are web related - they are shared between ClientMultiGame and ServerGame.
+
+  @action receiveSellTower(towerId) {
+    const tower = this.towers.byId[towerId]
+    if (!tower) {
+      console.log("No tower with id", towerId);
+      return
+    }
+    this.sellTower(tower)
+    return true
+  }
 
   @action adjustGameSpeed(multiplier) {
     // console.log('Setting game speed to:', multiplier);
