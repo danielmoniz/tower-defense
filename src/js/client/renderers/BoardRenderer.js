@@ -161,31 +161,44 @@ export default class BoardRenderer {
   }
 
   renderTerrain(game) {
-    const terrainColor = {
-      normal: 0xFFFFFF,
+    const terrain = game.pathHelper.weights.terrain,
+          terrainColor = {
       crater: 0xCECECE,
       ridge: 0xE5E5E5,
       obstacle: 0x000000,
     }
-    let terrainContainer = new PIXI.Container()
+
+    let terrainContainer, terrainBackground
+    if (terrain.rendered === undefined) {
+      terrainContainer = new PIXI.Container()
+      terrainBackground = new PIXI.Graphics()
+      terrain.rendered = {
+        container: terrainContainer,
+        background: terrainBackground,
+      }
+      terrainContainer.addChild(terrainBackground)
+      terrainContainer.parentLayer = this.mapLayer
+      this.app.stage.addChild(terrainContainer)
+    } else {
+      terrainContainer = terrain.rendered.container
+      terrainBackground = terrain.rendered.background
+    }
+
+    terrainBackground.clear()
     for (let x = 0; x < game.width / GRID_SIZE; x++) {
       for (let y = 0; y < game.height / GRID_SIZE; y++) {
-        let terrainBackground = new PIXI.Graphics()
-        terrainBackground.position = {
+        let type = terrain.typeAt(x, y)
+        if (type === "normal") continue
+
+        let position = {
           x: GRID_SIZE * x,
           y: GRID_SIZE * y,
         }
-        terrainBackground.beginFill(
-          terrainColor[game.pathHelper.weights.terrain.typeAt(x, y)])
-        terrainBackground.drawRect(0, 0, GRID_SIZE, GRID_SIZE)
+        terrainBackground.beginFill(terrainColor[type])
+        terrainBackground.drawRect(position.x, position.y, GRID_SIZE, GRID_SIZE)
         terrainBackground.endFill()
-        terrainContainer.addChild(terrainBackground)
       }
     }
-
-    terrainContainer.parentLayer = this.mapLayer
-
-    this.app.stage.addChild(terrainContainer)
   }
 
   addExit(game) {

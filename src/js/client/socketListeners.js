@@ -47,6 +47,7 @@ function setUpListeners(game, emitter) {
   socket.on('join existing game', (gameData) => {
     game.start()
     game.updateAll(gameData)
+    game.setTerrain(gameData.terrain)
     console.log('Joined existing game');
   })
 
