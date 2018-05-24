@@ -18,6 +18,8 @@ export default class BoardRenderer {
       resolution: 1,
     })
 
+    this.loadUnitAssets()
+
     this.app.view.id = "game-viewport"
     const displayBox = document.querySelector("#display-box")
     displayBox.appendChild(this.app.view)
@@ -35,8 +37,7 @@ export default class BoardRenderer {
     this.app.stage.addChild(this.backgroundLayer)
     this.app.stage.addChild(this.unitsLayer)
     this.app.stage.addChild(this.menuLayer)
-    
-    this.loadUnitAssets()
+
     this.setupGameStateDisplay(game)
     this.setupInfoPanel(game)
   }
@@ -181,6 +182,9 @@ export default class BoardRenderer {
         terrainContainer.addChild(terrainBackground)
       }
     }
+
+    terrainContainer.parentLayer = this.mapLayer
+
     this.app.stage.addChild(terrainContainer)
   }
 
