@@ -13,7 +13,9 @@ class SoloGame extends ClientGame {
   }
 
   start() {
-    this.startSolo()
+    super.start()
+    this.pathHelper.generateTerrain()
+    this.renderer.board.renderTerrain(this)
   }
 
   reset() {

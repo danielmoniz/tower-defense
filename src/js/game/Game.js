@@ -74,18 +74,6 @@ export default class Game {
     this.wave.initializeWaveTimer(GAME_REFRESH_RATE)
   }
 
-  startSolo() {
-    if (this.inProgress) { return }
-    this.inProgress = true
-    this.reset()
-    this.play()
-    this.wave.initializeWaveTimer(GAME_REFRESH_RATE)
-    this.pathHelper.generateTerrain()
-    this.renderer.tick()
-    this.renderer.board.renderTerrain(this)
-    this.renderer.board.startGame(this)
-  }
-
   @action reset() {
     // @TODO Likely needs to be updated for proper New Game behaviour (terrain, etc.)
     this.wave.reset()
