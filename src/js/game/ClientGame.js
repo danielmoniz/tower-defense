@@ -114,6 +114,13 @@ class ClientGame extends Game {
     this.selectedEntity = entity
   }
 
+  setSelectedTowerTarget(target) {
+    const tower = this.selectedEntity
+    if (!target || !tower || tower.type !== 'Tower') { return }
+    tower.setTarget(target)
+    console.log('Set tower target!');
+  }
+
   @action updateAll(data, serverTime) {
     console.log('Updating all');
 
