@@ -9,8 +9,6 @@ export default class UnitRenderer {
     this.board = board
     this.actions = gameActions
     this.registerEmitter = registerEmitter
-    // this.registerEmitterCallback = registerEmitter.persistent
-    // this.registerOneTimeEmitterCallback = registerEmitter.oneTime
   }
 
   render(unit) {
