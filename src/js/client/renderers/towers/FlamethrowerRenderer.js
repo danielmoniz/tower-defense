@@ -71,9 +71,9 @@ export default class FlamethrowerRenderer extends TowerRenderer {
   }
 
   getFlameEmitter(container, unit) {
-    let coneWidth = 10
+    let coneWidth = 20
     if (unit.coneWidth) {
-      coneWidth = unit.coneWidth
+      coneWidth = unit.coneWidth - 10 // account for width of flame image
     }
     // @TODO Base the width of particle spray on the tower's coneWidth property.
     // The width of the flame image is also relevant to the size of the
