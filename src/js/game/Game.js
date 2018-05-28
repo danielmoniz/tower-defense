@@ -328,7 +328,7 @@ export default class Game {
 
     tower.destroy()
     // update pathing - allows for new tower placement
-    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+    this.pathHelper.removeTowerObstacle(tower.getTopLeft(), tower.width, tower.height)
     this.addTower(newTower)
     this.spend(upgradeInfo.cost)
     return newTower
