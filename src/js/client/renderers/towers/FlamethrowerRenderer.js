@@ -34,7 +34,7 @@ export default class FlamethrowerRenderer extends TowerRenderer {
     flameEmitter.updateOwnerPos(unit.width / 2, unit.height / 2)
     flameEmitter.updateSpawnPos(gunOptions.gunLength, gunOptions.gunHeight / 2)
 
-    this.registerEmitterCallback(() => {
+    this.registerEmitter.persistent(() => {
       flameEmitter.update(0.005) // higher numbers mean more/faster fire
     })
 
