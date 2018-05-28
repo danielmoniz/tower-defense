@@ -64,15 +64,15 @@ class Cooldown {
     if (this.softReset) {
       this.ticksPassed -= this.cooldownLength
     } else {
-      this.ticksPassed = 0
+      this.reset()
     }
   }
 
   /*
-   * Alias for coolDown() function.
+   * Restarts the cooldown - ensures the ticks pass are set to zero.
    */
   reset() {
-    this.coolDown()
+    this.setTicksPassed(0)
   }
 
   /*
