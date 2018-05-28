@@ -105,6 +105,7 @@ class GameServer {
     return {
       enemies: game.enemies.all,
       towers: game.towers.all,
+      terrain: game.pathHelper.getTerrain(),
       credits: game.credits.current,
       waveNumber: game.wave.number,
       gameSpeedMultiplier: performance,

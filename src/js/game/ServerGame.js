@@ -26,6 +26,11 @@ class ServerGame extends Game {
     return newEnemies
   }
 
+  sendTerrain() {
+    const terrainData = this.pathHelper.getTerrain()
+    this.emitter.sendTerrain(this.serverInfo.gameNumber, terrainData)
+  }
+
   sendPerformance() {
     this.actions.updatePerformance(
       this.serverInfo.gameNumber,
@@ -37,6 +42,12 @@ class ServerGame extends Game {
   gameLogic() {
     super.gameLogic()
     this.checkPerformance()
+  }
+
+  start() {
+    super.start()
+    this.pathHelper.generateTerrain()
+    this.sendTerrain()
   }
 
   pause() {

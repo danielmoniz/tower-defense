@@ -1,47 +1,45 @@
-
 import Grid from './Grid'
+import TerrainGrid from './TerrainGrid'
+import TowerGrid from './TowerGrid'
 
 export default class WeightsGrid extends Grid {
   constructor(tilesWide, tilesHigh) {
-    // this.grid = new Grid(tilesWide, tilesHigh)
     super(tilesWide, tilesHigh, 1)
+    this.terrain = new TerrainGrid(tilesWide, tilesHigh)
+    this.tower = new TowerGrid(tilesWide, tilesHigh)
+    this.compute()
   }
 
-  randomize(wallProbability = 0.1) {
-    for (let i = 0; i < this.tilesWide; i++) {
-      for (let j = 0; j < this.tilesHigh; j++) {
-        let random = Math.random()
-        if (random < wallProbability) {
-          this.set(i, j, 0)
-        } else {
-          this.set(i, j, 1)
-        }
-      }
-    }
+  compute() {
+    this.recalculate({x: 0, y: 0}, this.tilesWide, this.tilesHigh)
   }
 
-  /*
-   * Adds an obstacle onto the weights grid. Simply sets relevant values to 0.
-   * Takes a position, a width, and a height.
-   */
-  addObstacle(gridLocation, gridWidth, gridHeight) {
+  reset() {
+    super.reset()
+    this.terrain.reset()
+    this.tower.reset()
+    this.compute()
+  }
+
+  addTerrainObstacle(gridLocation, gridWidth, gridHeight) {
+    this.terrain.addObstacle(gridLocation, gridWidth, gridHeight)
+    this.recalculate(gridLocation, gridWidth, gridHeight)
+  }
+
+  addTowerObstacle(gridLocation, gridWidth, gridHeight) {
+    this.tower.addObstacle(gridLocation, gridWidth, gridHeight)
+    this.recalculate(gridLocation, gridWidth, gridHeight)
+  }
+
+  removeTowerObstacle(gridLocation, gridWidth, gridHeight) {
+    this.tower.removeObstacle(gridLocation, gridWidth, gridHeight)
+    this.recalculate(gridLocation, gridWidth, gridHeight)
+  }
+
+  recalculate(gridLocation, gridWidth, gridHeight) {
     for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
       for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        this.set(x, y, 0)
-      }
-    }
-  }
-
-  /*
-   * Removes an obstacle from the weights grid. Simply sets relevant values to 0.
-   * Takes a position, a width, and a height.
-   * @NOTE This method is very naive and simply resets the weights to ones.
-   * @TODO Will need to be updated (or removed) for soft terrain.
-   */
-  removeObstacle(gridLocation, gridWidth, gridHeight) {
-    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
-      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        this.set(x, y, 1)
+        this.set(x, y, this.tower.at(x, y) && this.terrain.difficultyAt(x, y))
       }
     }
   }
@@ -50,27 +48,21 @@ export default class WeightsGrid extends Grid {
     if ([gridLocation, gridWidth, gridHeight].indexOf(undefined) !== -1) {
       throw TypeError('Must supply real values to isAreaFree().')
     }
-    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
-      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        if (this.at(x, y) === 0) {
-          return false
-        }
-      }
-    }
-    return true
+    return this.terrain.isAreaFree(gridLocation, gridWidth, gridHeight) &&
+           this.tower.isAreaFree(gridLocation, gridWidth, gridHeight)
   }
 
-  /*
-   * Adds invisible wall in the middle of the map. Enemies have to go above
-   * or below it.
-   */
-  testTerrainWall() {
-    const x = Math.floor(this.tilesWide / 2)
-    const startY = Math.floor(this.tilesHigh * (1 / 4))
-    const endY = Math.floor(this.tilesHigh * (3 / 4))
-
-    for (let y = startY; y < endY; y++) {
-      this.set(x, y, 0)
+  copyValues() {
+    return {
+      values: super.copyValues(),
+      terrainValues: this.terrain.copyValues(),
+      towerValues: this.tower.copyValues(),
     }
+  }
+
+  setValues(newValues) {
+    this.values = newValues.values
+    this.terrain.values = newValues.terrainValues
+    this.tower.values = newValues.towerValues
   }
 }

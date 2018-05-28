@@ -21,14 +21,18 @@ export default class GameRenderer {
     this.board = new BoardRenderer()
     this.events = new GameEvents()
 
+    const registerEmitter = {
+      persistent: this.registerEmitter.bind(this),
+      oneTime: this.registerOneTimeEmitter.bind(this),
+    }
     // @TODO This system is clearly horrendous. Find a way to do this dynamically.
-    this.unitRenderer = new UnitRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
-    this.towerRenderer = new TowerRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
-    this.enemyRenderer = new EnemyRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
-    this.cannonRenderer = new CannonRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
-    this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
-    this.machineGunRenderer = new MachineGunRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
-    this.plasmaBatteryRenderer = new PlasmaBatteryRenderer(this.board, actions, this.registerEmitter.bind(this), this.registerOneTimeEmitter.bind(this))
+    this.unitRenderer = new UnitRenderer(this.board, actions, registerEmitter)
+    this.towerRenderer = new TowerRenderer(this.board, actions, registerEmitter)
+    this.enemyRenderer = new EnemyRenderer(this.board, actions, registerEmitter)
+    this.cannonRenderer = new CannonRenderer(this.board, actions, registerEmitter)
+    this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, registerEmitter)
+    this.machineGunRenderer = new MachineGunRenderer(this.board, actions, registerEmitter)
+    this.plasmaBatteryRenderer = new PlasmaBatteryRenderer(this.board, actions, registerEmitter)
 
     this.towerRenderers = {
       Tower: this.towerRenderer, // default?
@@ -49,6 +53,10 @@ export default class GameRenderer {
 
   createGameBoard(game) {
     this.board.setupGameBox(game)
+  }
+
+  startGame() {
+    this.board.startGame()
   }
 
   queueRender(entity) {
@@ -146,7 +154,6 @@ export default class GameRenderer {
     }
   }
 
-  // @TODO Have a way of removing emitters for (say) removed towers
   registerEmitter(emitterCallback) {
     this.emitterCallbacks.push(emitterCallback)
   }

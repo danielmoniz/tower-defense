@@ -76,8 +76,8 @@ export default class Game {
   }
 
   @action reset() {
+    // @TODO Likely needs to be updated for proper New Game behaviour (terrain, etc.)
     this.wave.reset()
-    this.pathHelper.weights.reset()
     this.lives = 20
     this.credits.current = this.credits.start
   }
@@ -145,15 +145,14 @@ export default class Game {
         continue
       }
       if (!unit.disabled && unit.act) {
-        // @TODO Get terrain type and pass it to unit (for speed/cover purposes)
         const nextTargetLocation = this.pathHelper.getDirection(unit.x, unit.y)
         const adjustedTargetLocation = {
           x: nextTargetLocation.x + Math.floor(GRID_SIZE / 2),
           y: nextTargetLocation.y + Math.floor(GRID_SIZE / 2),
         }
 
-        unit.act(adjustedTargetLocation)
-        // unit.jumpTo(0, 0)
+        const currentTerrain = this.pathHelper.getTerrainAt(unit.x, unit.y)
+        unit.act(adjustedTargetLocation, currentTerrain)
       }
     }
   }
@@ -259,7 +258,7 @@ export default class Game {
   }
 
   addTower(tower) {
-    const placed = this.pathHelper.addObstacle(
+    const placed = this.pathHelper.addTowerObstacle(
       tower.getTopLeft(), tower.width, tower.height)
     if (!placed) { return false }
 
@@ -277,7 +276,7 @@ export default class Game {
 
   @action sellTower(tower) {
     this.profit(tower.getSellValue())
-    this.pathHelper.removeObstacle(tower.getTopLeft(), tower.width, tower.height)
+    this.pathHelper.removeTowerObstacle(tower.getTopLeft(), tower.width, tower.height)
     tower.destroy()
   }
 

@@ -24,13 +24,41 @@ export default class Pathing {
     this.compute()
   }
 
+  reset() {
+    this.weights.reset()
+    this.compute()
+  }
+
+  // @TERRAIN
+  generateTerrain() {
+    this.weights.terrain.generateTerrain()
+    this.weights.compute()
+    this.compute()
+  }
+
+  setTerrain(terrainData) {
+    this.weights.terrain.setTerrain(terrainData)
+    this.weights.compute()
+    this.compute()
+  }
+
+  getTerrain() {
+    return this.weights.terrain.values
+  }
+
+  getTerrainAt(x, y) {
+    const location = { x: x, y: y}
+    const gridLocation = this.calculateGridLocation(location)
+    return this.weights.terrain.difficultyAt(gridLocation.x, gridLocation.y)
+  }
+
   /*
    * Attempts to add an obstacle to the map. This involves updating both
    * the weights and pathLengths grids.
    * If the obstacle is not valid, will not update anything.
    * Returns true or false based on success.
    */
-  addObstacle(location, width, height) {
+  addTowerObstacle(location, width, height) {
     if (!this.isAreaFree(location, width, height)) {
       return false
     }
@@ -44,7 +72,7 @@ export default class Pathing {
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
 
-    const { allowed, newWeights, newPathLengths } = this.checkObstacleValidity(gridLocation, gridWidth, gridHeight)
+    const { allowed, newWeights, newPathLengths } = this.checkTowerObstacleValidity(gridLocation, gridWidth, gridHeight)
     if (!allowed) { return false }
 
     this.weights.setValues(newWeights.copyValues())
@@ -55,12 +83,12 @@ export default class Pathing {
     return true
   }
 
-  removeObstacle(location, width, height) {
+  removeTowerObstacle(location, width, height) {
     const gridLocation = this.calculateGridLocation(location)
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
 
-    this.weights.removeObstacle(gridLocation, gridWidth, gridHeight)
+    this.weights.removeTowerObstacle(gridLocation, gridWidth, gridHeight)
     this.compute()
   }
 
@@ -68,10 +96,10 @@ export default class Pathing {
    * Determines whether or not an obstacle would be blocking the pathfinding.
    * Returns an object of information about the obstacle placement.
    */
-  checkObstacleValidity(gridLocation, gridWidth, gridHeight) {
+  checkTowerObstacleValidity(gridLocation, gridWidth, gridHeight) {
     const testWeights = new WeightsGrid(this.tilesWide, this.tilesHigh)
-    testWeights.values = this.weights.copyValues() // copy existing weights
-    testWeights.addObstacle(gridLocation, gridWidth, gridHeight)
+    testWeights.setValues(this.weights.copyValues()) // copy existing weights
+    testWeights.addTowerObstacle(gridLocation, gridWidth, gridHeight)
     const testPathLengths = new PathsGrid(this.tilesWide, this.tilesHigh)
     testPathLengths.calculate(testWeights, this.endGoal.x, this.endGoal.y)
 
@@ -228,10 +256,6 @@ export default class Pathing {
     }
 
     return diagonals
-  }
-
-  degreesToRadians(degrees) {
-    return degrees * Math.PI / 180
   }
 
   calculateGridDimensions() {

@@ -2,6 +2,7 @@
 import { autorun } from 'mobx'
 
 import UnitRenderer from '../UnitRenderer'
+import { getBurningEmitter, getShellExplosionEmitter } from '../emitters'
 
 export default class EnemyRenderer extends UnitRenderer {
 
@@ -37,8 +38,9 @@ export default class EnemyRenderer extends UnitRenderer {
     autorun(() => {
       if (!unit.hitBy) { return }
       if (unit.hitBy === 'shell') {
-        let shellExplosion = this.getShellExplosionEmitter(unit, { x: unit.x, y: unit.y })
-        this.registerOneTimeEmitterCallback(shellExplosion)
+        let shellExplosion = getShellExplosionEmitter(
+          unit, this.board.effectsLayer, { x: unit.x, y: unit.y })
+        this.registerEmitter.oneTime(shellExplosion)
       } else if (unit.hitBy === 'fire') { // do nothing, because burning will trigger
       } else if (unit.hitBy === 'burning') { // do nothing, because burning will trigger
       } else {
@@ -63,8 +65,8 @@ export default class EnemyRenderer extends UnitRenderer {
     autorun(() => {
       // only allow burning if unit is still alive
       if (unit.burning && !unit.removeMe) {
-        burningEmitter = this.getBurningEmitter(unit, container)
-        this.registerOneTimeEmitterCallback(burningEmitter)
+        burningEmitter = getBurningEmitter(unit, container)
+        this.registerEmitter.oneTime(burningEmitter)
       } else {
         if (!burningEmitter) { return }
         burningEmitter.emit = false

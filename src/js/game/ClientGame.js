@@ -23,6 +23,7 @@ class ClientGame extends Game {
   start() {
     super.start()
     this.renderer.tick()
+    this.renderer.board.startGame(this)
   }
 
   /*
@@ -239,15 +240,11 @@ class ClientGame extends Game {
    * Updates the burning cooldown for a unit.
    */
   updateBurningCooldown(unit, data) {
-    // @TODO Refactor this.
     if (!data.burningInfo.cooldown) { return }
-
-    if (unit.burningInfo.cooldown) {
-      unit.burningInfo.cooldown.setTicksPassed(data.burningInfo.cooldown.ticksPassed)
-    } else {
+    if (!unit.burningInfo.cooldown) {
       unit.setBurningCooldown(data.burningInfo.cooldown.cooldownLength)
-      unit.burningInfo.cooldown.setTicksPassed(data.burningInfo.cooldown.ticksPassed)
     }
+    unit.burningInfo.cooldown.setTicksPassed(data.burningInfo.cooldown.ticksPassed)
   }
 
   setTowerTarget(tower) {

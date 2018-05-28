@@ -29,8 +29,8 @@ export default class PlasmaBattery extends Tower {
 
     this.explosionRadius = 100 // pixels
 
-    this.width = GRID_SIZE * 3
-    this.height = GRID_SIZE * 3
+    this.width = GRID_SIZE * 4
+    this.height = GRID_SIZE * 4
   }
 
   @action attack() {
@@ -48,18 +48,18 @@ export default class PlasmaBattery extends Tower {
     // damage enemies around target within this.explosionRadius
     const enemiesInExplosionData = this.findEnemiesInRadius(this.explosionRadius, this.target)
     enemiesInExplosionData.forEach((enemyData) => {
-      // target hit by 'shell', others hit by 'explosion'
+      // target hit directly; others hit by 'explosion'
       if (enemyData.enemy === this.target) {
         this.damageEnemy(this.target)
       } else {
         this.damageEnemyWithExplosion(enemyData.enemy, enemyData.distance)
       }
-      // enemy.ignite()
     })
-
-    // @TODO Should damage units decreasingly by distance from explosion
   }
 
+  /*
+   * @TODO Use a quadtree to more efficiently find enemies in radius
+   */
   findEnemiesInRadius(radius, location) {
     const enemies = []
     this.game.enemies.all.forEach((enemy) => {
