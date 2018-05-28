@@ -31,18 +31,9 @@ export default class WeightsGrid extends Grid {
     this.recalculate(gridLocation, gridWidth, gridHeight)
   }
 
-  /*
-   * Removes an obstacle from the weights grid. Simply sets relevant values to 0.
-   * Takes a position, a width, and a height.
-   * @NOTE This method is very naive and simply resets the weights to ones.
-   * @TODO Will need to be updated (or removed) for soft terrain.
-   */
-  removeObstacle(gridLocation, gridWidth, gridHeight) {
-    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
-      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
-        this.set(x, y, 1)
-      }
-    }
+  removeTowerObstacle(gridLocation, gridWidth, gridHeight) {
+    this.tower.removeObstacle(gridLocation, gridWidth, gridHeight)
+    this.recalculate(gridLocation, gridWidth, gridHeight)
   }
 
   recalculate(gridLocation, gridWidth, gridHeight) {

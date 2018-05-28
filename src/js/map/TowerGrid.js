@@ -17,6 +17,14 @@ export default class TowerGrid extends Grid {
     }
   }
 
+  removeObstacle(gridLocation, gridWidth, gridHeight) {
+    for (let x = gridLocation.x; x < gridLocation.x + gridWidth; x++) {
+      for (let y = gridLocation.y; y < gridLocation.y + gridHeight; y++) {
+        this.set(x, y, 1)
+      }
+    }
+  }
+
   isAreaFree(gridLocation, gridWidth, gridHeight) {
     if ([gridLocation, gridWidth, gridHeight].indexOf(undefined) !== -1) {
       throw TypeError('Must supply real values to isAreaFree().')

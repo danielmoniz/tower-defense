@@ -83,12 +83,12 @@ export default class Pathing {
     return true
   }
 
-  removeObstacle(location, width, height) {
+  removeTowerObstacle(location, width, height) {
     const gridLocation = this.calculateGridLocation(location)
     const gridWidth = this.convertToGridValue(width)
     const gridHeight = this.convertToGridValue(height)
 
-    this.weights.removeObstacle(gridLocation, gridWidth, gridHeight)
+    this.weights.removeTowerObstacle(gridLocation, gridWidth, gridHeight)
     this.compute()
   }
 
