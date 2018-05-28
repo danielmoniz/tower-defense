@@ -154,7 +154,6 @@ export default class GameRenderer {
     }
   }
 
-  // @TODO Have a way of removing emitters for (say) removed towers
   registerEmitter(emitterCallback) {
     this.emitterCallbacks.push(emitterCallback)
   }
