@@ -232,10 +232,6 @@ class Unit {
     return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
   }
 
-  degreesToRadians(degrees) {
-    return degrees * Math.PI / 180
-  }
-
 }
 
 export default Unit

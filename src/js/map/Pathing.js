@@ -258,10 +258,6 @@ export default class Pathing {
     return diagonals
   }
 
-  degreesToRadians(degrees) {
-    return degrees * Math.PI / 180
-  }
-
   calculateGridDimensions() {
     this.tilesWide = this.convertToGridValue(this.dimensions.width)
     this.tilesHigh = this.convertToGridValue(this.dimensions.height)

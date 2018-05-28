@@ -4,6 +4,7 @@ import { observable, computed, action, autorun } from 'mobx'
 import { GRID_SIZE, GAME_REFRESH_RATE } from '../appConstants'
 import Tower from './Tower'
 import Cooldown from '../Cooldown'
+import { degreesToRadians } from '../utility/angle'
 
 export default class Flamethrower extends Tower {
 
@@ -61,7 +62,7 @@ export default class Flamethrower extends Tower {
 
   findEnemiesInCone() {
     // get tower's current facing angle
-    const coneAngle = this.degreesToRadians(this.coneWidth)
+    const coneAngle = degreesToRadians(this.coneWidth)
     const towerFacingAngle = this.getAngleToPoint(this.target.xFloor, this.target.yFloor)
     const enemies = []
 
