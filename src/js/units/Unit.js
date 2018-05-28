@@ -3,6 +3,7 @@ import { observable, computed, action, autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../appConstants'
 import getAltId from '../utility/altId'
+import Cooldown from '../Cooldown'
 
 class Unit {
   // defaults (observables)
@@ -18,6 +19,10 @@ class Unit {
   @observable currentHitPoints
   @observable selected = false
   @observable burning = false
+  @observable burningInfo = {
+    killProfitMultiplier: 1,
+    dps: 0,
+  }
   @observable hitBy = null
 
   constructor(game, options) {
@@ -100,6 +105,12 @@ class Unit {
     this.y = newY
   }
 
+  // handle any actions that are global to all unit types
+  @action act() {
+    this.clearHit()
+    this.handleEffects()
+  }
+
   /*
    * Makes the unit take damage.
    * Returns true if the unit is killed.
@@ -111,9 +122,40 @@ class Unit {
     this.takeHit(type)
     this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
     if (this.currentHitPoints <= 0) {
+      if (type === 'burning') { // handle profit in case of passive damage
+        const attacker = this.burningInfo.attacker
+        if (attacker) {
+          // @TODO This hardcodes attackers being towers. Ideally this is more generic.
+          const tower = this.game.towers.byId[attacker]
+          tower.killEnemy(this.killValue)
+        } else {
+          // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold. So else never fires!
+          const multiplier = this.burningInfo.killProfitMultiplier
+          this.game.profit(this.killValue.credits * multiplier)
+        }
+      }
       this.kill()
       return true
     }
+  }
+
+  handleEffects() {
+    this.regenerate()
+    this.burn()
+  }
+
+  regenerate() {
+    if (!this.regenerates) { return }
+    const ticksPerSecond = 1000 / GAME_REFRESH_RATE
+    const hpToHeal = Math.sqrt(this.maxHitPoints) * this.regenerates / ticksPerSecond
+    this.heal(hpToHeal)
+  }
+
+  burn() {
+    if (!this.burning) { return }
+    this.takeDamage(this.burningInfo.dps, 'burning')
+    this.burningInfo.cooldown && this.burningInfo.cooldown.tick()
+    // this.takeHit('burning')
   }
 
   @action heal(amount) {
@@ -133,16 +175,47 @@ class Unit {
     this.destroy()
   }
 
-  @action ignite() {
+  @action ignite(attacker, killProfitMultiplier, dps, time) {
+    this.setBurningCooldown(time)
+
     this.burning = true
+    this.burningInfo.killProfitMultiplier = killProfitMultiplier
+    if (dps > this.burningInfo.dps) {
+      this.burningInfo.dps = dps // override only if higher dps
+    }
+    this.burningInfo.attacker = attacker.id
+  }
+
+  setBurningCooldown(time = 0) {
+    if (time === 0) { return }
+    if (this.burningInfo.cooldown) {
+      this.burningInfo.cooldown.reset()
+    } else {
+      this.burningInfo.cooldown = Cooldown.createTimeBased(time, GAME_REFRESH_RATE, {
+        callback: function() {
+          this.extinguish()
+          delete this.burningInfo.cooldown
+        }.bind(this),
+        autoActivate: true,
+        delayActivation: true,
+      })
+    }
   }
 
   @action extinguish() {
     this.burning = false
+    this.burningInfo.killProfitMultiplier = 0 // reset just in case
+    this.burningInfo.dps = 0 // reset just in case
+    this.burningInfo.attacker = undefined
   }
 
+  /*
+   * The additional logic may have twisted the purpose of this method.
+   * 'Alive' is defined as: has hit points, hasn't reached the exit, and
+   * doesn't want to be removed.
+   */
   isAlive() {
-    return this.currentHitPoints > 0
+    return this.currentHitPoints > 0 && !this.completed && !this.removeMe
   }
 
   getAngleToPoint(x, y) {

@@ -2,6 +2,7 @@
 import { autorun } from 'mobx'
 
 import UnitRenderer from '../UnitRenderer'
+import { getBurningEmitter, getShellExplosionEmitter } from '../emitters'
 
 export default class EnemyRenderer extends UnitRenderer {
 
@@ -11,6 +12,7 @@ export default class EnemyRenderer extends UnitRenderer {
     const unitBase = this.createUnitBase(unit, container)
     this.createHealthBar(unit, container)
     const explosion = this.createExplosion(unit, container)
+    const burnAnimation = this.createBurning(unit, container)
 
     return container
   }
@@ -34,7 +36,14 @@ export default class EnemyRenderer extends UnitRenderer {
     container.addChild(explosion)
 
     autorun(() => {
-      if (unit.hitBy && unit.hitBy !== 'fire') {
+      if (!unit.hitBy) { return }
+      if (unit.hitBy === 'shell') {
+        let shellExplosion = getShellExplosionEmitter(
+          unit, this.board.effectsLayer, { x: unit.x, y: unit.y })
+        this.registerEmitter.oneTime(shellExplosion)
+      } else if (unit.hitBy === 'fire') { // do nothing, because burning will trigger
+      } else if (unit.hitBy === 'burning') { // do nothing, because burning will trigger
+      } else {
         explosion.visible = true
         setTimeout(() => {
           explosion.visible = false
@@ -43,6 +52,26 @@ export default class EnemyRenderer extends UnitRenderer {
     })
 
     return explosion
+  }
+
+/*
+ * This method needs to create an autorun function. That function should
+ * trigger a burning animation when the unit is burning and remove it otherwise.
+ * It is also responsible for making sure the emitter is cleaned up on unit
+ * removal.
+ */
+  createBurning(unit, container) {
+    let burningEmitter
+    autorun(() => {
+      // only allow burning if unit is still alive
+      if (unit.burning && !unit.removeMe) {
+        burningEmitter = getBurningEmitter(unit, container)
+        this.registerEmitter.oneTime(burningEmitter)
+      } else {
+        if (!burningEmitter) { return }
+        burningEmitter.emit = false
+      }
+    })
   }
 
   createHealthBar(unit, container) {

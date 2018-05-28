@@ -30,11 +30,11 @@ export default class FlamethrowerRenderer extends TowerRenderer {
     const { container, unitContainer } = super.startRender(unit, board)
     const gunOptions = this.getGunOptions(unit)
 
-    let flameEmitter = this.getFlameEmitter(container, unit, 0, 0)
+    let flameEmitter = this.getFlameEmitter(container, unit)
     flameEmitter.updateOwnerPos(unit.width / 2, unit.height / 2)
     flameEmitter.updateSpawnPos(gunOptions.gunLength, gunOptions.gunHeight / 2)
 
-    this.registerEmitterCallback(() => {
+    this.registerEmitter.persistent(() => {
       flameEmitter.update(0.005) // higher numbers mean more/faster fire
     })
 
@@ -71,6 +71,13 @@ export default class FlamethrowerRenderer extends TowerRenderer {
   }
 
   getFlameEmitter(container, unit) {
+    let coneWidth = 20
+    if (unit.coneWidth) {
+      coneWidth = unit.coneWidth - 10 // account for width of flame image
+    }
+    // @TODO Base the width of particle spray on the tower's coneWidth property.
+    // The width of the flame image is also relevant to the size of the
+    // visible cone.
     return new PIXI.particles.Emitter(
       container,
       [PIXI.Texture.fromImage('/images/Fire.png')],
@@ -92,8 +99,8 @@ export default class FlamethrowerRenderer extends TowerRenderer {
 					"end": 200
 				},
 				"startRotation": {
-					"min": -5,
-					"max": 5
+					"min": -unit.coneWidth / 2,
+					"max": unit.coneWidth / 2
 				},
 				"rotationSpeed": {
 					"min": 50,

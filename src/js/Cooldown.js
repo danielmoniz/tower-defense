@@ -5,6 +5,17 @@ class Cooldown {
   totalTicks = 0
   numActivations = 0
 
+  /*
+   * cooldownLength: the length of the cooldown period
+   * options:
+   *   softReset: when resetting/activating, only reset ticks by cooldownLength.
+   *     ie. do not reset to zero if activation is late
+   *   autoActivate: activate on its own - don't wait for activate() to be
+   *     called manually
+   *   callback: a function to be called (automatically or not) when complete
+   *   delayActivation: wait for the cooldownLength before activating.
+   *     Otherwise, activate immediately
+   */
   constructor(cooldownLength, options={}) {
     this.cooldownLength = cooldownLength
     this.softReset = options.softReset
@@ -14,11 +25,13 @@ class Cooldown {
     if (!options.delayActivation) {
       this.ticksPassed = cooldownLength
     }
+
   }
 
   toJSON() {
     return {
       ticksPassed: this.ticksPassed,
+      cooldownLength: this.cooldownLength,
     }
   }
 
@@ -51,8 +64,15 @@ class Cooldown {
     if (this.softReset) {
       this.ticksPassed -= this.cooldownLength
     } else {
-      this.ticksPassed = 0
+      this.reset()
     }
+  }
+
+  /*
+   * Restarts the cooldown - ensures the ticks pass are set to zero.
+   */
+  reset() {
+    this.setTicksPassed(0)
   }
 
   /*

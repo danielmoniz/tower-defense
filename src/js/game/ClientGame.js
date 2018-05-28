@@ -39,8 +39,19 @@ class ClientGame extends Game {
     return this.placingTower
   }
 
+  pause() {
+    super.pause()
+    this.renderer.pause()
+  }
+
   sendPause() {
     this.pause()
+  }
+
+  play() {
+    const play = super.play()
+    if (!play) { return }
+    this.renderer.play()
   }
 
   sendPlay() {
@@ -144,6 +155,7 @@ class ClientGame extends Game {
     }
 
     this.buildEntityFromData(enemy, enemyData)
+    this.updateBurningCooldown(enemy, enemyData)
 
     if (enemyIsNew) {
       this.enemies.add(enemy)
@@ -180,7 +192,7 @@ class ClientGame extends Game {
       const TowerType = this.TOWER_TYPES[towerData.name]
       tower = new TowerType(this, towerData.name)
     }
-    // console.log(towerData);
+
     this.buildEntityFromData(tower, towerData)
 
     if (towerIsNew) {
@@ -204,6 +216,18 @@ class ClientGame extends Game {
     tower.firingTimeCooldown.setTicksPassed(towerData.firingTimeCooldown.ticksPassed)
     tower.ammoCooldown.setTicksPassed(towerData.ammoCooldown.ticksPassed)
     tower.reloadCooldown.setTicksPassed(towerData.reloadCooldown.ticksPassed)
+    this.updateBurningCooldown(tower, towerData)
+  }
+
+  /*
+   * Updates the burning cooldown for a unit.
+   */
+  updateBurningCooldown(unit, data) {
+    if (!data.burningInfo.cooldown) { return }
+    if (!unit.burningInfo.cooldown) {
+      unit.setBurningCooldown(data.burningInfo.cooldown.cooldownLength)
+    }
+    unit.burningInfo.cooldown.setTicksPassed(data.burningInfo.cooldown.ticksPassed)
   }
 
   setTowerTarget(tower) {

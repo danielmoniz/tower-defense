@@ -5,17 +5,17 @@ import { GRID_SIZE } from '../../appConstants'
 
 export default class UnitRenderer {
 
-  constructor(board, gameActions, registerEmitterCallback) {
+  constructor(board, gameActions, registerEmitter) {
     this.board = board
     this.actions = gameActions
-    this.registerEmitterCallback = registerEmitterCallback
+    this.registerEmitter = registerEmitter
   }
 
   render(unit) {
     this.startRender(unit, this.board)
   }
 
-  startRender(unit, board, registerEmitterCallback) {
+  startRender(unit, board) {
 
     let container = new PIXI.Container()
     container.pivot.x = unit.width / 2

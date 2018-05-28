@@ -62,6 +62,7 @@ export default class Tower extends Unit {
   }
 
   act() {
+    super.act()
     this.resetFiring()
     this.firingTimeCooldown.tick()
     if (this.canAttack()) {
@@ -116,17 +117,23 @@ export default class Tower extends Unit {
     if (!this.target) { return }
     this.isFiring = true
 
-    var targetValue = this.target.killValue
-    const killedUnit = this.target.takeDamage(this.attackPower.current, this.ammoType)
-    if (killedUnit) {
-      // @TODO move these state changes into separate method
-      this.game.profit(targetValue.credits * this.killProfitMultiplier)
-      this.kills++
-      this.xp += targetValue.xp
-      this.checkLevel()
-      return
-    }
-    return this.target
+    return this.damageEnemy(this.target)
+  }
+
+  @action damageEnemy(enemy) {
+    var targetValue = enemy.killValue
+    const killedUnit = enemy.takeDamage(this.attackPower.current, this.ammoType)
+    if (!killedUnit) { return enemy }
+
+    this.killEnemy(targetValue)
+    return
+  }
+
+  @action killEnemy(enemyValue) {
+    this.game.profit(enemyValue.credits * this.killProfitMultiplier)
+    this.kills++
+    this.xp += enemyValue.xp
+    this.checkLevel()
   }
 
   @action checkLevel() {
@@ -152,7 +159,7 @@ export default class Tower extends Unit {
   targetIsValid() {
     // test that the target even has an isAlive function
     // -> must be a server-updated target that no longer exists
-    return this.target && this.target.isAlive && this.unitInRange(this.target) && this.target.isAlive()
+    return this.target && this.target.isAlive && this.target.isAlive() && this.unitInRange(this.target)
   }
 
   unitInRange(unit) {

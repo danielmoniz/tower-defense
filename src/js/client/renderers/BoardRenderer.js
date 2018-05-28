@@ -31,11 +31,13 @@ export default class BoardRenderer {
     this.mapLayer = new PIXI.display.Layer()
     this.backgroundLayer = new PIXI.display.Layer()
     this.unitsLayer = new PIXI.display.Layer()
+    this.effectsLayer = new PIXI.display.Layer()
     this.menuLayer = new PIXI.display.Layer()
 
     this.app.stage.addChild(this.mapLayer)
     this.app.stage.addChild(this.backgroundLayer)
     this.app.stage.addChild(this.unitsLayer)
+    this.app.stage.addChild(this.effectsLayer)
     this.app.stage.addChild(this.menuLayer)
 
     this.setupGameStateDisplay(game)
@@ -122,6 +124,17 @@ export default class BoardRenderer {
         "Kills: " + entity.kills + "<br>" +
         "Experience: " + entity.xp + "<br>" +
         "Level: " + entity.level
+
+    if (entity.attackPower.burning) {
+      infoPanelData.innerHTML += "<br>"
+      let burningLength = "unlimited"
+      if (entity.burningLength.current && entity.burningLength.current > 0) {
+        burningLength = (entity.burningLength.current / 1000).toFixed(2) + " seconds"
+      }
+      infoPanelData.innerHTML +=
+        "Burning DPS: " + entity.attackPower.burning.current + "<br>" +
+        "Burning length: " + burningLength
+    }
   }
 
   setupGameStateDisplay(game) {

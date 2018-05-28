@@ -6,7 +6,8 @@ import GameEvents from './GameEvents'
 import UnitRenderer from './UnitRenderer'
 import EnemyRenderer from './enemies/EnemyRenderer'
 import TowerRenderer from './towers/TowerRenderer'
-import { CannonRenderer, FlamethrowerRenderer, MachineGunRenderer } from './towers'
+import { CannonRenderer, FlamethrowerRenderer, MachineGunRenderer, PlasmaBatteryRenderer } from './towers'
+import getAltId from '../../utility/altId'
 
 
 export default class GameRenderer {
@@ -20,22 +21,29 @@ export default class GameRenderer {
     this.board = new BoardRenderer()
     this.events = new GameEvents()
 
+    const registerEmitter = {
+      persistent: this.registerEmitter.bind(this),
+      oneTime: this.registerOneTimeEmitter.bind(this),
+    }
     // @TODO This system is clearly horrendous. Find a way to do this dynamically.
-    this.unitRenderer = new UnitRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.towerRenderer = new TowerRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.enemyRenderer = new EnemyRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.cannonRenderer = new CannonRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, this.registerEmitter.bind(this))
-    this.machineGunRenderer = new MachineGunRenderer(this.board, actions, this.registerEmitter.bind(this))
+    this.unitRenderer = new UnitRenderer(this.board, actions, registerEmitter)
+    this.towerRenderer = new TowerRenderer(this.board, actions, registerEmitter)
+    this.enemyRenderer = new EnemyRenderer(this.board, actions, registerEmitter)
+    this.cannonRenderer = new CannonRenderer(this.board, actions, registerEmitter)
+    this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, registerEmitter)
+    this.machineGunRenderer = new MachineGunRenderer(this.board, actions, registerEmitter)
+    this.plasmaBatteryRenderer = new PlasmaBatteryRenderer(this.board, actions, registerEmitter)
 
     this.towerRenderers = {
       Tower: this.towerRenderer, // default?
       Cannon: this.cannonRenderer,
       Flamethrower: this.flamethrowerRenderer,
       MachineGun: this.machineGunRenderer,
+      PlasmaBattery: this.plasmaBatteryRenderer,
     }
 
     this.emitterCallbacks = []
+    this.oneTimeEmitterCallbacks = {}
     this.renderStack = []
 
     this.createGameBoard(game)
@@ -66,17 +74,28 @@ export default class GameRenderer {
     return this.board.assetsReady
   }
 
-  tick() {
-    window.requestAnimationFrame(() => {
+  tick(lastTime = 0) {
+    window.requestAnimationFrame((time) => {
       if (!this.assetsLoaded()) { // only start rendering once assets are loaded
         return this.tick();
       }
 
-      this.renderEntities(this.renderStack)
-      this.emit(this.emitterCallbacks)
+      if (this.render) {
+        this.renderEntities(this.renderStack)
+        this.emit(this.emitterCallbacks)
+        this.emitOnce(this.oneTimeEmitterCallbacks, time - lastTime)
+      }
 
-      this.tick()
+      this.tick(time)
     })
+  }
+
+  pause() {
+    this.render = false
+  }
+
+  play() {
+    this.render = true
   }
 
   /*
@@ -101,6 +120,9 @@ export default class GameRenderer {
 
   /*
    * Iterates over a list of emitter callbacks and calls them.
+   * NOTE: There may be the odd emitter that should be removed, eg. a
+   * Flamethrower that has been sold. But the array of callbacks will currently
+   * not grow too large.
    */
   emit(emitterCallbacks) {
     emitterCallbacks.forEach((emitter) => {
@@ -108,8 +130,37 @@ export default class GameRenderer {
     })
   }
 
+  /*
+   * Iterates over an object of emitters intended to be removed after one play.
+   * Destroy them and delete them from the object once finished.
+   * Handling emitter updating manually allows for graphics to be properly
+   * paused when pausing the game. Otherwise they will play through as long as
+   * the renderer is ticking.
+   * timeElapsed is in milliseconds.
+   */
+  emitOnce(emitterInfo, timeElapsed = 5) {
+    for (let key in emitterInfo) {
+      const emitter = emitterInfo[key]
+      if (!emitter.__playing) {
+        emitter.playOnce(() => { // use playOnce to get the callback feature
+          emitter.destroy()
+          delete emitterInfo[key]
+        })
+        emitter.autoUpdate = false // ensure we can update it manually
+      } else {
+        emitter.update(timeElapsed / 1000) // convert to seconds
+      }
+      emitter.__playing = true
+    }
+  }
+
   registerEmitter(emitterCallback) {
     this.emitterCallbacks.push(emitterCallback)
+  }
+
+  registerOneTimeEmitter(emitter, updateFrequency) {
+    const key = getAltId()
+    this.oneTimeEmitterCallbacks[getAltId()] = emitter
   }
 
   setUpEvents(game, board) {
