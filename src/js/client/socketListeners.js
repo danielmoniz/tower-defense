@@ -47,11 +47,16 @@ function setUpListeners(game, emitter) {
   socket.on('join existing game', (gameData) => {
     game.start()
     game.updateAll(gameData)
+    game.setTerrain(gameData.terrain)
     console.log('Joined existing game');
   })
 
   socket.on('spawn wave', (newEnemies) => {
     game.acceptSpawnedWave(newEnemies)
+  })
+
+  socket.on('send terrain', (terrainData) => {
+    game.setTerrain(terrainData)
   })
 
   socket.on('poll for game number', () => {

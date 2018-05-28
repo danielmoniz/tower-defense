@@ -39,9 +39,9 @@ class Enemy extends Unit {
    * If the unit is already moving, it ensures they continue in the new direction.
    */
   @action setMoveTarget() {
-    this.act = (nextLocation) => {
+    this.act = (nextLocation, terrainDifficulty) => {
       this.clearHit()
-      this.moveXAndY(nextLocation.x, nextLocation.y)
+      this.moveXAndY(nextLocation.x, nextLocation.y, terrainDifficulty)
       this.handleEffects()
     }
     if (this.movementId) { // if already moving, continue in a new direction
@@ -53,12 +53,12 @@ class Enemy extends Unit {
    * Moves the unit by one 'turn' or tick. They should move up to their speed (or less
    * if they are close to their objective).
    */
-  @action moveXAndY(finalX, finalY) {
+  @action moveXAndY(finalX, finalY, terrainDifficulty) {
     if (this.x === finalX && this.y === finalY) {
       return true
     }
 
-    const actualSpeed = this.speed / (1000 / GAME_REFRESH_RATE)
+    const actualSpeed = this.speed / (1000 / GAME_REFRESH_RATE) / terrainDifficulty
 
     // use polar coordinates to generate X and Y given target destination
     const deltaX = finalX - this.x

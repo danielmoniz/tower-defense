@@ -1,6 +1,8 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
+import { GAME_REFRESH_RATE, GRID_SIZE } from '../appConstants'
+
 import ClientGame from './ClientGame'
 import WaveSpawnerLocal from '../WaveSpawnerLocal'
 
@@ -8,6 +10,17 @@ class SoloGame extends ClientGame {
 
   constructor(emitter, actions) {
     super(emitter, actions)
+  }
+
+  start() {
+    super.start()
+    this.pathHelper.generateTerrain()
+    this.renderer.board.renderTerrain(this)
+  }
+
+  reset() {
+    super.reset()
+    this.pathHelper.reset()
   }
 
   setUpWaveSpawner() {

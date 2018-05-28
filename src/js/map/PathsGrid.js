@@ -1,5 +1,6 @@
 
 import Grid from './Grid'
+import BinaryHeap from './BinaryHeap'
 
 export default class PathsGrid extends Grid {
   constructor(tilesWide, tilesHigh) {
@@ -24,8 +25,6 @@ export default class PathsGrid extends Grid {
   }
 
   calculate(weights, endX = this.tilesWide - 1, endY = this.tilesHigh - 1) {
-    let start = new Date()
-
     // this.setUpPathLengths()
     this.reset()
 
@@ -42,19 +41,18 @@ export default class PathsGrid extends Grid {
       return false
     }
     this.set(endX, endY, 0)
-    let queue = []
+
+    let queue = new BinaryHeap((pos) => this.at(pos.x, pos.y))
     let currentPos = { x: endX, y: endY }
-    let lastPos = {}
     let coordinates = this.searchDirections(queue, currentPos)
     this.addMultipleToQueue(queue, coordinates, currentPos, weights)
 
-    while (queue.length != 0) {
-      currentPos = queue.shift()
+    while (queue.size() !== 0) {
+      currentPos = queue.pop()
       coordinates = this.searchDirections(queue, currentPos)
       this.addMultipleToQueue(queue, coordinates, currentPos, weights)
     }
 
-    // console.log('Time to calculate path lengths:', new Date() - start)
     return this.isMapValid() // need to know if map is blocked
   }
 
@@ -130,8 +128,8 @@ export default class PathsGrid extends Grid {
       this.set(coordinate.x, coordinate.y, -1)
     } else {
       let newLength = this.at(currentPos.x, currentPos.y) + newWeight
-      queue.push(coordinate)
       this.set(coordinate.x, coordinate.y, newLength)
+      queue.push(coordinate)
     }
   }
 

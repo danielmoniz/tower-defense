@@ -19,6 +19,10 @@ class GameEmitter {
     this.io.to(gameNumber).emit('spawn wave', newEnemies)
   }
 
+  sendTerrain(gameNumber, terrainData) {
+    this.io.to(gameNumber).emit('send terrain', terrainData)
+  }
+
   play(socket) {
     socket.broadcast.to(socket.roomId).emit('play')
   }
