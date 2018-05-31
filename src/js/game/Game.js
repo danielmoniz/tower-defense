@@ -270,6 +270,19 @@ export default class Game {
     tower.destroy()
   }
 
+  setTowerTargetFromData(towerId, targetId) {
+    const tower = this.towers.byId[towerId]
+    const target = this.enemies.byId[targetId]
+    console.log('Set tower target from data!');
+    return this.setTowerTarget(tower, target)
+  }
+
+  setTowerTarget(tower, target) {
+    if (!tower || !target) { return }
+    tower.setTarget(target)
+    return true
+  }
+
   endGame() {
     this.pause()
     this.towers.clear()

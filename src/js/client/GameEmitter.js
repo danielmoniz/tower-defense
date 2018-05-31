@@ -44,6 +44,11 @@ class GameEmitter {
     console.log('EMITTED SELL TOWER');
   }
 
+  setTowerTarget(tower, target) {
+    this.emit('set tower target', tower.id, target.id)
+    console.log('set tower target', tower.id, target.id);
+  }
+
   sendPerformance(data) {
     this.emit('send performance', data)
   }
