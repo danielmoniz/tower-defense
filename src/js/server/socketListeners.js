@@ -2,37 +2,48 @@
 export default function socketListeners(socket, emitter, serverFunctions) {
   socket.on('place tower', (tower) => {
     console.log('placing tower at:', tower.x, tower.y);
-    if (socket.gameManager && socket.gameManager.game) {
-      const success = socket.gameManager.game.placeTower(tower)
-      if (success) {
-        socket.broadcast.to(socket.roomId).emit('place tower', tower)
-      } else {
-        socket.emit('place tower failed', tower)
-      }
+    if (!socket.gameManager || !socket.gameManager.game) { return }
+    const success = socket.gameManager.game.placeTower(tower)
+    if (success) {
+      socket.broadcast.to(socket.roomId).emit('place tower', tower)
+    } else {
+      socket.emit('place tower failed', tower)
     }
   })
 
   socket.on('sell tower', (towerId) => {
     console.log('selling tower with ID:', towerId);
-    if (socket.gameManager && socket.gameManager.game) {
-      const sellSuccess = socket.gameManager.game.receiveSellTower(towerId)
-      if (sellSuccess) {
-        console.log('Sell tower success on server side!');
-        socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
-      } else {
-        // @TODO Inform client that the tower sale failed
-      }
+    if (!socket.gameManager || !socket.gameManager.game) { return }
+    const sellSuccess = socket.gameManager.game.receiveSellTower(towerId)
+    if (sellSuccess) {
+      console.log('Sell tower success on server side!');
+      socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
+    } else {
+      // @TODO Inform client that the tower sale failed
     }
   })
 
   socket.on('sell tower', (towerId) => {
     console.log('selling tower with ID:', towerId);
-    if (socket.gameManager && socket.gameManager.game) {
-      const sellSuccess = socket.gameManager.game.receiveSellTower(towerId)
-      if (sellSuccess) {
-        console.log('Sell tower success on server side!');
-        socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
-      }
+    if (!socket.gameManager || !socket.gameManager.game) { return }
+    const sellSuccess = socket.gameManager.game.receiveSellTower(towerId)
+    if (sellSuccess) {
+      console.log('Sell tower success on server side!');
+      socket.broadcast.to(socket.roomId).emit('sell tower', towerId)
+    }
+  })
+
+  socket.on('set tower target', (towerId, targetId) => {
+    if (!socket.gameManager || !socket.gameManager.game) { return }
+    const game = socket.gameManager.game
+    const setTargetSuccess = game.setTowerTargetFromData(towerId, targetId)
+    // const setTargetSuccess = false
+    if (setTargetSuccess) {
+      console.log('Set tower target success on server side!');
+      socket.broadcast.to(socket.roomId).emit('set tower target', towerId, targetId)
+    } else {
+      // @TODO If it does not work, update socket with game data (or current target)
+      // NOTE: Can use work form menu branch to completely resync game if needed
     }
   })
 
