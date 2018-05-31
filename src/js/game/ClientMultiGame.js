@@ -49,6 +49,14 @@ class ClientMultiGame extends ClientGame {
     this.emitter.sellTower(tower)
   }
 
+  /*
+   * Trigger the setting of a tower's target. Emit the event to the server.
+   */
+  sendSetTowerTarget(tower, target) {
+    super.sendSetTowerTarget(tower, target)
+    this.emitter.setTowerTarget(tower, target)
+  }
+
   newGame() {
     this.emitter.addNewGame()
   }

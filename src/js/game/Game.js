@@ -270,6 +270,26 @@ export default class Game {
     tower.destroy()
   }
 
+  /*
+   * Given data about a tower and a target, finds those objects and sets
+   * the tower to have that target. Useful for server syncing.
+   */
+  setTowerTargetFromData(towerId, targetId) {
+    const tower = this.towers.byId[towerId]
+    const target = this.enemies.byId[targetId]
+    return this.setTowerTarget(tower, target)
+  }
+
+  /*
+   * Given a tower and a target object, sets the tower to have that target.
+   * Fails if either are not provided.
+   */
+  setTowerTarget(tower, target) {
+    if (!tower || !target) { return }
+    tower.setTarget(target)
+    return true
+  }
+
   endGame() {
     this.pause()
     this.towers.clear()

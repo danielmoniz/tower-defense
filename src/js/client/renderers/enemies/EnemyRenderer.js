@@ -14,6 +14,10 @@ export default class EnemyRenderer extends UnitRenderer {
     const explosion = this.createExplosion(unit, container)
     const burnAnimation = this.createBurning(unit, container)
 
+    container.on('rightclick', () => {
+      this.actions.setSelectedTowerTarget(unit)
+    })
+
     return container
   }
 

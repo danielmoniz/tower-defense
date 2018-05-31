@@ -15,6 +15,7 @@ export default class GameRenderer {
     // @TODO Game should have an object of actions - shouldn't be done here!
     const actions = {
       selectEntity: game.selectEntity.bind(game),
+      setSelectedTowerTarget: game.setSelectedTowerTarget.bind(game),
     }
 
     this.gameHelpers = gameHelpers

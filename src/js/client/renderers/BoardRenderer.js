@@ -22,6 +22,11 @@ export default class BoardRenderer {
 
     this.app.view.id = "game-viewport"
     const displayBox = document.querySelector("#display-box")
+    // Prevent context menu from displaying
+    displayBox.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+    })
+
     displayBox.appendChild(this.app.view)
     this.app.renderer.backgroundColor = 0xFFFFFF
     this.app.renderer.view.style.border = '2px solid black'
