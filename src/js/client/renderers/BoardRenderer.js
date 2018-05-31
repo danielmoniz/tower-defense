@@ -22,10 +22,7 @@ export default class BoardRenderer {
 
     this.app.view.id = "game-viewport"
     const displayBox = document.querySelector("#display-box")
-    // Prevent context menu from displaying
-    displayBox.addEventListener('contextmenu', (e) => {
-      e.preventDefault()
-    })
+    this.preventBadUserInteraction()
 
     displayBox.appendChild(this.app.view)
     this.app.renderer.backgroundColor = 0xFFFFFF
@@ -261,6 +258,20 @@ export default class BoardRenderer {
       attributesMessage += enemy.attributes.join(", ")
     }
     return attributesMessage
+  }
+
+  preventBadUserInteraction() {
+    const gameFrame = document.querySelector(".gameFrame")
+    // Prevent context menu from displaying
+    gameFrame.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+    })
+    // Prevent double clicking causing text highlighting
+    gameFrame.addEventListener('mousedown', (e) => {
+      if (e.detail > 1) { // at least one event happened before this one
+        e.preventDefault()
+      }
+    })
   }
 
 }
