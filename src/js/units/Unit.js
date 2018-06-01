@@ -15,8 +15,10 @@ class Unit {
   @observable display = true
   @observable disabled = false // setting to true disables and greys the unit
   @observable removeMe = false // setting to true allows for units to be removed from the game
-  @observable maxHitPoints = 50
+  @observable maxHitPoints
   @observable currentHitPoints
+  @observable maxArmour
+  @observable currentArmour
   @observable selected = false
   @observable burning = false
   @observable burningInfo = {
@@ -120,7 +122,12 @@ class Unit {
       return
     }
     this.takeHit(type)
-    this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
+    const armourRatio = parseFloat(this.currentArmour) / this.maxArmour
+    const armourDamage = Math.ceil(Math.min(amount * armourRatio, this.currentArmour))
+    this.currentArmour -= armourDamage
+    const hpDamage = amount - armourDamage
+    this.currentHitPoints = Math.max(this.currentHitPoints - hpDamage, 0)
+
     if (this.currentHitPoints <= 0) {
       if (type === 'burning') { // handle profit in case of passive damage
         const attacker = this.burningInfo.attacker

@@ -111,6 +111,7 @@ export default class BoardRenderer {
 
     infoPanelData.innerHTML = "Speed: " + Math.ceil(enemy.speed) + "<br>" +
         "Hit points: " + Math.ceil(enemy.currentHitPoints) + "/" + Math.ceil(enemy.maxHitPoints) + "<br>" +
+        "Armour: " + Math.ceil(enemy.currentArmour) + "/" + Math.ceil(enemy.maxArmour) + "<br>" +
         "Value: $" + enemy.killValue.credits + ", " + enemy.killValue.xp + "xp<br>" +
         attributesMessage + "<br>"
         // (we probably don't need size, as it has no in-game effect)

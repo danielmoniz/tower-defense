@@ -18,6 +18,7 @@ class Enemy extends Unit {
 
     this.setAttributes(enemyData)
     this.currentHitPoints = this.maxHitPoints
+    this.currentArmour = this.maxArmour
   }
 
   setAttributes(enemyAttributes) {
