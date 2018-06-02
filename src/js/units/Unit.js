@@ -113,6 +113,74 @@ class Unit {
     this.handleEffects()
   }
 
+
+  // receiveAttack(ammo, damage) {
+  //   if (this.currentHitPoints <= 0) {
+  //     return
+  //   }
+  //
+  //   if (damage === undefined) {
+  //     if (ammo.damage === undefined) {
+  //       throw 'Must pass damage in ammo object or separately.'
+  //     }
+  //     damage = ammo.damage
+  //   }
+  //
+  //   this.takeHit(ammo.type)
+  //   return this.takeDamage(damage, ammo.type, ammo.armourPiercing)
+  // }
+  // takeDamage(damage, type, armourPiercing) {
+  //   const armourDamageRatio = this.getArmourDamageRatio(armourPiercing)
+  //   const armourDamageAllocation = damage * armourDamageRatio
+  //   const undealtDamage = this.damageArmour(armourDamageAllocation, type)
+  //   return this.damageHP(damage - armourDamageAllocation + undealtDamage, type)
+  // }
+  // damageHP(damage, type) {
+  //   // @TODO Should eventually deal more or less damage depending on type
+  //   this.currentHitPoints = Math.max(this.currentHitPoints - damage, 0)
+  //   return this.handleDeath(type)
+  // }
+  // damageArmour(damage, type) {
+  //   // @TODO Should eventually deal more or less damage depending on type
+  //   const actualBaseDamage = Math.min(damage, this.currentArmour)
+  //   this.currentArmour -= actualBaseDamage
+  //   // Must return the base undealt damage, not including any bonuses to armour damage!
+  //   return damage - actualBaseDamage
+  // }
+  // getArmourDamageRatio(armourPiercing) {
+  //   let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
+  //   if (armourPiercing) {
+  //     armourRatio /= 3 // ensure less damage goes to armour
+  //   }
+  //   return armourRatio
+  // }
+  // /*
+  //  * Kills a unit if need be. Returns true if it did.
+  //  */
+  handleDeath(damageType) {
+    if (this.currentHitPoints > 0) { return }
+    this.handlePassiveKillReward(damageType)
+    this.kill()
+    return true
+  }
+  handlePassiveKillReward(damageType) {
+    // @TODO Ideally this checks whether the damage is 'passive', not just burning
+    if (damageType === 'burning') { // handle profit in case of passive damage
+      const attacker = this.burningInfo.attacker
+      if (attacker) {
+        // @TODO This hardcodes attackers being towers. Ideally this is more generic.
+        const tower = this.game.towers.byId[attacker]
+        tower.killEnemy(this.killValue)
+      } else {
+        // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold. So else never fires!
+        const multiplier = this.burningInfo.killProfitMultiplier
+        this.game.profit(this.killValue.credits * multiplier)
+      }
+    }
+  }
+
+
+
   /*
    * Makes the unit take damage.
    * Returns true if the unit is killed.
@@ -128,31 +196,18 @@ class Unit {
       return
     }
     this.takeHit(ammo.type)
+
     let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
     if (ammo.armourPiercing) {
       armourRatio /= 3 // ensure less damage goes to armour
     }
     const armourDamage = Math.min(totalDamage * armourRatio, this.currentArmour)
     this.currentArmour -= armourDamage
+
     const hpDamage = totalDamage - armourDamage
     this.currentHitPoints = Math.max(this.currentHitPoints - hpDamage, 0)
 
-    if (this.currentHitPoints <= 0) {
-      if (ammo.type === 'burning') { // handle profit in case of passive damage
-        const attacker = this.burningInfo.attacker
-        if (attacker) {
-          // @TODO This hardcodes attackers being towers. Ideally this is more generic.
-          const tower = this.game.towers.byId[attacker]
-          tower.killEnemy(this.killValue)
-        } else {
-          // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold. So else never fires!
-          const multiplier = this.burningInfo.killProfitMultiplier
-          this.game.profit(this.killValue.credits * multiplier)
-        }
-      }
-      this.kill()
-      return true
-    }
+    return this.handleDeath(ammo.type)
   }
 
   handleEffects() {
