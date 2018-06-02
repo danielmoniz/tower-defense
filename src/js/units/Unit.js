@@ -117,7 +117,13 @@ class Unit {
    * Makes the unit take damage.
    * Returns true if the unit is killed.
    */
-  @action takeDamage(amount, ammo) {
+  @action takeDamage(ammo, totalDamage) {
+    if (totalDamage === undefined) {
+      if (ammo.damage === undefined) {
+        throw 'Must pass damage in ammo object or separately.'
+      }
+      totalDamage = ammo.damage
+    }
     if (this.currentHitPoints <= 0) {
       return
     }
@@ -126,9 +132,9 @@ class Unit {
     if (ammo.armourPiercing) {
       armourRatio /= 3 // ensure less damage goes to armour
     }
-    const armourDamage = Math.min(amount * armourRatio, this.currentArmour)
+    const armourDamage = Math.min(totalDamage * armourRatio, this.currentArmour)
     this.currentArmour -= armourDamage
-    const hpDamage = amount - armourDamage
+    const hpDamage = totalDamage - armourDamage
     this.currentHitPoints = Math.max(this.currentHitPoints - hpDamage, 0)
 
     if (this.currentHitPoints <= 0) {
@@ -163,7 +169,9 @@ class Unit {
 
   burn() {
     if (!this.burning) { return }
-    this.takeDamage(this.burningInfo.dps, 'burning')
+    // @TODO @FIXME This is a bit awkward because it's not ammo doing the damage.
+    const burn = { type: 'burning', damage: this.burningInfo.dps }
+    this.takeDamage(burn)
     this.burningInfo.cooldown && this.burningInfo.cooldown.tick()
     // this.takeHit('burning')
   }

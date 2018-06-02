@@ -124,7 +124,7 @@ export default class Tower extends Unit {
 
   @action damageEnemy(enemy) {
     var targetValue = enemy.killValue
-    const killedUnit = enemy.takeDamage(this.ammo.damage, this.ammo)
+    const killedUnit = enemy.takeDamage(this.ammo)
     if (!killedUnit) { return enemy }
 
     this.killEnemy(targetValue)

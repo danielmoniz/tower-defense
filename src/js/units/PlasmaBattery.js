@@ -76,11 +76,11 @@ export default class PlasmaBattery extends Tower {
   @action damageEnemyWithExplosion(enemy, distance) {
     var targetValue = enemy.killValue
     const damage = this.calculateExplosionDamage(
-      this.ammo.damage,
+      this.explosion.damage,
       distance,
       this.explosion.radius,
     )
-    const killedUnit = enemy.takeDamage(damage, this.explosion)
+    const killedUnit = enemy.takeDamage(this.explosion, damage)
     if (!killedUnit) { return }
 
     this.killEnemy(targetValue)
