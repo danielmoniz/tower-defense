@@ -123,7 +123,7 @@ class Unit {
     }
     this.takeHit(type)
     const armourRatio = parseFloat(this.currentArmour) / this.maxArmour
-    const armourDamage = Math.ceil(Math.min(amount * armourRatio, this.currentArmour))
+    const armourDamage = Math.min(amount * armourRatio, this.currentArmour)
     this.currentArmour -= armourDamage
     const hpDamage = amount - armourDamage
     this.currentHitPoints = Math.max(this.currentHitPoints - hpDamage, 0)
