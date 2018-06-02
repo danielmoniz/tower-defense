@@ -80,7 +80,7 @@ export default class EnemyRenderer extends UnitRenderer {
 
   createHealthBar(unit, container) {
     // const healthBarHeight = 6    // because the image is 6 pixels high
-    const healthBarHeight = Math.ceil(unit.height / 7)    // because the image is 6 pixels high
+    const healthBarHeight = Math.ceil(unit.height / 7)
     const healthBarBackground = new PIXI.Sprite(PIXI.utils.TextureCache["healthBarBackground"])
     healthBarBackground.height = healthBarHeight + 2
     healthBarBackground.position.y = unit.height - healthBarHeight - 2
@@ -92,15 +92,27 @@ export default class EnemyRenderer extends UnitRenderer {
     healthBar.height = healthBarHeight
     container.addChild(healthBar)
 
+    const armourBar = new PIXI.Sprite(PIXI.utils.TextureCache['armourBar'])
+    armourBar.position.y = unit.height - healthBarHeight - 1
+    armourBar.position.x = 150
+    armourBar.height = healthBarHeight
+    container.addChild(armourBar)
+
     autorun(() => {
-      renderHitPointsBar(unit, healthBar, healthBarBackground)
+      renderHitPointsBar(unit, healthBar, healthBarBackground, armourBar)
     })
   }
 
 }
 
-function renderHitPointsBar(unit, healthBar, healthBarBackground) {
-  const backgroundWidth = unit.width * (unit.currentHitPoints / unit.maxHitPoints)
-  healthBar.width = backgroundWidth - 2
+function renderHitPointsBar(unit, healthBar, healthBarBackground, armourBar) {
+  const currentStats = unit.currentHitPoints + unit.currentArmour
+  const maxStats = unit.maxHitPoints + unit.maxArmour
+  const backgroundWidth = unit.width * (currentStats / maxStats)
   healthBarBackground.width = backgroundWidth
+
+  const maxWidth = backgroundWidth - 3
+  healthBar.width = maxWidth * unit.currentHitPoints / currentStats
+  armourBar.width = maxWidth * unit.currentArmour / currentStats
+  armourBar.x = healthBar.width + 2
 }

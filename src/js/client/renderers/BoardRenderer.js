@@ -57,7 +57,9 @@ export default class BoardRenderer {
     // @TODO Move this into another file
     // load assets into PIXI
     this.loader = new PIXI.loaders.Loader()
-    this.loader.add('healthBar', '/images/healthBar.png')
+    this.loader
+          .add('healthBar', '/images/healthBar.png')
+          .add('armourBar', '/images/armourBar.png')
           .add('healthBarBackground', '/images/healthBarBackground.png')
           .add('tank', '/images/tank.png')
           .add('invader', '/images/invader.png')
