@@ -80,7 +80,7 @@ export default class PlasmaBattery extends Tower {
       distance,
       this.explosion.radius,
     )
-    const killedUnit = enemy.takeDamage(this.explosion, damage)
+    const killedUnit = enemy.receiveAttack(this.explosion, damage)
     if (!killedUnit) { return }
 
     this.killEnemy(targetValue)

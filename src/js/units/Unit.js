@@ -113,40 +113,64 @@ class Unit {
     this.handleEffects()
   }
 
+  /*
+   * Makes the unit to receive an attack (delivered by ammo).
+   * Can optionally specific damage. Will override ammo attack power.
+   * Returns true if the unit is killed.
+   */
+  @action receiveAttack(ammo, damage) {
+    if (this.currentHitPoints <= 0) {
+      return
+    }
 
-  // receiveAttack(ammo, damage) {
-  //   if (this.currentHitPoints <= 0) {
-  //     return
-  //   }
-  //
-  //   if (damage === undefined) {
-  //     if (ammo.damage === undefined) {
-  //       throw 'Must pass damage in ammo object or separately.'
-  //     }
-  //     damage = ammo.damage
-  //   }
-  //
-  //   this.takeHit(ammo.type)
-  //   return this.takeDamage(damage, ammo.type, ammo.armourPiercing)
-  // }
-  // takeDamage(damage, type, armourPiercing) {
-  //   const armourDamageRatio = this.getArmourDamageRatio(armourPiercing)
-  //   const armourDamageAllocation = damage * armourDamageRatio
-  //   const undealtDamage = this.damageArmour(armourDamageAllocation, type)
-  //   return this.damageHP(damage - armourDamageAllocation + undealtDamage, type)
-  // }
-  // damageHP(damage, type) {
-  //   // @TODO Should eventually deal more or less damage depending on type
-  //   this.currentHitPoints = Math.max(this.currentHitPoints - damage, 0)
-  //   return this.handleDeath(type)
-  // }
-  // damageArmour(damage, type) {
-  //   // @TODO Should eventually deal more or less damage depending on type
-  //   const actualBaseDamage = Math.min(damage, this.currentArmour)
-  //   this.currentArmour -= actualBaseDamage
-  //   // Must return the base undealt damage, not including any bonuses to armour damage!
-  //   return damage - actualBaseDamage
-  // }
+    if (damage === undefined) {
+      if (ammo.damage === undefined) {
+        throw 'Must pass damage in ammo object or separately.'
+      }
+      damage = ammo.damage
+    }
+
+    this.takeHit(ammo.type)
+    return this.takeDamage(damage, ammo.type, ammo.armourPiercing)
+  }
+
+  /*
+   * Forces the unit to take damage. Will divide it between armour and HP.
+   * Returns true if the unit is killed.
+   */
+  takeDamage(damage, type, armourPiercing) {
+    const armourDamageRatio = this.getArmourDamageRatio(armourPiercing)
+    const armourDamageAllocation = damage * armourDamageRatio
+    const undealtDamage = this.damageArmour(armourDamageAllocation, type)
+    return this.damageHP(damage - armourDamageAllocation + undealtDamage, type)
+  }
+
+  /*
+   * Damages the HP specifically. Will also handle its death if needed.
+   * Returns true if the unit is killed.
+   */
+  damageHP(damage, type) {
+    // @TODO Should eventually deal more or less damage depending on type
+    this.currentHitPoints = Math.max(this.currentHitPoints - damage, 0)
+    return this.handleDeath(type)
+  }
+
+  /*
+   * Damages the armour specifically.
+   * If the armour is used up, the excess damage is returned to be later
+   * applied to HP.
+   * Note that only base undealt damage must be returned, not damage after bonuses.
+   */
+  damageArmour(damage, type) {
+    // @TODO Should eventually deal more or less damage depending on type
+    const actualBaseDamage = Math.min(damage, this.currentArmour)
+    this.currentArmour -= actualBaseDamage
+    return damage - actualBaseDamage
+  }
+
+  /*
+   * Returns the ratio at which the armour will soak damage.
+   */
   getArmourDamageRatio(armourPiercing) {
     let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
     if (armourPiercing) {
@@ -165,6 +189,10 @@ class Unit {
     return true
   }
 
+  /*
+   * Provides kill rewards for when the unit is killed by passive effects
+   * such as fire (in contrast to being hit with ammo).
+   */
   handlePassiveKillReward(damageType) {
     // @TODO Ideally this checks whether the damage is 'passive', not just burning
     if (damageType === 'burning') { // handle profit in case of passive damage
@@ -181,34 +209,6 @@ class Unit {
     }
   }
 
-
-
-  /*
-   * Makes the unit take damage.
-   * Returns true if the unit is killed.
-   */
-  @action takeDamage(ammo, totalDamage) {
-    if (totalDamage === undefined) {
-      if (ammo.damage === undefined) {
-        throw 'Must pass damage in ammo object or separately.'
-      }
-      totalDamage = ammo.damage
-    }
-    if (this.currentHitPoints <= 0) {
-      return
-    }
-    this.takeHit(ammo.type)
-
-    const armourRatio = this.getArmourDamageRatio(ammo.armourPiercing)
-    const armourDamage = Math.min(totalDamage * armourRatio, this.currentArmour)
-    this.currentArmour -= armourDamage
-
-    const hpDamage = totalDamage - armourDamage
-    this.currentHitPoints = Math.max(this.currentHitPoints - hpDamage, 0)
-
-    return this.handleDeath(ammo.type)
-  }
-
   handleEffects() {
     this.regenerate()
     this.burn()
@@ -223,9 +223,7 @@ class Unit {
 
   burn() {
     if (!this.burning) { return }
-    // @TODO @FIXME This is a bit awkward because it's not ammo doing the damage.
-    const burn = { type: 'burning', damage: this.burningInfo.dps }
-    this.takeDamage(burn)
+    this.takeDamage(this.burningInfo.dps, 'burning')
     this.burningInfo.cooldown && this.burningInfo.cooldown.tick()
     // this.takeHit('burning')
   }
