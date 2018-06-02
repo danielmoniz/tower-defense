@@ -71,6 +71,112 @@ describe('Unit.js', function() {
     })
   })
 
+  describe('damageArmour', () => {
+    it('should deal all damage to the armour if possible', () => {
+      const unit = new Unit({})
+      unit.currentArmour = 75
+      const undealtDamage = unit.damageArmour(20)
+
+      expect(unit.currentArmour).toBe(55)
+      expect(undealtDamage).toBe(0)
+    })
+
+    it('should reduce the armour to zero and return the undealt damage', () => {
+      const unit = new Unit({})
+      unit.currentArmour = 75
+      const undealtDamage = unit.damageArmour(90)
+
+      expect(unit.currentArmour).toBe(0)
+      expect(undealtDamage).toBe(15)
+    })
+  })
+
+  describe('damageHP', () => {
+    it('should reduce the HP of the unit by the passed damage amount', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 50
+      const unitIsDead = unit.damageHP(20)
+      expect(unitIsDead).toBeFalsy()
+
+      expect(unit.currentHitPoints).toBe(30)
+      expect(unit.removeMe).toBeFalsy()
+    })
+
+    it('should kill a unit if dealt exactly enough damage', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 75
+      expect(unit.removeMe).toBeFalsy()
+
+      const unitIsDead = unit.damageHP(75)
+      expect(unitIsDead).toBeTruthy()
+      expect(unit.currentHitPoints).toBe(0)
+      expect(unit.removeMe).toBeTruthy()
+    })
+
+    it('should reduce the HP to zero but not further', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 75
+      expect(unit.removeMe).toBeFalsy()
+
+      const unitIsDead = unit.damageHP(90)
+      expect(unitIsDead).toBeTruthy()
+      expect(unit.currentHitPoints).toBe(0)
+      expect(unit.removeMe).toBeTruthy()
+    })
+  })
+
+  describe('takeDamage', () => {
+    function makeUnit() {
+      const unit = new Unit()
+      unit.maxHitPoints = 100
+      unit.currentHitPoints = 100
+      unit.maxArmour = 100
+      unit.currentArmour = 43
+      return unit
+    }
+
+    it('should damage armour and hp according to correct ratio', () => {
+      const unit = makeUnit()
+
+      const armourDamageRatio = unit.getArmourDamageRatio()
+      const damage = 70
+      const expectedArmour = unit.currentArmour - armourDamageRatio * damage
+      const expectedHP = unit.currentHitPoints - (1 - armourDamageRatio) * damage
+
+      const unitIsDead = unit.takeDamage(damage, 'bullet')
+      expect(unitIsDead).toBeFalsy()
+      expect(unit.currentArmour).toBeCloseTo(expectedArmour, 5)
+      expect(unit.currentHitPoints).toBeCloseTo(expectedHP, 5)
+    })
+
+    it('should damage hp accordingly with excess armour damage', () => {
+      const unit = makeUnit()
+
+      const armourDamageRatio = unit.getArmourDamageRatio()
+      const damage = 115
+      const expectedHP = unit.currentHitPoints - (damage - 43)
+
+      const unitIsDead = unit.takeDamage(damage, 'bullet')
+      expect(unitIsDead).toBeFalsy()
+      expect(unit.currentArmour).toBe(0)
+      expect(unit.currentHitPoints).toBeCloseTo(expectedHP, 5)
+    })
+
+    it('should kill a unit if enough damage is passed', () => {
+      const unit = makeUnit()
+
+      const armourDamageRatio = unit.getArmourDamageRatio()
+      const damage = 150
+      const expectedHP = unit.currentHitPoints - (damage - 43)
+
+      const unitIsDead = unit.takeDamage(damage, 'bullet')
+      expect(unitIsDead).toBe(true)
+      expect(unit.currentArmour).toBe(0)
+      expect(unit.currentHitPoints).toBe(0)
+      expect(unit.removeMe).toBe(true)
+    })
+  })
+
   // describe('getEnemySubtypes', function() {
   //   it('should error if invalid type is provided', () => {
   //     expect(() => {
