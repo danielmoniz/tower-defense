@@ -147,22 +147,24 @@ class Unit {
   //   // Must return the base undealt damage, not including any bonuses to armour damage!
   //   return damage - actualBaseDamage
   // }
-  // getArmourDamageRatio(armourPiercing) {
-  //   let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
-  //   if (armourPiercing) {
-  //     armourRatio /= 3 // ensure less damage goes to armour
-  //   }
-  //   return armourRatio
-  // }
-  // /*
-  //  * Kills a unit if need be. Returns true if it did.
-  //  */
+  getArmourDamageRatio(armourPiercing) {
+    let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
+    if (armourPiercing) {
+      armourRatio /= 3 // ensure less damage goes to armour
+    }
+    return armourRatio
+  }
+
+  /*
+   * Kills a unit if need be. Returns true if it did.
+   */
   handleDeath(damageType) {
     if (this.currentHitPoints > 0) { return }
     this.handlePassiveKillReward(damageType)
     this.kill()
     return true
   }
+
   handlePassiveKillReward(damageType) {
     // @TODO Ideally this checks whether the damage is 'passive', not just burning
     if (damageType === 'burning') { // handle profit in case of passive damage
@@ -197,10 +199,7 @@ class Unit {
     }
     this.takeHit(ammo.type)
 
-    let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
-    if (ammo.armourPiercing) {
-      armourRatio /= 3 // ensure less damage goes to armour
-    }
+    const armourRatio = this.getArmourDamageRatio(ammo.armourPiercing)
     const armourDamage = Math.min(totalDamage * armourRatio, this.currentArmour)
     this.currentArmour -= armourDamage
 
