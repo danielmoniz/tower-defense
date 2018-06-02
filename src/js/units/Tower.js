@@ -13,9 +13,9 @@ export default class Tower extends Unit {
   // @NOTE All of the below must be overwritten on every Tower!
   @observable name
   @observable type
-  @observable attackPower
+  @observable baseAttackPower
   @observable firingTime
-  @observable range // pixels
+  @observable range = {}
   @observable purchaseCost
   @observable killProfitMultiplier // certain towers can gain extra credits when killing units
   @observable clipSize
@@ -124,7 +124,7 @@ export default class Tower extends Unit {
 
   @action damageEnemy(enemy) {
     var targetValue = enemy.killValue
-    const killedUnit = enemy.takeDamage(this.attackPower.current, this.ammo)
+    const killedUnit = enemy.takeDamage(this.ammo.damage, this.ammo)
     if (!killedUnit) { return enemy }
 
     this.killEnemy(targetValue)
@@ -154,7 +154,7 @@ export default class Tower extends Unit {
   }
 
   @action updateStats() {
-    this.attackPower.current = this.attackPower.base * Math.pow(1.05, this.level - 1)
+    this.ammo.damage = this.baseAttackPower * Math.pow(1.05, this.level - 1)
     this.range.current = this.range.base * Math.pow(1.01, this.level - 1)
   }
 

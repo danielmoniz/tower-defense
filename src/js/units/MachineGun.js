@@ -12,10 +12,12 @@ export default class MachineGun extends Tower {
 
     this.name = 'MachineGun'
 
-    this.attackPower = {
-      base: 7,
-      current: 7,
+    this.baseAttackPower = 7
+    this.ammo = {
+      type: 'bullet',
+      damage: this.baseAttackPower,
     }
+
     this.range = {
       base: 300,
       current: 300,

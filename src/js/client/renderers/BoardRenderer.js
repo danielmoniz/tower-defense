@@ -123,7 +123,7 @@ export default class BoardRenderer {
   // @TODO Consider using Vue.js for templating here
   displayTower(infoPanelData, entity) {
     infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br>" +
-        "Damage: " + entity.attackPower.current.toFixed(2) + "<br>" +
+        "Damage: " + entity.ammo.damage.toFixed(2) + "<br>" +
         "Range: " + entity.range.current.toFixed(0) + "<br>" +
         "Clip size: " + entity.clipSize + "<br>" +
         "Firing time: " + entity.firingTime + "ms" + "<br>" +
@@ -133,14 +133,14 @@ export default class BoardRenderer {
         "Experience: " + entity.xp + "<br>" +
         "Level: " + entity.level
 
-    if (entity.attackPower.burning) {
+    if (entity.burningDamage) {
       infoPanelData.innerHTML += "<br>"
       let burningLength = "unlimited"
       if (entity.burningLength.current && entity.burningLength.current > 0) {
         burningLength = (entity.burningLength.current / 1000).toFixed(2) + " seconds"
       }
       infoPanelData.innerHTML +=
-        "Burning DPS: " + entity.attackPower.burning.current + "<br>" +
+        "Burning DPS: " + entity.burningDamage.current + "<br>" +
         "Burning length: " + burningLength
     }
   }

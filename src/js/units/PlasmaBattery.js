@@ -12,10 +12,6 @@ export default class PlasmaBattery extends Tower {
 
     this.name = 'PlasmaBattery'
 
-    this.attackPower = {
-      base: 40,
-      current: 40,
-    }
     this.range = {
       base: 300,
       current: 300,
@@ -25,14 +21,16 @@ export default class PlasmaBattery extends Tower {
     this.reloadTime = 5000
     this.killProfitMultiplier = 1
     this.purchaseCost = 50
+    this.baseAttackPower = 40
     this.ammo = {
       type: 'shell',
+      damage: this.baseAttackPower,
       armourPiercing: true,
     }
-    this.armourPiercing = true
 
     this.explosion = {
       type: 'explosion',
+      damage: this.baseAttackPower,
       radius: 100,
     }
 
@@ -41,13 +39,6 @@ export default class PlasmaBattery extends Tower {
   }
 
   @action attack() {
-    // @TODO
-     // Separate direct hit damage from explosion damage.
-     // That is, the target should receive both, and all other enemies within
-     // the explosion radius are hit only with the explosion.
-
-
-    // super.attack()
     this.selectTarget()
     if (!this.target) { return }
     this.isFiring = true
@@ -85,7 +76,7 @@ export default class PlasmaBattery extends Tower {
   @action damageEnemyWithExplosion(enemy, distance) {
     var targetValue = enemy.killValue
     const damage = this.calculateExplosionDamage(
-      this.attackPower.current,
+      this.ammo.damage,
       distance,
       this.explosion.radius,
     )
