@@ -1,7 +1,5 @@
 
 import Unit from 'units/Unit'
-// @TODO Cannot use a stock unit - need to use a specific one
-import Cannon from 'units/Cannon'
 
 describe('Unit.js', function() {
 
@@ -149,6 +147,20 @@ describe('Unit.js', function() {
       expect(unit.currentHitPoints).toBeCloseTo(expectedHP, 5)
     })
 
+    it('should damage armour and hp according to correct ratio with armour piercing', () => {
+      const unit = makeUnit()
+
+      const armourDamageRatio = unit.getArmourDamageRatio(true)
+      const damage = 70
+      const expectedArmour = unit.currentArmour - armourDamageRatio * damage
+      const expectedHP = unit.currentHitPoints - (1 - armourDamageRatio) * damage
+
+      const unitIsDead = unit.takeDamage(damage, 'bullet', true) // armour piercing
+      expect(unitIsDead).toBeFalsy()
+      expect(unit.currentArmour).toBeCloseTo(expectedArmour, 5)
+      expect(unit.currentHitPoints).toBeCloseTo(expectedHP, 5)
+    })
+
     it('should damage hp accordingly with excess armour damage', () => {
       const unit = makeUnit()
 
@@ -177,80 +189,95 @@ describe('Unit.js', function() {
     })
   })
 
-  // describe('getEnemySubtypes', function() {
-  //   it('should error if invalid type is provided', () => {
-  //     expect(() => {
-  //       Enemies.getEnemySubtypes('bad enemy type')
-  //     }).toThrow()
-  //   })
-  //
-  //   it('should return an object of enemy subtypes', () => {
-  //     const data = Enemies.getEnemySubtypes(validEnemyType)
-  //     expect(data).toMatchObject({
-  //       [validEnemySubtype]: getEnemyMatcher()
-  //     })
-  //   })
-  // })
-  //
-  // describe('getEnemyTypes', function() {
-  //   it('should return an object of enemy types', () => {
-  //     const data = Enemies.getEnemyTypes()
-  //     expect(data).toMatchObject({
-  //       [validEnemyType]: {
-  //         [validEnemySubtype]: expect.any(Object)
-  //       }
-  //     })
-  //   })
-  // })
-  //
-  // describe('getPointsValue', function() {
-  //   it('should return a valid points amount given enemy data', () => {
-  //     const enemyData = Enemies.getEnemyData(validEnemyType, validEnemySubtype)
-  //     const pointsValue = Enemies.getPointsValue(enemyData)
-  //     expect(pointsValue).toEqual(expect.any(Number))
-  //     expect(pointsValue).toBeGreaterThan(0)
-  //   })
-  // })
-  //
-  // describe('getCreditsValue', function() {
-  //   it('should return a non-zero credits amount given a small points value', () => {
-  //     const creditsValue = Enemies.getCreditsValue(0.4)
-  //     expect(creditsValue).toEqual(expect.any(Number))
-  //     expect(creditsValue).toBeGreaterThan(0)
-  //   })
-  // })
-  //
-  // describe('scaleEnemy', function() {
-  //   // @NOTE These attributes will change depending on which enemy attributes are scaled
-  //   const scaledAttributes = ['maxHitPoints']
-  //
-  //   it('should return data for a scaled enemy', () => {
-  //     const enemyData = Enemies.getEnemyData(validEnemyType, validEnemySubtype)
-  //     const scaledEnemyData = Enemies.scaleEnemy(enemyData, 4)
-  //     scaledAttributes.forEach((attribute) => {
-  //       expect(scaledEnemyData[attribute]).toBeGreaterThan(enemyData[attribute])
-  //     })
-  //   })
-  //
-  //   it('should not scale an enemy on the first level', () => {
-  //     const enemyData = Enemies.getEnemyData(validEnemyType, validEnemySubtype)
-  //     const scaledEnemyData = Enemies.scaleEnemy(enemyData, 1)
-  //     scaledAttributes.forEach((attribute) => {
-  //       expect(scaledEnemyData[attribute]).toEqual(enemyData[attribute])
-  //     })
-  //   })
-  // })
+  describe('receiveAttack', () => {
+    it('should return false if the unit is already dead', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 0
+      expect(unit.receiveAttack()).toBeFalsy()
+    })
+
+    it('should throw an error if no damage is passed', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 100
+
+      expect(() => {
+        unit.receiveAttack()
+      }).toThrow()
+
+      expect(() => {
+        unit.receiveAttack({}, undefined)
+      }).toThrow()
+    })
+
+    it('should set the unit to be hit by the given damage type', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 100
+
+      unit.receiveAttack({
+        damage: 50,
+        type: 'steam',
+      })
+      expect(unit.hitBy).toBe('steam')
+    })
+
+    it('should damage the HP and armour of the unit', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 100
+      unit.maxArmour = 100
+      unit.currentArmour = 50
+
+      unit.receiveAttack({
+        damage: 50,
+        type: 'steam',
+      })
+      expect(unit.currentHitPoints).toBe(75)
+      expect(unit.currentArmour).toBe(25)
+    })
+
+    it('should damage the HP and armour of the unit with armour piercing', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 100
+      unit.maxArmour = 100
+      unit.currentArmour = 50
+
+      unit.receiveAttack({
+        damage: 50,
+        type: 'steam',
+        armourPiercing: true,
+      })
+      expect(unit.currentHitPoints < 75).toBe(true)
+      expect(unit.currentArmour > 25).toBe(true)
+    })
+
+    it('should kill the unit if enough damage is passed', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 100
+      unit.maxArmour = 100
+      unit.currentArmour = 50
+      expect(unit.removeMe).toBe(false)
+
+      const unitIsDead = unit.receiveAttack({
+        damage: 170,
+        type: 'steam',
+      })
+      expect(unitIsDead).toBe(true)
+      expect(unit.currentHitPoints).toBe(0)
+      expect(unit.removeMe).toBe(true)
+    })
+
+    it('should kill the unit if enough damage is passed', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 100
+      unit.maxArmour = 100
+      unit.currentArmour = 50
+
+      const unitIsDead = unit.receiveAttack({
+        damage: 250, // would kill the unit
+        type: 'steam',
+      }, 100) // overriding ammo attack power
+      expect(unitIsDead).toBeFalsy()
+      expect(unit.currentHitPoints).toBe(50)
+    })
+  })
 
 })
-
-/*
- * Return an object with Jest matching for testing if an enemy has valid attributes.
- */
-// function getEnemyMatcher() {
-//   return {
-//     width: expect.any(Number),
-//     height: expect.any(Number),
-//     speed: expect.any(Number),
-//     maxHitPoints: expect.any(Number),
-//   }
-// }
