@@ -36,7 +36,9 @@ export default class Flamethrower extends Tower {
     this.reloadTime = 2000
     this.killProfitMultiplier = 0.8
     this.purchaseCost = 30
-    this.ammoType = 'fire'
+    this.ammo = {
+      type: 'fire',
+    }
 
     this.coneWidth = 20 // degrees
 

@@ -22,7 +22,9 @@ export default class Tower extends Unit {
   @observable reloadTime
 
   @observable isFiring = false
-  @observable ammoType = 'bullet'
+  @observable ammo = {
+    type: 'bullet',
+  }
 
   // tower performance data
   @observable kills = 0
@@ -122,7 +124,7 @@ export default class Tower extends Unit {
 
   @action damageEnemy(enemy) {
     var targetValue = enemy.killValue
-    const killedUnit = enemy.takeDamage(this.attackPower.current, this.ammoType)
+    const killedUnit = enemy.takeDamage(this.attackPower.current, this.ammo)
     if (!killedUnit) { return enemy }
 
     this.killEnemy(targetValue)

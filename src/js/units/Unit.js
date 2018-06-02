@@ -117,11 +117,11 @@ class Unit {
    * Makes the unit take damage.
    * Returns true if the unit is killed.
    */
-  @action takeDamage(amount, type) {
+  @action takeDamage(amount, ammo) {
     if (this.currentHitPoints <= 0) {
       return
     }
-    this.takeHit(type)
+    this.takeHit(ammo.type)
     const armourRatio = parseFloat(this.currentArmour) / this.maxArmour
     const armourDamage = Math.min(amount * armourRatio, this.currentArmour)
     this.currentArmour -= armourDamage
@@ -129,7 +129,7 @@ class Unit {
     this.currentHitPoints = Math.max(this.currentHitPoints - hpDamage, 0)
 
     if (this.currentHitPoints <= 0) {
-      if (type === 'burning') { // handle profit in case of passive damage
+      if (ammo.type === 'burning') { // handle profit in case of passive damage
         const attacker = this.burningInfo.attacker
         if (attacker) {
           // @TODO This hardcodes attackers being towers. Ideally this is more generic.

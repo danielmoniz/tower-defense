@@ -13,8 +13,8 @@ export default class PlasmaBattery extends Tower {
     this.name = 'PlasmaBattery'
 
     this.attackPower = {
-      base: 5,
-      current: 5,
+      base: 20,
+      current: 20,
     }
     this.range = {
       base: 300,
@@ -25,9 +25,16 @@ export default class PlasmaBattery extends Tower {
     this.reloadTime = 5000
     this.killProfitMultiplier = 1
     this.purchaseCost = 50
-    this.ammoType = 'shell'
+    this.ammo = {
+      type: 'shell',
+      armourPiercing: true,
+    }
+    this.armourPiercing = true
 
-    this.explosionRadius = 100 // pixels
+    this.explosion = {
+      radius: 100,
+      type: 'explosion',
+    }
 
     this.width = GRID_SIZE * 4
     this.height = GRID_SIZE * 4
@@ -46,7 +53,7 @@ export default class PlasmaBattery extends Tower {
     this.isFiring = true
 
     // damage enemies around target within this.explosionRadius
-    const enemiesInExplosionData = this.findEnemiesInRadius(this.explosionRadius, this.target)
+    const enemiesInExplosionData = this.findEnemiesInRadius(this.explosion.radius, this.target)
     enemiesInExplosionData.forEach((enemyData) => {
       // target hit directly; others hit by 'explosion'
       if (enemyData.enemy === this.target) {
@@ -80,9 +87,9 @@ export default class PlasmaBattery extends Tower {
     const damage = this.calculateExplosionDamage(
       this.attackPower.current,
       distance,
-      this.explosionRadius,
+      this.explosion.radius,
     )
-    const killedUnit = enemy.takeDamage(damage, 'explosion')
+    const killedUnit = enemy.takeDamage(damage, this.explosion)
     if (!killedUnit) { return }
 
     this.killEnemy(targetValue)
