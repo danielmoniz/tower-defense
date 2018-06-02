@@ -122,7 +122,10 @@ class Unit {
       return
     }
     this.takeHit(ammo.type)
-    const armourRatio = parseFloat(this.currentArmour) / this.maxArmour
+    let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
+    if (ammo.armourPiercing) {
+      armourRatio /= 3 // ensure less damage goes to armour
+    }
     const armourDamage = Math.min(amount * armourRatio, this.currentArmour)
     this.currentArmour -= armourDamage
     const hpDamage = amount - armourDamage

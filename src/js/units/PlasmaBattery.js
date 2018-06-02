@@ -13,8 +13,8 @@ export default class PlasmaBattery extends Tower {
     this.name = 'PlasmaBattery'
 
     this.attackPower = {
-      base: 20,
-      current: 20,
+      base: 40,
+      current: 40,
     }
     this.range = {
       base: 300,
@@ -32,8 +32,8 @@ export default class PlasmaBattery extends Tower {
     this.armourPiercing = true
 
     this.explosion = {
-      radius: 100,
       type: 'explosion',
+      radius: 100,
     }
 
     this.width = GRID_SIZE * 4
