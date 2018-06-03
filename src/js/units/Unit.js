@@ -85,12 +85,17 @@ class Unit extends Entity {
    * Damages the armour specifically.
    * If the armour is used up, the excess damage is returned to be later
    * applied to HP.
-   * Note that only base undealt damage must be returned, not damage after bonuses.
+   * NOTE: base undealt damage must be returned (before bonuses/penalties).
    */
   damageArmour(damage, type) {
     // @TODO Should eventually deal more or less damage depending on type
     const actualBaseDamage = Math.min(damage, this.currentArmour)
-    this.currentArmour -= actualBaseDamage
+    // most damage types should be less effective against armour than HP
+    let damageDealt = actualBaseDamage / 2
+    if (type === 'fire' || type === 'burning') {
+      damageDealt /= 20
+    }
+    this.currentArmour -= damageDealt
     return damage - actualBaseDamage
   }
 
