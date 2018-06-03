@@ -116,6 +116,9 @@ export default class BoardRenderer {
         "Armour: " + Math.ceil(enemy.currentArmour) + "/" + Math.ceil(enemy.maxArmour) + "<br>" +
         "Value: $" + enemy.killValue.credits + ", " + enemy.killValue.xp + "xp<br>" +
         attributesMessage + "<br>"
+    if (enemy.maxShields) {
+      infoPanelData.innerHTML += `Shields: ${parseInt(enemy.currentShields)}/${parseInt(enemy.maxShields)}<br>`
+    }
         // (we probably don't need size, as it has no in-game effect)
         // "Size: " + entity.width + "x" + entity.height
   }

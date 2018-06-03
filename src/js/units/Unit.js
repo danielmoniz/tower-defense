@@ -19,6 +19,8 @@ class Unit extends Entity {
     dps: 0,
   }
   @observable hitBy = null
+  @observable maxShields = 0
+  @observable currentShields = 0
 
   constructor(game, options) {
     super(game)
@@ -64,18 +66,22 @@ class Unit extends Entity {
    * Forces the unit to take damage. Will divide it between armour and HP.
    * Returns true if the unit is killed.
    */
-  takeDamage(damage, type, armourPiercing) {
+  @action takeDamage(damage, type, armourPiercing) {
+    // const shieldDamage = Math.min(damage, this.currentShields)
+    // let undealtShieldDamage = damage - shieldDamage
+    // this.currentShields -= shieldDamage
+    const undealtShieldDamage = this.damageShields(damage, type)
     const armourDamageRatio = this.getArmourDamageRatio(armourPiercing)
-    const armourDamageAllocation = damage * armourDamageRatio
-    const undealtDamage = this.damageArmour(armourDamageAllocation, type)
-    return this.damageHP(damage - armourDamageAllocation + undealtDamage, type)
+    const armourDamageAllocation = undealtShieldDamage * armourDamageRatio
+    let undealtArmourDamage = this.damageArmour(armourDamageAllocation, type)
+    return this.damageHP(undealtShieldDamage - armourDamageAllocation + undealtArmourDamage, type)
   }
 
   /*
    * Damages the HP specifically. Will also handle its death if needed.
    * Returns true if the unit is killed.
    */
-  damageHP(damage, type) {
+  @action damageHP(damage, type) {
     // @TODO Should eventually deal more or less damage depending on type
     this.currentHitPoints = Math.max(this.currentHitPoints - damage, 0)
     return this.handleDeath(type)
@@ -85,10 +91,9 @@ class Unit extends Entity {
    * Damages the armour specifically.
    * If the armour is used up, the excess damage is returned to be later
    * applied to HP.
-   * NOTE: base undealt damage must be returned (before bonuses/penalties).
+   * NOTE: Must return base undealt damage (before bonuses/penalties).
    */
-  damageArmour(damage, type) {
-    // @TODO Should eventually deal more or less damage depending on type
+  @action damageArmour(damage, type) {
     const actualBaseDamage = Math.min(damage, this.currentArmour)
     // most damage types should be less effective against armour than HP
     let damageDealt = actualBaseDamage / 2
@@ -97,6 +102,19 @@ class Unit extends Entity {
     }
     this.currentArmour -= damageDealt
     return damage - actualBaseDamage
+  }
+
+  /*
+   * Damages the unit's shields. The excess damage is returned to be applied
+   * to the next layer of the unit.
+   * NOTE: Must return base undealt damage (before bonuses/penalties).
+   */
+  @action damageShields(damage, type) {
+    // @TODO Should eventually deal more or less damage depending on type
+    const shieldDamage = Math.min(damage, this.currentShields)
+    let undealtShieldDamage = damage - shieldDamage
+    this.currentShields -= shieldDamage
+    return undealtShieldDamage
   }
 
   /*

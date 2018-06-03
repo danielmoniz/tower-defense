@@ -2,6 +2,7 @@
 import { autorun } from 'mobx'
 
 import UnitRenderer from '../UnitRenderer'
+import { GRID_SIZE } from '../../../appConstants'
 import { getBurningEmitter, getShellExplosionEmitter } from '../emitters'
 
 export default class EnemyRenderer extends UnitRenderer {
@@ -13,6 +14,7 @@ export default class EnemyRenderer extends UnitRenderer {
     this.createHealthBar(unit, container)
     const explosion = this.createExplosion(unit, container)
     const burnAnimation = this.createBurning(unit, container)
+    const shields = this.createShields(unit, container)
 
     container.on('rightclick', () => {
       this.actions.setSelectedTowerTarget(unit)
@@ -100,6 +102,23 @@ export default class EnemyRenderer extends UnitRenderer {
 
     autorun(() => {
       renderHitPointsBar(unit, healthBar, healthBarBackground, armourBar)
+    })
+  }
+
+  createShields(unit, container) {
+    if (!unit.maxShields) { return }
+    let shieldCircle
+
+    autorun(() => {
+      if (shieldCircle) {
+        shieldCircle.destroy()
+      }
+      shieldCircle = new PIXI.Graphics();
+      const shieldThickness = unit.currentShields / unit.maxShields * (unit.width / GRID_SIZE) * 5
+      shieldCircle.lineStyle(shieldThickness, 0x6666FF);  //(thickness, color)
+      shieldCircle.drawCircle(unit.width / 2, unit.height / 2, unit.width * 0.7);   //(x,y,radius)
+      shieldCircle.endFill();
+      container.addChild(shieldCircle);
     })
   }
 

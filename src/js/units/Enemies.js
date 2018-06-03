@@ -49,6 +49,10 @@ export function applyAttributes(oldEnemyData, attributes) {
   attributes.forEach((attribute) => {
     Object.keys(attribute).forEach((key) => {
       if (key === 'name') { return }
+      if (key === 'maxShields') {
+        enemyData['maxShields'] = enemyData.maxHitPoints * attribute[key]
+        return
+      }
       if (isNaN(enemyData[key])) {
         enemyData[key] = attribute[key]
       } else {
@@ -91,6 +95,7 @@ export function scaleEnemy(enemyData, gameLevel) {
   const scaleFactor = Math.pow(gameLevel, 1.2) // slow power
   data.maxHitPoints = Math.ceil(data.maxHitPoints * scaleFactor)
   data.maxArmour = Math.ceil(data.maxArmour * scaleFactor)
+  data.maxShields = Math.ceil(data.maxShields * scaleFactor)
   return data
 }
 
