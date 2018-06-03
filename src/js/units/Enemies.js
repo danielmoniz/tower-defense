@@ -58,8 +58,10 @@ export function applyAttributes(oldEnemyData, attributes) {
   })
   enemyData.attributes = attributes.map((attribute) => attribute.name)
 
-  delete enemyData.killValue // remove this so getEnemyStats will not ignore it // @FIXME Hacky!
-  return getEnemyStats(enemyData)
+  // delete enemyData.killValue // remove this so getEnemyStats will not ignore it // @FIXME Hacky!
+
+  // return getEnemyStats(enemyData) // would recalculate killValue and points
+  return enemyData // leaves killValue and points as they were before attrs
 }
 
 /*
@@ -76,7 +78,6 @@ export function getEnemyData(type, subtype, attributes = []) {
   finalEnemyData.enemyType = type
   finalEnemyData.subtype = subtype
   finalEnemyData.name = `${type} (${subtype})`
-
   return finalEnemyData
 }
 

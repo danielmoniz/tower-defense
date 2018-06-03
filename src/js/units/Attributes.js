@@ -16,8 +16,8 @@ export const attributes = [
   },
   {
     name: 'Elite',
-    maxHitPoints: normalFactor,
-    speed: normalFactor,
+    maxHitPoints: multiplyMultiplier(normalFactor, 0.5),
+    speed: multiplyMultiplier(normalFactor, 0.5),
   },
   {
     name: 'Regenerative',
