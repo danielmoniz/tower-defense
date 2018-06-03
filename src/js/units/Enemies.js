@@ -130,7 +130,7 @@ export const enemies = {
       height: GRID_SIZE * 1,
       speed: 20,
       maxHitPoints: 25,
-      maxArmour: 5,
+      maxArmour: 10,
       probability: 1,
       priority: 0,
     },
