@@ -196,16 +196,17 @@ class Unit {
   handlePassiveKillReward(damageType) {
     // @TODO Ideally this checks whether the damage is 'passive', not just burning
     if (damageType === 'burning') { // handle profit in case of passive damage
+      // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold.
       const attacker = this.burningInfo.attacker
-      if (attacker) {
-        // @TODO This hardcodes attackers being towers. Ideally this is more generic.
-        const tower = this.game.towers.byId[attacker]
-        tower.killEnemy(this.killValue)
-      } else {
-        // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold. So else never fires!
+      // @TODO This hardcodes attackers being towers. Ideally this is more generic.
+      const tower = this.game.towers.byId[attacker]
+
+      if (!attacker || !tower) {
         const multiplier = this.burningInfo.killProfitMultiplier
-        this.game.profit(this.killValue.credits * multiplier)
+        return this.game.profit(this.killValue.credits * multiplier)
       }
+
+      return tower.killEnemy(this.killValue)
     }
   }
 
