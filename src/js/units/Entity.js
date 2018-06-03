@@ -1,6 +1,7 @@
 
 import { observable, computed, action, autorun } from 'mobx'
 
+import { GRID_SIZE } from '../appConstants'
 import getAltId from '../utility/altId'
 
 export default class Entity {
@@ -13,8 +14,8 @@ export default class Entity {
   @observable removeMe = false // setting to true allows for units to be removed from the game
   @observable selected = false
 
-  @observable width
-  @observable height
+  @observable width = GRID_SIZE
+  @observable height = GRID_SIZE
 
   constructor(game) {
     this.id = getAltId()

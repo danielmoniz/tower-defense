@@ -11,8 +11,6 @@ export default class Tower extends Unit {
   @observable placed = false // towers generally start unplaced and become placed
 
   // @NOTE All of the below must be overwritten on every Tower!
-  @observable name
-  @observable type
   @observable baseAttackPower
   @observable firingTime
   @observable range = {}
@@ -30,10 +28,6 @@ export default class Tower extends Unit {
   @observable kills = 0
   @observable xp = 0
   @observable level = 1
-
-  // default size: 1 tile
-  @observable width = GRID_SIZE
-  @observable height = GRID_SIZE
 
   constructor(game, options) {
     super(game, options)
