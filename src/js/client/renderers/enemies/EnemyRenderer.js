@@ -114,7 +114,7 @@ export default class EnemyRenderer extends UnitRenderer {
         shieldCircle.destroy()
       }
       shieldCircle = new PIXI.Graphics();
-      const shieldThickness = unit.currentShields / unit.maxShields * (unit.width / GRID_SIZE) * 5
+      const shieldThickness = unit.currentShields / unit.maxShields * (unit.width / GRID_SIZE) * 4
       shieldCircle.lineStyle(shieldThickness, 0x6666FF);  //(thickness, color)
       shieldCircle.drawCircle(unit.width / 2, unit.height / 2, unit.width * 0.7);   //(x,y,radius)
       shieldCircle.endFill();
