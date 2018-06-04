@@ -82,6 +82,9 @@ export function getEnemyData(type, subtype, attributes = []) {
   finalEnemyData.enemyType = type
   finalEnemyData.subtype = subtype
   finalEnemyData.name = `${type} (${subtype})`
+  if (finalEnemyData.maxShields === undefined) {
+    finalEnemyData.maxShields = 0 // @TODO Set defaults here - refactor
+  }
   return finalEnemyData
 }
 
