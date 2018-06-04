@@ -36,7 +36,9 @@ class Unit extends Entity {
       basic: 0.1,
       laser: 10,
     },
-    // armourRatio:
+    armourRatio: {
+      piercing: 0.33,
+    }
   }
 
   constructor(game, options) {
@@ -152,7 +154,7 @@ class Unit extends Entity {
   getArmourDamageRatio(armourPiercing) {
     let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
     if (armourPiercing) {
-      armourRatio /= 3 // ensure less damage goes to armour
+      armourRatio *= this.damageFactor.armourRatio.piercing // ensure less damage goes to armour
     }
     return armourRatio
   }

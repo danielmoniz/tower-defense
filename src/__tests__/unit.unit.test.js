@@ -60,6 +60,7 @@ describe('Unit.js', function() {
 
     it('should return a smaller armour ratio if using armour piercing ammo', () => {
       const unit = new Unit({})
+      unit.damageFactor.armourRatio.piercing = 0.5
       unit.maxArmour = 100
       unit.currentArmour = 75
       const armourRatio = unit.getArmourDamageRatio()
@@ -88,6 +89,36 @@ describe('Unit.js', function() {
 
       expect(unit.currentArmour).toBe(0)
       expect(undealtDamage).toBe(15)
+    })
+
+    it('should reduce the armour based on the damage type', () => {
+      const unit = new Unit({})
+      unit.currentArmour = 75
+      unit.damageFactor.armour.laser = 0.5
+      const undealtDamage = unit.damageArmour(50, 'laser')
+
+      expect(unit.currentArmour).toBe(50)
+      expect(undealtDamage).toBe(0)
+    })
+
+    it('should return zero undealt damage if penalties reduce damage enough', () => {
+      const unit = new Unit({})
+      unit.currentArmour = 75
+      unit.damageFactor.armour.laser = 0.5
+      const undealtDamage = unit.damageArmour(90, 'laser')
+
+      expect(unit.currentArmour).toBe(30)
+      expect(undealtDamage).toBe(0)
+    })
+
+    it('should return some undealt damage if bonuses increase damage enough', () => {
+      const unit = new Unit({})
+      unit.currentArmour = 80
+      unit.damageFactor.armour.laser = 2
+      const undealtDamage = unit.damageArmour(60, 'laser')
+
+      expect(unit.currentArmour).toBe(0)
+      expect(undealtDamage).toBe(20)
     })
   })
 
