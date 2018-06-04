@@ -33,9 +33,9 @@ class Unit extends Entity {
       armourPiercing: 0.33,
     },
     shields: {
-      basic: 0.1,
-      laser: 10,
-      fire: 0,
+      basic: 0.5,
+      laser: 2,
+      fire: 0.2,
       burning: 0,
     },
     armourRatio: {
@@ -88,10 +88,8 @@ class Unit extends Entity {
    * Returns true if the unit is killed.
    */
   @action takeDamage(damage, type, armourPiercing) {
-    // const shieldDamage = Math.min(damage, this.currentShields)
-    // let undealtShieldDamage = damage - shieldDamage
-    // this.currentShields -= shieldDamage
     const undealtShieldDamage = this.damageShields(damage, type)
+    if (this.hasShields()) { return } // shields are not gone!
     const armourDamageRatio = this.getArmourDamageRatio(armourPiercing)
     const armourDamageAllocation = undealtShieldDamage * armourDamageRatio
     let undealtArmourDamage = this.damageArmour(armourDamageAllocation, type)
@@ -115,8 +113,9 @@ class Unit extends Entity {
    * NOTE: Must return base undealt damage (before bonuses/penalties).
    */
   @action damageArmour(damage, type) {
-    // const maxDamageDealt = Math.min(damage, this.currentArmour)
     const damageFactor = this.getDamageFactor('armour', type)
+    if (damageFactor === 0) { return damage }
+
     const baseDamageNeeded = this.currentArmour / parseFloat(damageFactor)
     const damageDealt = Math.min(damage * damageFactor, this.currentArmour)
     this.currentArmour -= damageDealt
@@ -130,6 +129,8 @@ class Unit extends Entity {
    */
   @action damageShields(damage, type) {
     const damageFactor = this.getDamageFactor('shields', type)
+    if (damageFactor === 0) { return damage }
+
     const baseDamageNeeded = this.currentShields / parseFloat(damageFactor)
     const damageDealt = Math.min(damage * damageFactor, this.currentShields)
     this.currentShields -= damageDealt
@@ -143,7 +144,7 @@ class Unit extends Entity {
    */
   getDamageFactor(unitLayer, type) {
     let damageFactor = this.damageFactor[unitLayer][type]
-    if (!damageFactor) {
+    if (damageFactor === undefined) {
       damageFactor = this.damageFactor[unitLayer].basic
     }
     return damageFactor
@@ -228,6 +229,7 @@ class Unit extends Entity {
   }
 
   @action ignite(attacker, killProfitMultiplier, dps, time) {
+    if (this.hasShields()) { return }
     this.setBurningCooldown(time)
 
     this.burning = true
@@ -268,6 +270,10 @@ class Unit extends Entity {
    */
   isAlive() {
     return this.currentHitPoints > 0 && !this.completed && !this.removeMe
+  }
+
+  hasShields() {
+    return this.currentShields > 0
   }
 
 }
