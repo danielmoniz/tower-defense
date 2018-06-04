@@ -35,6 +35,8 @@ class Unit extends Entity {
     shields: {
       basic: 0.1,
       laser: 10,
+      fire: 0,
+      burning: 0,
     },
     armourRatio: {
       piercing: 0.33,
@@ -127,12 +129,11 @@ class Unit extends Entity {
    * NOTE: Must return base undealt damage (before bonuses/penalties).
    */
   @action damageShields(damage, type) {
-    let damageDealt = Math.min(damage, this.currentShields)
-    let undealtShieldDamage = damage - damageDealt
-
-    // damageDealt *= this.getDamageFactor('shields', type)
+    const damageFactor = this.getDamageFactor('shields', type)
+    const baseDamageNeeded = this.currentShields / parseFloat(damageFactor)
+    const damageDealt = Math.min(damage * damageFactor, this.currentShields)
     this.currentShields -= damageDealt
-    return undealtShieldDamage
+    return Math.max(damage - baseDamageNeeded, 0)
   }
 
   /*

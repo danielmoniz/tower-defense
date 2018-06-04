@@ -156,6 +156,38 @@ describe('Unit.js', function() {
     })
   })
 
+  describe('damageShields', () => {
+    it('should reduce the shields of the unit by the passed damage amount', () => {
+      const unit = new Unit({})
+      unit.damageFactor.shields.basic = 1
+      unit.currentShields = 30
+
+      const undealtDamage = unit.damageShields(20)
+      expect(unit.currentShields).toBe(10)
+      expect(undealtDamage).toBe(0)
+    })
+
+    it("should reduce a unit's shields to zero if dealt enough damage (but no further)", () => {
+      const unit = new Unit({})
+      unit.damageFactor.shields.basic = 1
+      unit.currentShields = 30
+
+      const undealtDamage = unit.damageShields(66)
+      expect(unit.currentShields).toBe(0)
+      expect(undealtDamage).toBe(36)
+    })
+
+    it("should damage a unit's shields depending on damage type", () => {
+      const unit = new Unit({})
+      unit.damageFactor.shields.laser = 2
+      unit.currentShields = 40
+
+      const undealtDamage = unit.damageShields(30, 'laser')
+      expect(unit.currentShields).toBe(0)
+      expect(undealtDamage).toBe(10)
+    })
+  })
+
   describe('takeDamage', () => {
     function makeUnit() {
       const unit = new Unit()
@@ -222,6 +254,24 @@ describe('Unit.js', function() {
       expect(unit.currentArmour).toBe(0)
       expect(unit.currentHitPoints).toBe(0)
       expect(unit.removeMe).toBe(true)
+    })
+
+    it('should damage shields first, then spill over and use the correct ratio', () => {
+      const unit = makeUnit()
+      unit.currentShields = 20
+      unit.damageFactor.shields.basic = 1
+
+      const armourDamageRatio = unit.getArmourDamageRatio()
+      const damage = 70
+      const damageAfterShields = damage - unit.currentShields
+      const expectedArmour = unit.currentArmour - armourDamageRatio * damageAfterShields
+      const expectedHP = unit.currentHitPoints - (1 - armourDamageRatio) * damageAfterShields
+
+      const unitIsDead = unit.takeDamage(damage)
+      expect(unitIsDead).toBeFalsy()
+      expect(unit.currentShields).toBe(0)
+      expect(unit.currentArmour).toBeCloseTo(expectedArmour, 5)
+      expect(unit.currentHitPoints).toBeCloseTo(expectedHP, 5)
     })
   })
 
