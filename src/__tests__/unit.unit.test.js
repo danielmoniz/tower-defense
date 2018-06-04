@@ -70,6 +70,40 @@ describe('Unit.js', function() {
     })
   })
 
+  describe('damageHP', () => {
+    it('should reduce the HP of the unit by the passed damage amount', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 50
+      const unitIsDead = unit.damageHP(20)
+      expect(unitIsDead).toBeFalsy()
+
+      expect(unit.currentHitPoints).toBe(30)
+      expect(unit.removeMe).toBeFalsy()
+    })
+
+    it('should kill a unit if dealt exactly enough damage', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 75
+      expect(unit.removeMe).toBeFalsy()
+
+      const unitIsDead = unit.damageHP(75)
+      expect(unitIsDead).toBeTruthy()
+      expect(unit.currentHitPoints).toBe(0)
+      expect(unit.removeMe).toBeTruthy()
+    })
+
+    it('should reduce the HP to zero but not further', () => {
+      const unit = new Unit({})
+      unit.currentHitPoints = 75
+      expect(unit.removeMe).toBeFalsy()
+
+      const unitIsDead = unit.damageHP(90)
+      expect(unitIsDead).toBeTruthy()
+      expect(unit.currentHitPoints).toBe(0)
+      expect(unit.removeMe).toBeTruthy()
+    })
+  })
+
   describe('damageArmour', () => {
     it('should deal all damage to the armour if possible', () => {
       const unit = new Unit({})
@@ -122,40 +156,6 @@ describe('Unit.js', function() {
     })
   })
 
-  describe('damageHP', () => {
-    it('should reduce the HP of the unit by the passed damage amount', () => {
-      const unit = new Unit({})
-      unit.currentHitPoints = 50
-      const unitIsDead = unit.damageHP(20)
-      expect(unitIsDead).toBeFalsy()
-
-      expect(unit.currentHitPoints).toBe(30)
-      expect(unit.removeMe).toBeFalsy()
-    })
-
-    it('should kill a unit if dealt exactly enough damage', () => {
-      const unit = new Unit({})
-      unit.currentHitPoints = 75
-      expect(unit.removeMe).toBeFalsy()
-
-      const unitIsDead = unit.damageHP(75)
-      expect(unitIsDead).toBeTruthy()
-      expect(unit.currentHitPoints).toBe(0)
-      expect(unit.removeMe).toBeTruthy()
-    })
-
-    it('should reduce the HP to zero but not further', () => {
-      const unit = new Unit({})
-      unit.currentHitPoints = 75
-      expect(unit.removeMe).toBeFalsy()
-
-      const unitIsDead = unit.damageHP(90)
-      expect(unitIsDead).toBeTruthy()
-      expect(unit.currentHitPoints).toBe(0)
-      expect(unit.removeMe).toBeTruthy()
-    })
-  })
-
   describe('damageShields', () => {
     it('should reduce the shields of the unit by the passed damage amount', () => {
       const unit = new Unit({})
@@ -167,7 +167,7 @@ describe('Unit.js', function() {
       expect(undealtDamage).toBe(0)
     })
 
-    it("should reduce a unit's shields to zero if dealt enough damage (but no further)", () => {
+    it("should reduce a unit's shields to zero if dealt enough damage", () => {
       const unit = new Unit({})
       unit.damageFactor.shields.basic = 1
       unit.currentShields = 30
@@ -185,6 +185,38 @@ describe('Unit.js', function() {
       const undealtDamage = unit.damageShields(30, 'laser')
       expect(unit.currentShields).toBe(0)
       expect(undealtDamage).toBe(10)
+    })
+
+    it('should return zero undealt damage if penalties reduce damage enough', () => {
+      const unit = new Unit({})
+      unit.currentShields = 75
+      unit.damageFactor.shields.bullet = 0.5
+      const undealtDamage = unit.damageShields(90, 'bullet')
+
+      expect(unit.currentShields).toBe(30)
+      expect(undealtDamage).toBe(0)
+    })
+
+    it('should return some undealt damage if bonuses increase damage enough', () => {
+      const unit = new Unit({})
+      unit.currentShields = 80
+      unit.damageFactor.shields.laser = 2
+      const undealtDamage = unit.damageShields(60, 'laser')
+
+      expect(unit.currentShields).toBe(0)
+      expect(undealtDamage).toBe(20)
+    })
+  })
+
+  describe('damageAttribute', () => {
+    it('should handle a damage factor of zero by returning all damage', () => {
+      const unit = new Unit({})
+      unit.currentShields = 80
+      unit.damageFactor.armour.laser = 0
+      const undealtDamage = unit.damageAttribute('currentArmour', 60, 'laser', 'armour')
+
+      expect(unit.currentShields).toBe(80)
+      expect(undealtDamage).toBe(60)
     })
   })
 

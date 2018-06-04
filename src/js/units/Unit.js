@@ -110,32 +110,34 @@ class Unit extends Entity {
    * Damages the armour specifically.
    * If the armour is used up, the excess damage is returned to be later
    * applied to HP.
-   * NOTE: Must return base undealt damage (before bonuses/penalties).
    */
   @action damageArmour(damage, type) {
-    const damageFactor = this.getDamageFactor('armour', type)
-    if (damageFactor === 0) { return damage }
-
-    const baseDamageNeeded = this.currentArmour / parseFloat(damageFactor)
-    const damageDealt = Math.min(damage * damageFactor, this.currentArmour)
-    this.currentArmour -= damageDealt
-    return Math.max(damage - baseDamageNeeded, 0)
+    return this.damageAttribute('currentArmour', damage, type, 'armour')
   }
 
   /*
    * Damages the unit's shields. The excess damage is returned to be applied
    * to the next layer of the unit.
-   * NOTE: Must return base undealt damage (before bonuses/penalties).
    */
   @action damageShields(damage, type) {
-    const damageFactor = this.getDamageFactor('shields', type)
+    return this.damageAttribute('currentShields', damage, type, 'shields')
+  }
+
+  /*
+   * Damages a dynamic attribute of the unit.
+   * Returns the base undealt damage (before bonuses/penalties).
+   */
+  damageAttribute(attrName, damage, type, damageFactorName) {
+    const damageFactor = this.getDamageFactor(damageFactorName, type)
     if (damageFactor === 0) { return damage }
 
-    const baseDamageNeeded = this.currentShields / parseFloat(damageFactor)
-    const damageDealt = Math.min(damage * damageFactor, this.currentShields)
-    this.currentShields -= damageDealt
+    const baseDamageNeeded = this[attrName] / parseFloat(damageFactor)
+    const damageDealt = Math.min(damage * damageFactor, this[attrName])
+    this[attrName] -= damageDealt
     return Math.max(damage - baseDamageNeeded, 0)
   }
+
+  // @TODO Add method to DRY up damageArmour() and damageShields()
 
   /*
    * Return the damage factor for the given unit layer (eg. shields/armour/hp)
