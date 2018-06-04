@@ -14,7 +14,7 @@ export default class Cannon extends Tower {
 
     this.baseAttackPower = 11
     this.ammo = {
-      type: 'bullet',
+      type: 'laser',
       damage: this.baseAttackPower,
     }
 

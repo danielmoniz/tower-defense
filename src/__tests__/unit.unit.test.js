@@ -73,16 +73,18 @@ describe('Unit.js', function() {
     it('should deal all damage to the armour if possible', () => {
       const unit = new Unit({})
       unit.currentArmour = 75
+      unit.damageFactor.armour.basic = 1
       const undealtDamage = unit.damageArmour(20)
 
-      expect(unit.currentArmour).toBe(55)
       expect(undealtDamage).toBe(0)
+      expect(unit.currentArmour).toBe(55)
     })
 
     it('should reduce the armour to zero and return the undealt damage', () => {
       const unit = new Unit({})
       unit.currentArmour = 75
-      const undealtDamage = unit.damageArmour(90)
+      unit.damageFactor.armour.basic = 1
+      const undealtDamage = unit.damageArmour(90, 'basic')
 
       expect(unit.currentArmour).toBe(0)
       expect(undealtDamage).toBe(15)
@@ -130,6 +132,9 @@ describe('Unit.js', function() {
       unit.currentHitPoints = 100
       unit.maxArmour = 100
       unit.currentArmour = 43
+
+      unit.damageFactor.armour.basic = 1
+      unit.damageFactor.hp.basic = 1
       return unit
     }
 
@@ -141,7 +146,7 @@ describe('Unit.js', function() {
       const expectedArmour = unit.currentArmour - armourDamageRatio * damage
       const expectedHP = unit.currentHitPoints - (1 - armourDamageRatio) * damage
 
-      const unitIsDead = unit.takeDamage(damage, 'bullet')
+      const unitIsDead = unit.takeDamage(damage)
       expect(unitIsDead).toBeFalsy()
       expect(unit.currentArmour).toBeCloseTo(expectedArmour, 5)
       expect(unit.currentHitPoints).toBeCloseTo(expectedHP, 5)
@@ -190,6 +195,18 @@ describe('Unit.js', function() {
   })
 
   describe('receiveAttack', () => {
+    function makeUnit() {
+      const unit = new Unit()
+      unit.maxHitPoints = 100
+      unit.currentHitPoints = 100
+      unit.maxArmour = 100
+      unit.currentArmour = 43
+
+      unit.damageFactor.armour.basic = 1
+      unit.damageFactor.hp.basic = 1
+      return unit
+    }
+
     it('should return false if the unit is already dead', () => {
       const unit = new Unit({})
       unit.currentHitPoints = 0
@@ -210,8 +227,7 @@ describe('Unit.js', function() {
     })
 
     it('should set the unit to be hit by the given damage type', () => {
-      const unit = new Unit({})
-      unit.currentHitPoints = 100
+      const unit = makeUnit()
 
       unit.receiveAttack({
         damage: 50,
@@ -222,6 +238,9 @@ describe('Unit.js', function() {
 
     it('should damage the HP and armour of the unit', () => {
       const unit = new Unit({})
+      unit.damageFactor.armour.basic = 1
+      unit.damageFactor.hp.basic = 1
+
       unit.currentHitPoints = 100
       unit.maxArmour = 100
       unit.currentArmour = 50
@@ -250,7 +269,7 @@ describe('Unit.js', function() {
     })
 
     it('should kill the unit if enough damage is passed', () => {
-      const unit = new Unit({})
+      const unit = makeUnit()
       unit.currentHitPoints = 100
       unit.maxArmour = 100
       unit.currentArmour = 50
@@ -266,7 +285,7 @@ describe('Unit.js', function() {
     })
 
     it('should kill the unit if enough damage is passed', () => {
-      const unit = new Unit({})
+      const unit = makeUnit()
       unit.currentHitPoints = 100
       unit.maxArmour = 100
       unit.currentArmour = 50

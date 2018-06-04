@@ -22,6 +22,23 @@ class Unit extends Entity {
   @observable maxShields = 0
   @observable currentShields = 0
 
+  damageFactor = {
+    hp: {
+      basic: 1,
+    },
+    armour: {
+      basic: 0.5,
+      fire: 0.05,
+      burning: 0.05,
+      armourPiercing: 0.33,
+    },
+    shields: {
+      basic: 0.1,
+      laser: 10,
+    },
+    // armourRatio:
+  }
+
   constructor(game, options) {
     super(game)
     options = options || {}
@@ -94,14 +111,12 @@ class Unit extends Entity {
    * NOTE: Must return base undealt damage (before bonuses/penalties).
    */
   @action damageArmour(damage, type) {
-    const actualBaseDamage = Math.min(damage, this.currentArmour)
-    // most damage types should be less effective against armour than HP
-    let damageDealt = actualBaseDamage / 2
-    if (type === 'fire' || type === 'burning') {
-      damageDealt /= 20
-    }
+    // const maxDamageDealt = Math.min(damage, this.currentArmour)
+    const damageFactor = this.getDamageFactor('armour', type)
+    const baseDamageNeeded = this.currentArmour / parseFloat(damageFactor)
+    const damageDealt = Math.min(damage * damageFactor, this.currentArmour)
     this.currentArmour -= damageDealt
-    return damage - actualBaseDamage
+    return Math.max(damage - baseDamageNeeded, 0)
   }
 
   /*
@@ -110,11 +125,25 @@ class Unit extends Entity {
    * NOTE: Must return base undealt damage (before bonuses/penalties).
    */
   @action damageShields(damage, type) {
-    // @TODO Should eventually deal more or less damage depending on type
-    const shieldDamage = Math.min(damage, this.currentShields)
-    let undealtShieldDamage = damage - shieldDamage
-    this.currentShields -= shieldDamage
+    let damageDealt = Math.min(damage, this.currentShields)
+    let undealtShieldDamage = damage - damageDealt
+
+    // damageDealt *= this.getDamageFactor('shields', type)
+    this.currentShields -= damageDealt
     return undealtShieldDamage
+  }
+
+  /*
+   * Return the damage factor for the given unit layer (eg. shields/armour/hp)
+   * and the given damage type.
+   * If none is found, returned the basic stat for the unit layer.
+   */
+  getDamageFactor(unitLayer, type) {
+    let damageFactor = this.damageFactor[unitLayer][type]
+    if (!damageFactor) {
+      damageFactor = this.damageFactor[unitLayer].basic
+    }
+    return damageFactor
   }
 
   /*
