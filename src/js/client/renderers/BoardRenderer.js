@@ -159,8 +159,15 @@ export default class BoardRenderer {
   setupRoundAttributesDisplay(game) {
     const attributesDisplay = document.querySelector('.round-attributes .attributes')
     autorun(() => {
-      const output = game.wave.currentAttributes.map((obj) => obj.name).join(', ')
+      const attributes = game.wave.currentAttributes
+      const output = attributes.map((attrObject) => attrObject.name).join(', ')
       attributesDisplay.innerHTML = output
+      if (attributes.length > 0) {
+        attributesDisplay.classList.remove('updated')
+        // trigger a 'reflow', otherwise it will be as if you never re-added the class
+        void attributesDisplay.offsetWidth
+        attributesDisplay.classList.add('updated')
+      }
     })
   }
 

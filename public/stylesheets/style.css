@@ -18,6 +18,16 @@ a {
 
 .gameState .round-attributes .attributes {
   font-weight: bold;
+  padding: 4px;
+}
+.gameState .round-attributes .attributes.updated {
+  animation: Highlight 1s linear;
+}
+
+@keyframes Highlight {
+  50% {
+    background-color: deepskyblue;
+  }
 }
 
 .info-panel {
