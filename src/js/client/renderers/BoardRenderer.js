@@ -161,7 +161,8 @@ export default class BoardRenderer {
     const attributesDisplay = document.querySelector('.round-attributes .attributes')
     autorun(() => {
       const attributes = game.wave.currentAttributes
-      const output = attributes.map((attrObject) => attrObject.name).join(', ')
+      const output = attributes.sort((attr1, attr2) => attr1.name > attr2.name)
+                               .map((attrObject) => attrObject.name).join(', ')
       attributesDisplay.innerHTML = output
       if (attributes.length > 0) {
         this.triggerUpdateAnimation(attributesDisplay)
