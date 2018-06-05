@@ -15,6 +15,7 @@ export default class EnemyRenderer extends UnitRenderer {
     const explosion = this.createExplosion(unit, container)
     const burnAnimation = this.createBurning(unit, container)
     const shields = this.createShields(unit, container)
+    const regenerative = this.createRegenerativeIndicator(unit, container)
 
     container.on('rightclick', () => {
       this.actions.setSelectedTowerTarget(unit)
@@ -119,6 +120,25 @@ export default class EnemyRenderer extends UnitRenderer {
       shieldCircle.drawCircle(unit.width / 2, unit.height / 2, unit.width * 0.7);   //(x,y,radius)
       shieldCircle.endFill();
       container.addChild(shieldCircle);
+    })
+  }
+
+  createRegenerativeIndicator(unit, container) {
+    if (unit.regenerates === undefined) { return }
+    const regenIndicator = new PIXI.Sprite(PIXI.utils.TextureCache['regenerative'])
+    regenIndicator.anchor.set(0.5)
+    regenIndicator.width = unit.width / 2
+    regenIndicator.height = regenIndicator.width
+    regenIndicator.position.x = unit.width / 4
+    regenIndicator.position.y = unit.height / 4
+    container.addChild(regenIndicator)
+
+    autorun(() => {
+      if (unit.regenerates > 0) {
+        regenIndicator.alpha = 1
+      } else {
+        regenIndicator.alpha = 0.5 // in case enemy loses regen for some reason
+      }
     })
   }
 

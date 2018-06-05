@@ -70,6 +70,7 @@ export default class BoardRenderer {
           .add('sell', '/images/sell.png')
           .add('muzzleFlash', '/images/muzzle_flash.png')
           .add('enemyExplosionBasic', '/images/enemy_explosion_basic.png')
+          .add('regenerative', '/images/regenerative.png')
     console.log("Loading images...");
     this.loader.on("progress", (loader, resource) => {
       const completion = `${Math.floor(loader.progress)}%`
