@@ -2,19 +2,19 @@
 const normalFactor = 1.2
 
 export const attributes = [
-  // {
-  //   name: 'Speedy',
-  //   speed: normalFactor,
-  // },
-  // {
-  //   name: 'Super speedy',
-  //   speed: multiplyMultiplier(normalFactor, 2),
-  //   maxHitPoints: 1 / normalFactor,
-  // },
-  // {
-  //   name: 'Beefy',
-  //   maxHitPoints: normalFactor,
-  // },
+  {
+    name: 'Speedy',
+    speed: normalFactor,
+  },
+  {
+    name: 'Super speedy',
+    speed: multiplyMultiplier(normalFactor, 2),
+    maxHitPoints: 1 / normalFactor,
+  },
+  {
+    name: 'Beefy',
+    maxHitPoints: normalFactor,
+  },
   {
     name: 'Elite',
     maxHitPoints: multiplyMultiplier(normalFactor, 0.5),

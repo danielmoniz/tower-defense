@@ -1,5 +1,5 @@
 
-import { observable, action } from 'mobx'
+import { observable, action, computed } from 'mobx'
 
 import Cooldown from './Cooldown'
 
@@ -12,6 +12,7 @@ class WaveSpawner {
 
   constructor() {
     this.cooldown = null
+    this.bossSpawnOnWave = 5
   }
 
   /*
@@ -22,6 +23,10 @@ class WaveSpawner {
       console.log('Waves beginning!');
       this.cooldown = Cooldown.createTimeBased(this.timeBetweenWaves, updateFrequency)
     }
+  }
+
+  @computed get round() {
+    return Math.ceil(this.number / this.bossSpawnOnWave)
   }
 
   /*

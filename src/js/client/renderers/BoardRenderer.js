@@ -154,6 +154,7 @@ export default class BoardRenderer {
     this.setupLivesDisplay(game)
     this.setupWaveDisplay(game)
     this.setupRoundAttributesDisplay(game)
+    this.setupRoundNumberDisplay(game)
   }
 
   setupRoundAttributesDisplay(game) {
@@ -163,11 +164,15 @@ export default class BoardRenderer {
       const output = attributes.map((attrObject) => attrObject.name).join(', ')
       attributesDisplay.innerHTML = output
       if (attributes.length > 0) {
-        attributesDisplay.classList.remove('updated')
-        // trigger a 'reflow', otherwise it will be as if you never re-added the class
-        void attributesDisplay.offsetWidth
-        attributesDisplay.classList.add('updated')
+        this.triggerUpdateAnimation(attributesDisplay)
       }
+    })
+  }
+
+  setupRoundNumberDisplay(game) {
+    const roundNumberDisplay = document.querySelector('.round-attributes .round-number')
+    autorun(() => {
+      roundNumberDisplay.innerHTML = game.wave.round
     })
   }
 
@@ -284,6 +289,13 @@ export default class BoardRenderer {
       attributesMessage += enemy.attributes.join(", ")
     }
     return attributesMessage
+  }
+
+  triggerUpdateAnimation(element) {
+    element.classList.remove('updated')
+    // trigger a 'reflow', otherwise it will be as if you never re-added the class
+    void element.offsetWidth
+    element.classList.add('updated')
   }
 
 }
