@@ -153,6 +153,15 @@ export default class BoardRenderer {
     this.setupCreditsDisplay(game)
     this.setupLivesDisplay(game)
     this.setupWaveDisplay(game)
+    this.setupRoundAttributesDisplay(game)
+  }
+
+  setupRoundAttributesDisplay(game) {
+    const attributesDisplay = document.querySelector('.round-attributes .attributes')
+    autorun(() => {
+      const output = game.wave.currentAttributes.map((obj) => obj.name).join(', ')
+      attributesDisplay.innerHTML = output
+    })
   }
 
   setupCreditsDisplay(game) {
