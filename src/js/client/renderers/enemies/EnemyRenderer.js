@@ -14,8 +14,9 @@ export default class EnemyRenderer extends UnitRenderer {
     this.createHealthBar(unit, container)
     const explosion = this.createExplosion(unit, container)
     const burnAnimation = this.createBurning(unit, container)
-    const shields = this.createShields(unit, container)
+    const speedy = this.createSpeedyIndicator(unit, container)
     const regenerative = this.createRegenerativeIndicator(unit, container)
+    const shields = this.createShields(unit, container) // renders below everything else
 
     container.on('rightclick', () => {
       this.actions.setSelectedTowerTarget(unit)
@@ -119,12 +120,13 @@ export default class EnemyRenderer extends UnitRenderer {
       shieldCircle.lineStyle(shieldThickness, 0x6666FF);  //(thickness, color)
       shieldCircle.drawCircle(unit.width / 2, unit.height / 2, unit.width * 0.7);   //(x,y,radius)
       shieldCircle.endFill();
-      container.addChild(shieldCircle);
+      container.addChildAt(shieldCircle, 0);
     })
   }
 
   createRegenerativeIndicator(unit, container) {
     if (unit.regenerates === undefined) { return }
+
     const regenIndicator = new PIXI.Sprite(PIXI.utils.TextureCache['regenerative'])
     regenIndicator.anchor.set(0.5)
     regenIndicator.width = unit.width / 2
@@ -140,6 +142,19 @@ export default class EnemyRenderer extends UnitRenderer {
         regenIndicator.alpha = 0.5 // in case enemy loses regen for some reason
       }
     })
+  }
+
+  createSpeedyIndicator(unit, container) {
+    if (!unit.hasAttribute('Speedy')) { return }
+
+    const speedyIndicator = new PIXI.Sprite(PIXI.utils.TextureCache['speedy'])
+    const widthToHeightRatio = speedyIndicator.width / speedyIndicator.height
+    speedyIndicator.anchor = { x: 0, y: 0.5 }
+    speedyIndicator.height = unit.height * 2/3
+    speedyIndicator.width = speedyIndicator.height * widthToHeightRatio
+    speedyIndicator.position.x = unit.width * 5/6
+    speedyIndicator.position.y = unit.height / 2
+    container.addChildAt(speedyIndicator, 0)
   }
 
 }

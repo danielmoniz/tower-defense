@@ -80,6 +80,10 @@ class Enemy extends Unit {
     this.completed = true
     this.destroy()
   }
+
+  hasAttribute(name) {
+    return this.attributes && this.attributes.indexOf(name) !== -1
+  }
 }
 
 export default Enemy

@@ -7,11 +7,6 @@ export const attributes = [
     speed: normalFactor,
   },
   {
-    name: 'Super speedy',
-    speed: multiplyMultiplier(normalFactor, 2),
-    maxHitPoints: 1 / normalFactor,
-  },
-  {
     name: 'Beefy',
     maxHitPoints: normalFactor,
   },
@@ -28,6 +23,11 @@ export const attributes = [
     name: 'Shielded',
     maxShields: 0.2, // multiple of hit points
   },
+  // {
+  //   name: 'Super speedy',
+  //   speed: multiplyMultiplier(normalFactor, 2),
+  //   maxHitPoints: 1 / normalFactor,
+  // },
 ]
 
 /*
