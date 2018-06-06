@@ -7,7 +7,7 @@ export const attributes = [
     speed: normalFactor,
   },
   {
-    name: 'Beefy',
+    name: 'Tough',
     maxHitPoints: normalFactor,
   },
   {
