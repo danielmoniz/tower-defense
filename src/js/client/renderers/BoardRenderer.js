@@ -145,7 +145,7 @@ export default class BoardRenderer {
         burningLength = (entity.burningLength.current / 1000).toFixed(2) + " seconds"
       }
       infoPanelData.innerHTML +=
-        "Burning DPS: " + entity.burningDamage.current + "<br>" +
+        "Burning DPS: " + entity.burningDamage.current.toFixed(2) + "<br>" +
         "Burning length: " + burningLength
     }
   }

@@ -81,4 +81,9 @@ export default class Flamethrower extends Tower {
     return enemies
   }
 
+  updateStats() {
+    super.updateStats()
+    this.burningDamage.current = this.burningDamage.base * this.getStatMultiplier()
+  }
+
 }

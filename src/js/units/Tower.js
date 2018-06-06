@@ -148,8 +148,12 @@ export default class Tower extends Unit {
   }
 
   @action updateStats() {
-    this.ammo.damage = this.baseAttackPower * Math.pow(1.05, this.level - 1)
-    this.range.current = this.range.base * Math.pow(1.01, this.level - 1)
+    this.ammo.damage = this.baseAttackPower * this.getStatMultiplier()
+    this.range.current = this.range.base * this.getStatMultiplier(1.01)
+  }
+
+  getStatMultiplier(factor = 1.05) {
+    return Math.pow(1.05, this.level - 1)
   }
 
   targetIsValid() {
