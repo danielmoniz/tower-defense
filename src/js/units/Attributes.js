@@ -1,5 +1,5 @@
 
-const normalFactor = 1.2
+const normalFactor = 1.6
 
 export const attributes = [
   {
@@ -17,11 +17,11 @@ export const attributes = [
   },
   {
     name: 'Regenerative',
-    regenerates: 0.2, // 20% of some amount of max HP per second (eg. sqrt)
+    regenerates: 0.3, // X% of some amount of max HP per second (eg. sqrt)
   },
   {
     name: 'Shielded',
-    maxShields: 0.2, // multiple of hit points
+    maxShields: normalFactor - 1, // multiple of hit points
   },
   // {
   //   name: 'Super speedy',
