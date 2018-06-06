@@ -1,5 +1,6 @@
 
 import { GRID_SIZE } from '../appConstants'
+import allEnemies from './enemiesList'
 
 /*
  * Given data for an enemy, returns the number of points they cost to be placed
@@ -127,85 +128,4 @@ export function getEnemyTypes() {
   return result
 }
 
-// @TODO Should have enemy sizes as ratios of GRID_SIZE (eg. 1, 2, 0.5, etc.)
-/*
- * NOTE: Can hardcode credits and xp by adding killValue object.
- */
-export const enemies = {
-  'Invader': {
-    'normal': {
-      width: GRID_SIZE * 1,
-      height: GRID_SIZE * 1,
-      speed: 20,
-      maxHitPoints: 25,
-      maxArmour: 10,
-      probability: 1,
-      priority: 0,
-    },
-    fast: {
-      width: GRID_SIZE * 0.75,
-      height: GRID_SIZE * 0.75,
-      speed: 30,
-      maxHitPoints: 20,
-      maxArmour: 0,
-      probability: 0.2,
-      priority: 20,
-    },
-  },
-
-  'Swarm': {
-    'normal': {
-      width: GRID_SIZE * 0.5,
-      height: GRID_SIZE * 0.5,
-      speed: 25,
-      maxHitPoints: 4,
-      maxArmour: 1,
-      probability: 0.4,
-      priority: 4,
-    },
-  },
-
-  'Scout': {
-    'normal': {
-      width: GRID_SIZE * 1,
-      height: GRID_SIZE * 1,
-      speed: 40,
-      maxHitPoints: 11,
-      maxArmour: 2,
-      probability: 0.4,
-      priority: 22,
-    }
-  },
-
-  'Carrier': {
-    'normal': {
-      width: GRID_SIZE * 4,
-      height: GRID_SIZE * 4,
-      speed: 10,
-      maxHitPoints: 600,
-      maxArmour: 600,
-      probability: 0, // only spawns under specific circumstances
-    },
-  },
-
-  'Tank': {
-    normal: {
-      width: GRID_SIZE * 2,
-      height: GRID_SIZE * 2,
-      speed: 20,
-      maxHitPoints: 12,
-      maxArmour: 50,
-      probability: 0.2,
-      priority: 15,
-    },
-    large: {
-      width: GRID_SIZE * 3,
-      height: GRID_SIZE * 3,
-      speed: 14,
-      maxHitPoints: 18,
-      maxArmour: 85,
-      probability: 0.05,
-      priority: 50,
-    },
-  },
-}
+export const enemies = allEnemies
