@@ -18,6 +18,10 @@ export default class EnemyRenderer extends UnitRenderer {
     const regenerative = this.createRegenerativeIndicator(unit, container)
     const shields = this.createShields(unit, container) // renders below everything else
 
+    autorun(() => {
+      rotateToTarget(unit, unitBase)
+    })
+
     container.on('rightclick', () => {
       this.actions.setSelectedTowerTarget(unit)
     })
@@ -28,6 +32,9 @@ export default class EnemyRenderer extends UnitRenderer {
   createUnitBase(unit, container) {
     const unitType = unit.enemyType.toLowerCase()
     const unitBase = new PIXI.Sprite(PIXI.utils.TextureCache[unitType])
+    unitBase.anchor.set(0.5)
+    unitBase.x = unit.width / 2
+    unitBase.y = unit.height / 2
     unitBase.width = unit.width
     unitBase.height = unit.height
     container.addChild(unitBase)
@@ -169,4 +176,10 @@ function renderHitPointsBar(unit, healthBar, healthBarBackground, armourBar) {
   healthBar.width = maxWidth * unit.currentHitPoints / currentStats
   armourBar.width = maxWidth * unit.currentArmour / currentStats
   armourBar.x = healthBar.width + 2
+}
+
+function rotateToTarget(unit, unitElement) {
+  // unit rotation toward their current direction
+  // const angle = unit.getAngleToPoint(unit.target.xFloor, unit.target.yFloor)
+  unitElement.rotation = unit.currentDirection
 }
