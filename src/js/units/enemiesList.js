@@ -1,86 +1,145 @@
 
 import { GRID_SIZE } from '../appConstants'
 
+
+const stats = {
+  speed: {
+    low: 15,
+    medium: 22,
+    high: 33,
+    veryHigh: 55,
+  },
+  hp: {
+    veryLow: 5,
+    low: 20,
+    high: 50,
+  },
+  armour: {
+    none: 1, // @FIXME This should be zero, but it's causing a bug
+    low: 10,
+    medium: 30,
+    high: 50,
+  },
+  size: {
+    tiny: GRID_SIZE * 0.5,
+    small: GRID_SIZE * 1,
+    medium: GRID_SIZE * 2,
+    large: GRID_SIZE * 3,
+    huge: GRID_SIZE * 4,
+  },
+  probability: {
+    certain: 1,
+    likely: 0.4,
+    common: 0.2,
+    uncommon: 0.1,
+    rare: 0.05,
+    impossible: 0,
+  },
+}
+
 // @TODO Should have enemy sizes as ratios of GRID_SIZE (eg. 1, 2, 0.5, etc.)
   // ie. should not need to import GRID_SIZE here
 /*
  * NOTE: Can hardcode credits and xp profit by adding killValue object.
  */
 export default {
-  'Invader': {
+  'Scout': {
     'normal': {
-      width: GRID_SIZE * 1,
-      height: GRID_SIZE * 1,
-      speed: 20,
-      maxHitPoints: 25,
-      maxArmour: 10,
-      probability: 1,
-      priority: 0,
-    },
-    fast: {
-      width: GRID_SIZE * 0.75,
-      height: GRID_SIZE * 0.75,
-      speed: 30,
-      maxHitPoints: 20,
-      maxArmour: 0,
-      probability: 0.2,
-      priority: 20,
+      width: stats.size.small,
+      height: stats.size.small,
+      speed: stats.speed.veryHigh,
+      maxHitPoints: stats.hp.low,
+      maxArmour: stats.armour.low,
+      probability: stats.probability.common,
+      priority: 6,
     },
   },
-
+  'Insectoid': {
+    'normal': {
+      width: stats.size.small,
+      height: stats.size.small,
+      speed: stats.speed.low,
+      maxHitPoints: stats.hp.low,
+      maxArmour: stats.armour.high,
+      probability: stats.probability.common,
+      priority: 7,
+    },
+  },
+  'Freighter': {
+    'normal': {
+      width: stats.size.large,
+      height: stats.size.large,
+      speed: stats.speed.low,
+      maxHitPoints: stats.hp.high,
+      maxArmour: stats.armour.none,
+      probability: stats.probability.certain,
+      priority: 1,
+    },
+  },
   'Swarm': {
     'normal': {
-      width: GRID_SIZE * 0.5,
-      height: GRID_SIZE * 0.5,
-      speed: 25,
-      maxHitPoints: 4,
-      maxArmour: 1,
-      probability: 0.4,
+      width: stats.size.tiny,
+      height: stats.size.tiny,
+      speed: stats.speed.medium,
+      maxHitPoints: stats.hp.veryLow,
+      maxArmour: stats.armour.low,
+      probability: stats.probability.uncommon,
+      priority: 5,
+    },
+  },
+  'Tank': {
+    'normal': {
+      width: stats.size.small,
+      height: stats.size.small,
+      speed: stats.speed.medium,
+      maxHitPoints: stats.hp.low,
+      maxArmour: stats.armour.high,
+      probability: stats.probability.common,
+      priority: 8,
+    },
+  },
+  'Hovercraft': {
+    'normal': {
+      width: stats.size.medium,
+      height: stats.size.medium,
+      speed: stats.speed.high,
+      maxHitPoints: stats.hp.high,
+      maxArmour: stats.armour.low,
+      probability: stats.probability.common,
       priority: 4,
     },
   },
-
-  'Scout': {
+  'Juggernaut': {
     'normal': {
-      width: GRID_SIZE * 1,
-      height: GRID_SIZE * 1,
-      speed: 40,
-      maxHitPoints: 11,
-      maxArmour: 2,
-      probability: 0.4,
-      priority: 22,
-    }
+      width: stats.size.large,
+      height: stats.size.large,
+      speed: stats.speed.low,
+      maxHitPoints: stats.hp.high,
+      maxArmour: stats.armour.high,
+      probability: stats.probability.uncommon,
+      priority: 3,
+    },
   },
-
+  'Chosen': {
+    'normal': {
+      width: stats.size.large,
+      height: stats.size.large,
+      speed: stats.speed.high,
+      maxHitPoints: stats.hp.high,
+      maxArmour: stats.armour.high,
+      probability: stats.probability.rare,
+      priority: 2,
+    },
+  },
   'Carrier': {
     'normal': {
-      width: GRID_SIZE * 4,
-      height: GRID_SIZE * 4,
-      speed: 20,
-      maxHitPoints: 400,
-      maxArmour: 400,
-      probability: 0, // only spawns under specific circumstances
-    },
-  },
-
-  'Tank': {
-    normal: {
-      width: GRID_SIZE * 2,
-      height: GRID_SIZE * 2,
-      speed: 20,
-      maxHitPoints: 12,
-      maxArmour: 50,
-      probability: 0.2,
-      priority: 15,
-    },
-    large: {
-      width: GRID_SIZE * 3,
-      height: GRID_SIZE * 3,
-      speed: 14,
-      maxHitPoints: 18,
-      maxArmour: 85,
-      probability: 0.05,
-      priority: 50,
+      width: stats.size.huge,
+      height: stats.size.huge,
+      speed: 15,
+      maxHitPoints: 330,
+      maxArmour: 330,
+      probability: stats.probability.impossible, // used on specific waves
+      priority: 0, // doesn't matter
     },
   },
 }
