@@ -15,6 +15,7 @@ export default class EnemyRenderer extends UnitRenderer {
     const explosion = this.createExplosion(unit, container)
     const burnAnimation = this.createBurning(unit, container)
     const speedy = this.createSpeedyIndicator(unit, container)
+    const elite = this.createEliteIndicator(unit, container) // render before tough & regeneratie
     const regenerative = this.createRegenerativeIndicator(unit, container)
     const tough = this.createToughIndicator(unit, container)
     const shields = this.createShields(unit, container) // renders below everything else
@@ -163,6 +164,19 @@ export default class EnemyRenderer extends UnitRenderer {
     toughIndicator.position.x = 3 * unit.width / 4
     toughIndicator.position.y = 3 * unit.height / 5
     container.addChild(toughIndicator)
+  }
+
+  createEliteIndicator(unit, container) {
+    if (!unit.hasAttribute('Elite')) { return }
+
+    const eliteIndicator = new PIXI.Sprite(PIXI.utils.TextureCache['elite'])
+    // eliteIndicator.anchor.set(0.5)
+    eliteIndicator.anchor = { x: 0.5, y: 1 }
+    eliteIndicator.width = unit.width * 2 / 3
+    eliteIndicator.height = eliteIndicator.width
+    eliteIndicator.position.x = unit.width / 2
+    eliteIndicator.position.y = unit.height / 10
+    container.addChild(eliteIndicator)
   }
 
   createSpeedyIndicator(unit, container) {
