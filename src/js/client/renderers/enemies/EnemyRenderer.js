@@ -14,11 +14,15 @@ export default class EnemyRenderer extends UnitRenderer {
     this.createHealthBar(unit, container)
     const explosion = this.createExplosion(unit, container)
     const burnAnimation = this.createBurning(unit, container)
-    const speedy = this.createSpeedyIndicator(unit, container)
-    const elite = this.createEliteIndicator(unit, container) // render before tough & regeneratie
-    const regenerative = this.createRegenerativeIndicator(unit, container)
-    const tough = this.createToughIndicator(unit, container)
-    const shields = this.createShields(unit, container) // renders below everything else
+    // const speedy = this.createSpeedyIndicator(unit, unitBase)
+    const speedy = this.createSpeedyIndicatorTest(unit, unitBase)
+    // const elite = this.createEliteIndicator(unit, container) // render before tough & regeneratie
+    // const regenerative = this.createRegenerativeIndicator(unit, container)
+    // const tough = this.createToughIndicator(unit, container)
+    // const shields = this.createShields(unit, container) // renders below everything else
+
+    // console.log(container.width);
+    // console.log(unitBase.width);
 
     autorun(() => {
       rotateToTarget(unit, unitBase)
@@ -189,6 +193,24 @@ export default class EnemyRenderer extends UnitRenderer {
     speedyIndicator.width = speedyIndicator.height * widthToHeightRatio
     speedyIndicator.position.x = unit.width * 5/6
     speedyIndicator.position.y = unit.height / 2
+    // console.log(speedyIndicator.width);
+    container.addChildAt(speedyIndicator, 0)
+  }
+
+  createSpeedyIndicatorTest(unit, container) {
+    if (!unit.hasAttribute('Speedy')) { return }
+
+    const speedyIndicator = new PIXI.Sprite(PIXI.utils.TextureCache['speedy'])
+    const widthToHeightRatio = speedyIndicator.width / speedyIndicator.height
+    speedyIndicator.anchor = { x: 0, y: 0.5 }
+    // speedyIndicator.height = unit.height * 2/3
+    console.log(speedyIndicator.height, container.height, unit.height);
+    // 253 80 80
+    speedyIndicator.height = 100
+    speedyIndicator.width = speedyIndicator.height * widthToHeightRatio
+    // speedyIndicator.position.x = unit.width * 5/6
+    // speedyIndicator.position.y = unit.height / 2
+    // console.log(speedyIndicator.height);
     container.addChildAt(speedyIndicator, 0)
   }
 
