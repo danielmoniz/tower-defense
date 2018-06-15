@@ -107,7 +107,6 @@ Strength comes from constraint
 
 ---
 
-When I introduce or change a technology, I'll try to provide an updated list of the tech being used and highlight the changes.
 
 #### Updated tech stack:
 

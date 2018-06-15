@@ -91,6 +91,16 @@ Thick roots into fertile soil
 The future is up
 ```
 
+---
+
+When I introduce or change a technology, I'll try to provide an updated list of the tech being used and highlight the changes.
+
+#### Tech stack:
+
+* **Front-end**
+  * **HTML/CSS**
+  * **JavaScript with MobX**
+
 [mobx github]: https://github.com/mobxjs/mobx
 [redux github]: https://github.com/reactjs/redux
 [react]: https://reactjs.org/
