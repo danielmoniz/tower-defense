@@ -17,11 +17,8 @@ export default class EnemyRenderer extends UnitRenderer {
     const speedy = this.createSpeedyIndicator(unit, unitBase)
     const elite = this.createEliteIndicator(unit, unitBase) // render before tough & regeneratie
     const regenerative = this.createRegenerativeIndicator(unit, unitBase)
-    // const tough = this.createToughIndicator(unit, container)
+    const tough = this.createToughIndicator(unit, unitBase)
     const shields = this.createShields(unit, container) // renders below everything else
-
-    // console.log(container.width);
-    // console.log(unitBase.width);
 
     autorun(() => {
       rotateToTarget(unit, unitBase)
@@ -162,10 +159,10 @@ export default class EnemyRenderer extends UnitRenderer {
 
     const toughIndicator = new PIXI.Sprite(PIXI.utils.TextureCache['tough'])
     toughIndicator.anchor.set(0.5)
-    toughIndicator.width = unit.width / 2
+    toughIndicator.width = (unit.width / 2) / container.scale.x
     toughIndicator.height = toughIndicator.width
-    toughIndicator.position.x = 3 * unit.width / 4
-    toughIndicator.position.y = 3 * unit.height / 5
+    toughIndicator.position.x = (unit.width / 4) / container.scale.x
+    toughIndicator.position.y = (unit.height / 10) / container.scale.y
     container.addChild(toughIndicator)
   }
 
