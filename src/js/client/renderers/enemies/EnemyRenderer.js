@@ -16,7 +16,7 @@ export default class EnemyRenderer extends UnitRenderer {
     const burnAnimation = this.createBurning(unit, container)
     const speedy = this.createSpeedyIndicator(unit, unitBase)
     const elite = this.createEliteIndicator(unit, unitBase) // render before tough & regeneratie
-    // const regenerative = this.createRegenerativeIndicator(unit, container)
+    const regenerative = this.createRegenerativeIndicator(unit, unitBase)
     // const tough = this.createToughIndicator(unit, container)
     const shields = this.createShields(unit, container) // renders below everything else
 
@@ -141,10 +141,10 @@ export default class EnemyRenderer extends UnitRenderer {
 
     const regenIndicator = new PIXI.Sprite(PIXI.utils.TextureCache['regenerative'])
     regenIndicator.anchor.set(0.5)
-    regenIndicator.width = unit.width / 2
+    regenIndicator.width = (unit.width / 2) / container.scale.x
     regenIndicator.height = regenIndicator.width
-    regenIndicator.position.x = unit.width / 4
-    regenIndicator.position.y = unit.height / 4
+    regenIndicator.position.x = (-unit.width / 4) / container.scale.x
+    regenIndicator.position.y = (-unit.height / 4) / container.scale.y
     container.addChild(regenIndicator)
 
     autorun(() => {
