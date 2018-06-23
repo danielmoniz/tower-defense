@@ -18,7 +18,7 @@ export default class EnemyRenderer extends UnitRenderer {
     const elite = this.createEliteIndicator(unit, unitBase) // render before tough & regeneratie
     // const regenerative = this.createRegenerativeIndicator(unit, container)
     // const tough = this.createToughIndicator(unit, container)
-    // const shields = this.createShields(unit, container) // renders below everything else
+    const shields = this.createShields(unit, container) // renders below everything else
 
     // console.log(container.width);
     // console.log(unitBase.width);
