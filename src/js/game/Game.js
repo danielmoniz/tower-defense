@@ -207,9 +207,19 @@ export default class Game {
   }
 
   placeEnemy(enemy, enemiesInWave, numEnemy) {
+
     const entrance = this.getEntranceZone()
-    const enemyDistance = Math.floor(entrance.height / enemiesInWave)
-    enemy.jumpTo(entrance.x + entrance.width, entrance.y + numEnemy * enemyDistance)
+    const heightCut = 4 * GRID_SIZE
+    const actualEntranceHeight = entrance.height - heightCut
+    // push down units depending on quantity of enemies
+    const yBumper = actualEntranceHeight / (1 + enemiesInWave) + (heightCut / 2)
+
+    const xPosition = entrance.x + entrance.width
+    const enemySpacing = actualEntranceHeight / enemiesInWave
+
+    const yPosition = entrance.y + numEnemy * enemySpacing + yBumper - (enemy.height / 2)
+
+    enemy.jumpTo(xPosition, yPosition)
   }
 
   canAfford(unit) {
