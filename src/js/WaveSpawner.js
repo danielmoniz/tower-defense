@@ -9,6 +9,7 @@ import Cooldown from './Cooldown'
 class WaveSpawner {
   @observable number = 0
   @observable timeBetweenWaves = 20000
+  @observable currentAttributes = []
 
   constructor() {
     this.cooldown = null
@@ -35,6 +36,13 @@ class WaveSpawner {
   @action reset() {
     this.number = 0
     delete this.cooldown
+  }
+
+  /*
+   * Given a new set of attributes, set them.
+   */
+  @action setRoundAttributes(newAttributes) {
+    this.currentAttributes = newAttributes
   }
 
   /*

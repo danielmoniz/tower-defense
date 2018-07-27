@@ -56,8 +56,8 @@ function setUpListeners(game, emitter) {
     console.log('Joined existing game');
   })
 
-  socket.on('spawn wave', (newEnemies) => {
-    game.acceptSpawnedWave(newEnemies)
+  socket.on('spawn wave', (newEnemies, roundAttributes) => {
+    game.acceptSpawnedWave(newEnemies, roundAttributes)
   })
 
   socket.on('send terrain', (terrainData) => {

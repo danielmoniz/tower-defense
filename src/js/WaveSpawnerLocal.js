@@ -24,7 +24,6 @@ class WaveSpawnerLocal extends WaveSpawner {
   //     },
   //   },
   // }
-  @observable currentAttributes = []
   waveList = {}
 
   constructor(createEnemy) {
@@ -135,13 +134,14 @@ class WaveSpawnerLocal extends WaveSpawner {
   }
 
   /*
-   * Sets the random attributes for the given round.
+   * Handles moving to the next round.
+   * Eg. sets the random attributes for the given round.
    */
-  @action setRoundAttributes() {
-    this.currentAttributes = getRandomSubarray(attributes, this.numBossAttributes)
+  nextRound() {
+    const newAttributes = getRandomSubarray(attributes, this.numBossAttributes)
+    this.setRoundAttributes(newAttributes)
     console.log('NEXT ROUND ATTRIBUTES:');
     console.log(this.currentAttributes.map(attr => attr.name));
-    // @TODO Present the round's random attributes to the player
   }
 
   /*
@@ -237,7 +237,7 @@ class WaveSpawnerLocal extends WaveSpawner {
   nextWave() {
     super.nextWave()
     if (this.number % this.bossSpawnOnWave === 1) { // first wave in new round
-      this.setRoundAttributes()
+      this.nextRound()
     }
   }
 
