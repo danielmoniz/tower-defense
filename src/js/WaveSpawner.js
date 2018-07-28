@@ -19,10 +19,24 @@ class WaveSpawner {
   /*
    * Initializes the cooldown for waves.
    */
-  initializeWaveTimer(updateFrequency) {
+  initializeWaveTimer(updateFrequency, firstSpawnDelay) {
     if (!this.cooldown) {
-      console.log('Waves beginning!');
-      this.cooldown = Cooldown.createTimeBased(this.timeBetweenWaves, updateFrequency)
+      const options = {
+        autoActivate: true,
+        delayActivation: true,
+        callback: () => {
+          console.log('Waves beginning!');
+          this.cooldown = Cooldown.createTimeBased(this.timeBetweenWaves, updateFrequency)
+        },
+      }
+
+      console.log('Setting up initial wave delay...');
+      this.cooldown = Cooldown.createTimeBased(
+        firstSpawnDelay,
+        updateFrequency,
+        options,
+      )
+
     }
   }
 

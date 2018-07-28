@@ -37,6 +37,8 @@ export default class Game {
     speedMultiplier: 1,
   }
 
+  firstSpawnDelay = 3000
+
   height = 700
   width = 700
 
@@ -72,7 +74,7 @@ export default class Game {
     this.inProgress = true
     this.reset()
     this.play()
-    this.wave.initializeWaveTimer(GAME_REFRESH_RATE)
+    this.wave.initializeWaveTimer(GAME_REFRESH_RATE, this.firstSpawnDelay)
   }
 
   @action reset() {
