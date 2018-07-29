@@ -15,11 +15,12 @@ class WaveSpawner {
 
   constructor() {
     this.bossSpawnOnWave = 5
+    this.updateFrequency = undefined
   }
 
   @computed get timeUntilNextWave() {
     if (this.cooldown) {
-      return Math.floor(this.cooldown.ticksUntilReady() * GAME_REFRESH_RATE / 1000) + 1
+      return Math.floor((this.cooldown.ticksUntilReady() - 1) * this.updateFrequency / 1000) + 1
     }
     return null
   }
@@ -28,6 +29,7 @@ class WaveSpawner {
    * Initializes the cooldown for waves.
    */
   @action initializeWaveTimer(updateFrequency, firstSpawnDelay) {
+    this.updateFrequency = updateFrequency
     if (!this.cooldown) {
       const callback = action(() => {
         console.log('Waves beginning!');
