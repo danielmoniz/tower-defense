@@ -97,9 +97,10 @@ export default class BoardRenderer {
       this.updateInfoPanel(game, infoPanelName, infoPanelData)
     })
 
+    const nextWaveCounter = document.querySelector(".seconds-until-wave")
     autorun(() => {
       if (game.wave.cooldown) {
-        console.log(game.wave.timeUntilNextWave);
+        nextWaveCounter.innerText = game.wave.timeUntilNextWave
       }
     })
   }

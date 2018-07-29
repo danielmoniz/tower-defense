@@ -15,7 +15,7 @@ class WaveSpawner {
 
   constructor() {
     this.bossSpawnOnWave = 5
-    this.updateFrequency = undefined
+    this.updateFrequency = undefined // will be set/overridden later
   }
 
   @computed get timeUntilNextWave() {
