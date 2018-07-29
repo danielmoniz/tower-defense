@@ -96,13 +96,6 @@ export default class BoardRenderer {
     autorun(() => {
       this.updateInfoPanel(game, infoPanelName, infoPanelData)
     })
-
-    const nextWaveCounter = document.querySelector(".seconds-until-wave")
-    autorun(() => {
-      if (game.wave.cooldown) {
-        nextWaveCounter.innerText = game.wave.timeUntilNextWave
-      }
-    })
   }
 
   updateInfoPanel(game, infoPanelName, infoPanelData) {
@@ -169,6 +162,7 @@ export default class BoardRenderer {
     this.setupWaveDisplay(game)
     this.setupRoundAttributesDisplay(game)
     this.setupRoundNumberDisplay(game)
+    this.setupWaveCounterDisplay(game)
   }
 
   setupRoundAttributesDisplay(game) {
@@ -188,6 +182,15 @@ export default class BoardRenderer {
     const roundNumberDisplay = document.querySelector('.round-attributes .round-number')
     autorun(() => {
       roundNumberDisplay.innerHTML = game.wave.round
+    })
+  }
+
+  setupWaveCounterDisplay(game) {
+    const nextWaveCounter = document.querySelector(".seconds-until-wave")
+    autorun(() => {
+      if (game.wave.cooldown) {
+        nextWaveCounter.innerText = game.wave.timeUntilNextWave
+      }
     })
   }
 
