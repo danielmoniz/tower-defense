@@ -96,6 +96,12 @@ export default class BoardRenderer {
     autorun(() => {
       this.updateInfoPanel(game, infoPanelName, infoPanelData)
     })
+
+    autorun(() => {
+      if (game.wave.cooldown) {
+        console.log(game.wave.timeUntilNextWave);
+      }
+    })
   }
 
   updateInfoPanel(game, infoPanelName, infoPanelData) {

@@ -1,5 +1,6 @@
 
 import { observable, action, computed } from 'mobx'
+import { GAME_REFRESH_RATE } from './appConstants'
 
 import Cooldown from './Cooldown'
 
@@ -10,24 +11,32 @@ class WaveSpawner {
   @observable number = 0
   @observable timeBetweenWaves = 20000
   @observable currentAttributes = []
+  @observable cooldown = null
 
   constructor() {
-    this.cooldown = null
     this.bossSpawnOnWave = 5
+  }
+
+  @computed get timeUntilNextWave() {
+    if (this.cooldown) {
+      return Math.floor(this.cooldown.ticksUntilReady() * GAME_REFRESH_RATE / 1000) + 1
+    }
+    return null
   }
 
   /*
    * Initializes the cooldown for waves.
    */
-  initializeWaveTimer(updateFrequency, firstSpawnDelay) {
+  @action initializeWaveTimer(updateFrequency, firstSpawnDelay) {
     if (!this.cooldown) {
+      const callback = action(() => {
+        console.log('Waves beginning!');
+        this.cooldown = Cooldown.createTimeBased(this.timeBetweenWaves, updateFrequency)
+      })
       const options = {
         autoActivate: true,
         delayActivation: true,
-        callback: () => {
-          console.log('Waves beginning!');
-          this.cooldown = Cooldown.createTimeBased(this.timeBetweenWaves, updateFrequency)
-        },
+        callback,
       }
 
       console.log('Setting up initial wave delay...');
@@ -76,7 +85,7 @@ class WaveSpawner {
   /*
    * Tells the wave cooldown to tick (bringing it closer to the next wave).
    */
-  updateWaveTimer() {
+  @action updateWaveTimer() {
     if (!this.cooldown) { return }
     this.cooldown.tick()
   }
