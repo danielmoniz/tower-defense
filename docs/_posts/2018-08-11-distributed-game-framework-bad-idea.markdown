@@ -116,7 +116,6 @@ Is a thunderstorm, writhing
 Shelter splits the rain
 ```
 
-
 ---
 
 #### Tech stack:
@@ -126,12 +125,3 @@ Shelter splits the rain
   * JavaScript with MobX and Socket.IO
 * Back-end
   * JavaScript with Express.js
-
-
-
-
-
-
-[battle-net-history]: https://www.pcgamer.com/the-story-of-battlenet/
-[tcp-vs-udp]: https://gafferongames.com/post/udp_vs_tcp/
-[client-server]: /tower-defense/td/technology/2018/01/26/server-side-language.html#single-source-of-truth
