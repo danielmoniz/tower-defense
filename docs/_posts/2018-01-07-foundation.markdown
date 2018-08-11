@@ -34,7 +34,7 @@ Simple enough! This brings us to my one JavaScript library of choice to make thi
 
 [MobX][mobx github] is beautiful. Most people see it in the context of [React][react] as an alternative to [Redux][redux github]. However, it's pretty useful on its own.
 
-It isn't really a framework. It's a solution to the problem of mutability in React. In a way, it's the _opposite_ solution to Redux. Redux which creates a framework designed to force the programmer to write functional code with immutable objects. MobX, on the other hand, makes object oriented programming cool again.
+It isn't really a framework. It's a solution to the problem of mutability in React. In a way, it's the _opposite_ solution to Redux, which creates a framework designed to force the programmer to write functional code with immutable objects. MobX, on the other hand, makes object oriented programming cool again.
 
 I'll try to talk more about MobX in a future post. What we need to know now is what it allows us to do.
 
