@@ -92,27 +92,92 @@ export default class BoardRenderer {
   setupInfoPanel(game) {
     const infoPanelName = document.getElementById("info-panel-name")
     const infoPanelData = document.getElementById("info-panel-data")
+    const towerActionsPanel = document.getElementById("tower-actions")
 
     autorun(() => {
-      this.updateInfoPanel(game, infoPanelName, infoPanelData)
+      this.updateInfoPanel(game, infoPanelName, infoPanelData, towerActionsPanel)
     })
   }
 
-  updateInfoPanel(game, infoPanelName, infoPanelData) {
-    if (game.selectedEntity === null) {
+  updateInfoPanel(game, infoPanelName, infoPanelData, towerActionsPanel) {
+    if (!game.selectedEntity) {
       infoPanelName.innerHTML = ""
       infoPanelData.innerHTML = ""
+      this.hideTowerActions(towerActionsPanel)
       return;
+    }
+    if (game.selectedEntity.type !== 'Tower') {
+      this.hideTowerActions(towerActionsPanel)
     }
 
     const entity = game.selectedEntity
     infoPanelName.innerHTML = entity.name
 
-    if (entity.type == "Tower") {
-      this.displayTower(infoPanelData, entity)
-    } else if (entity.type == "Enemy") {
+    if (entity.type === "Tower") {
+      this.displayTowerInfo(infoPanelData, entity)
+      // @TODO Show upgrade options if not placed, but grey them out
+      if (entity.placed) {
+        towerActionsPanel.innerHTML = ''
+        this.showTowerActions(towerActionsPanel)
+        this.updateTowerUpgrades(game, entity, towerActionsPanel)
+        this.updateSellButton(game, entity, towerActionsPanel)
+      }
+    } else if (entity.type === "Enemy") {
       this.displayEnemy(infoPanelData, entity)
     }
+  }
+
+  updateTowerUpgrades(game, tower, towerActionsPanel) {
+    const upgradeKeys = Object.keys(tower.upgrades)
+    upgradeKeys.forEach((upgradeKey) => {
+      const upgrade = tower.upgrades[upgradeKey]
+      const upgradeTile = document.createElement('div')
+      upgradeTile.classList.add('option', 'upgrade')
+      upgradeTile.dataset.upgrade = upgradeKey
+      upgradeTile.addEventListener('click', () => {
+        game.sendUpgradeSelectedTower(upgradeKey)
+      })
+      towerActionsPanel.appendChild(upgradeTile)
+
+      const valueDisplay = document.createElement('span')
+      valueDisplay.classList.add('upgrade-cost', 'value')
+      valueDisplay.innerText = upgrade.cost
+      upgradeTile.appendChild(valueDisplay)
+
+      const descriptionDisplay = document.createElement('span')
+      descriptionDisplay.classList.add('description')
+      descriptionDisplay.innerText = upgrade.description
+      upgradeTile.appendChild(descriptionDisplay)
+
+      const icon = document.createElement('img')
+      icon.setAttribute('src', `/images/${upgradeKey}UpgradeIcon.png`)
+      upgradeTile.appendChild(icon)
+    })
+  }
+
+  // @TODO Refactor to share code with updateTowerUpgrades()
+  updateSellButton(game, tower, towerActionsPanel) {
+    const sellTile = document.createElement('div')
+    sellTile.classList.add('option', 'sell')
+    sellTile.dataset.upgrade = 'sell'
+    sellTile.addEventListener('click', () => {
+      game.sendSellSelectedTower()
+    })
+    towerActionsPanel.appendChild(sellTile)
+
+    const valueDisplay = document.createElement('span')
+    valueDisplay.classList.add('profit', 'value')
+    valueDisplay.innerText = tower.getSellValue()
+    sellTile.appendChild(valueDisplay)
+
+    const descriptionDisplay = document.createElement('span')
+    descriptionDisplay.classList.add('description')
+    descriptionDisplay.innerText = 'Sell'
+    sellTile.appendChild(descriptionDisplay)
+
+    const icon = document.createElement('img')
+    icon.setAttribute('src', `/images/sell.png`)
+    sellTile.appendChild(icon)
   }
 
   // @TODO Consider using Vue.js for templating here
@@ -132,28 +197,36 @@ export default class BoardRenderer {
   }
 
   // @TODO Consider using Vue.js for templating here
-  displayTower(infoPanelData, entity) {
-    infoPanelData.innerHTML = "Price: $" + entity.purchaseCost + "<br>" +
-        "Damage: " + entity.ammo.damage.toFixed(2) + "<br>" +
-        "Range: " + entity.range.current.toFixed(0) + "<br>" +
-        "Clip size: " + entity.clipSize + "<br>" +
-        "Firing time: " + entity.firingTime + "ms" + "<br>" +
-        "Reload time: " + entity.reloadTime + "ms" + "<br>" +
-        "Profit multiplier: "  + entity.killProfitMultiplier + "<br>" +
-        "Kills: " + entity.kills + "<br>" +
-        "Experience: " + entity.xp + "<br>" +
-        "Level: " + entity.level
+  displayTowerInfo(infoPanelData, tower) {
+    infoPanelData.innerHTML = "Price: $" + tower.purchaseCost + "<br>" +
+        "Damage: " + tower.getDamage().toFixed(2) + "<br>" +
+        "Range: " + tower.range.current.toFixed(0) + "<br>" +
+        "Clip size: " + tower.clipSize + "<br>" +
+        "Firing time: " + tower.firingTime + "ms" + "<br>" +
+        "Reload time: " + tower.reloadTime + "ms" + "<br>" +
+        "Profit multiplier: "  + tower.killProfitMultiplier + "<br>" +
+        "Kills: " + tower.kills + "<br>" +
+        "Experience: " + tower.xp + "<br>" +
+        "Level: " + tower.level
 
-    if (entity.burningDamage) {
+    if (tower.burningDamage) {
       infoPanelData.innerHTML += "<br>"
       let burningLength = "unlimited"
-      if (entity.burningLength.current && entity.burningLength.current > 0) {
-        burningLength = (entity.burningLength.current / 1000).toFixed(2) + " seconds"
+      if (tower.burningLength.current && tower.burningLength.current > 0) {
+        burningLength = (tower.burningLength.current / 1000).toFixed(2) + " seconds"
       }
       infoPanelData.innerHTML +=
-        "Burning DPS: " + entity.burningDamage.current.toFixed(2) + "<br>" +
+        "Burning DPS: " + tower.burningDamage.current.toFixed(2) + "<br>" +
         "Burning length: " + burningLength
     }
+  }
+
+  hideTowerActions(towerActionsPanel) {
+    towerActionsPanel.classList.remove('tower-selected')
+  }
+
+  showTowerActions(towerActionsPanel) {
+    towerActionsPanel.classList.add('tower-selected')
   }
 
   setupGameStateDisplay(game) {

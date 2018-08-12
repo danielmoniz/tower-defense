@@ -49,6 +49,11 @@ class ClientMultiGame extends ClientGame {
     this.emitter.sellTower(tower)
   }
 
+  sendUpgradeSelectedTower(upgradeType) {
+    const tower = super.sendUpgradeSelectedTower(upgradeType)
+    this.emitter.upgradeTower(tower, upgradeType)
+  }
+
   /*
    * Trigger the setting of a tower's target. Emit the event to the server.
    */

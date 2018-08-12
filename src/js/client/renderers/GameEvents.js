@@ -17,6 +17,27 @@ export default class GameEvents {
     this.addPlaceTowerOnMap(game, gameBox)
     this.addSpawnWave(game)
     this.addNewGame(game)
+    this.setUpTowerUpgrades(game)
+    this.setUpTowerMenuSell(game)
+  }
+
+  setUpTowerUpgrades(game) {
+    const elements = document.querySelectorAll(".tower-actions .upgrade")
+    elements.forEach((element) => {
+      element.addEventListener('click', () => {
+        game.sendUpgradeSelectedTower(element.dataset.upgrade)
+      })
+    })
+  }
+
+  setUpTowerMenuSell(game) {
+    const elements = document.querySelectorAll(".tower-actions .sell")
+    elements.forEach((element) => {
+      element.addEventListener('click', () => {
+        console.log('Selling tower!');
+        game.sendSellSelectedTower()
+      })
+    })
   }
 
   addNewGame(game) {

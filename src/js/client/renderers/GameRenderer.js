@@ -6,7 +6,7 @@ import GameEvents from './GameEvents'
 import UnitRenderer from './UnitRenderer'
 import EnemyRenderer from './enemies/EnemyRenderer'
 import TowerRenderer from './towers/TowerRenderer'
-import { CannonRenderer, FlamethrowerRenderer, MachineGunRenderer, PlasmaBatteryRenderer } from './towers'
+import { CannonRenderer, FlamethrowerRenderer, MachineGunRenderer, PlasmaBatteryRenderer, SniperTowerRenderer } from './towers'
 import getAltId from '../../utility/altId'
 
 
@@ -34,6 +34,7 @@ export default class GameRenderer {
     this.flamethrowerRenderer = new FlamethrowerRenderer(this.board, actions, registerEmitter)
     this.machineGunRenderer = new MachineGunRenderer(this.board, actions, registerEmitter)
     this.plasmaBatteryRenderer = new PlasmaBatteryRenderer(this.board, actions, registerEmitter)
+    this.sniperTowerRenderer = new SniperTowerRenderer(this.board, actions, registerEmitter)
 
     this.towerRenderers = {
       Tower: this.towerRenderer, // default?
@@ -41,6 +42,7 @@ export default class GameRenderer {
       Flamethrower: this.flamethrowerRenderer,
       MachineGun: this.machineGunRenderer,
       PlasmaBattery: this.plasmaBatteryRenderer,
+      SniperTower: this.sniperTowerRenderer,
     }
 
     this.emitterCallbacks = []

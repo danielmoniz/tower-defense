@@ -74,6 +74,7 @@ export default class Flamethrower extends Tower {
       const angleToEnemy = this.getAngleToPoint(enemy.xFloor, enemy.yFloor)
       const minConeAngle = towerFacingAngle - (coneAngle / 2)
       const maxConeAngle = towerFacingAngle + (coneAngle / 2)
+
       if (angleToEnemy < maxConeAngle && angleToEnemy > minConeAngle) {
         enemies.push(enemy)
       }

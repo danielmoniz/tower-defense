@@ -29,6 +29,18 @@ export default class Tower extends Unit {
   @observable xp = 0
   @observable level = 1
 
+  // default size: 1 tile
+  @observable width = GRID_SIZE
+  @observable height = GRID_SIZE
+
+  @observable upgrades = {
+    generic: {
+      cost: 25,
+      // @TODO This information is display related and should probably be elsewhere.
+      description: 'Level up',
+    },
+  }
+
   constructor(game, options) {
     super(game, options)
 
@@ -128,20 +140,69 @@ export default class Tower extends Unit {
   @action killEnemy(enemyValue) {
     this.game.profit(enemyValue.credits * this.killProfitMultiplier)
     this.kills++
-    this.xp += enemyValue.xp
+    this.gainXp(enemyValue.xp)
+  }
+
+  getUpgradeCost(upgradeType) {
+    if (!this.upgrades[upgradeType]) { return }
+    return this.upgrades[upgradeType].cost
+  }
+
+  getUpgradeInfo(upgradeType) {
+    if (!this.upgrades[upgradeType]) { return {} }
+    return this.upgrades[upgradeType]
+  }
+
+  /*
+   * Delegates upgrading the tower to the relevant method.
+   */
+  @action upgrade(upgradeType) {
+    if (upgradeType === 'generic') {
+      this.upgradeGeneric()
+    }
+  }
+
+  /*
+   * Add a full level to the given tower.
+   * That is, if the tower is 20% through level 5, then make it be 20% through level 6.
+   */
+  @action upgradeGeneric() {
+    const xpForLevelFromZero = this.getXpInterval(this.level)
+    const xpForNextLevelFromZero = this.getXpInterval(this.level + 1)
+
+    let fractionOfLevel = this.getPartialLevel(this.xp) % 1
+    let totalXpGained = (1 - fractionOfLevel) * xpForLevelFromZero + fractionOfLevel * xpForNextLevelFromZero
+
+    this.gainXp(totalXpGained)
+  }
+
+  gainXp(newXp) {
+    this.xp += Math.floor(newXp)
     this.checkLevel()
   }
 
+  getLevel(xp) {
+    return Math.floor(this.getPartialLevel(xp))
+  }
+
+  getPartialLevel(xp) {
+    return 1 + Math.log(1 + 0.0015 * xp) / Math.log(1.15)
+  }
+
+  getXpInterval(currentLevel) {
+    return 100 * Math.pow(1.15, currentLevel - 1)
+  }
+
+  /*
+  * Calculations based on 100xp for level 1 -> 2, each subsequent level
+  * requiring 1.15x the xp of the previous level (115, 132, etc.)
+  *
+  * Cumulative xp = (1st level xp) * (1 - (1+r) ^ (level - 1)) / (-r)
+  * Re-arranged to convert xp --> level, as below
+  */
   @action checkLevel() {
-    /**
-     * Calculations based on 100xp for level 1 -> 2, each subsequent level
-     * requiring 1.15x the xp of the previous level (115, 132, etc.)
-     *
-     * Cumulative xp = (1st level xp) * (1 - (1+r) ^ (level - 1)) / (-r)
-     * Re-arranged to convert xp --> level, as below
-     */
     const currentLevel = this.Level
-    this.level = Math.floor(1 + Math.log(1 + 0.0015 * this.xp) / Math.log(1.15))
+    this.level = this.getLevel(this.xp)
     if (currentLevel !== this.level) {
       this.updateStats()
     }
@@ -184,8 +245,24 @@ export default class Tower extends Unit {
     return target.getDistanceToPoint(this.getCentre())
   }
 
+  getDamage() {
+    return this.ammo && this.ammo.damage;
+  }
+
   getSellValue() {
     return Math.floor(this.purchaseCost / 2)
+  }
+
+  /*
+   * Copies only relevant stats for tower upgrades. Eg. id, xp, and kills.
+   */
+  copyUpgradeStats(oldTower) {
+    this.x = oldTower.x
+    this.y = oldTower.y
+    this.id = oldTower.id
+    this.xp = oldTower.xp
+    this.kills = oldTower.kills
+    this.checkLevel()
   }
 
   /*

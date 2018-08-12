@@ -1,0 +1,26 @@
+
+.menu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  /* border: 5px black solid; */
+  grid-gap: 5px 5px;
+  width: 165px;
+  padding: 5px;
+  background-color: black;
+}
+
+.menu img.option {
+  width: 100%;
+  background-color: white;
+}
+
+.menu img.option.sell {
+  grid-column: 2 / 3;
+  grid-row: 3;
+}
+
+.menu img.option.upgrade-generic {
+  /* grid-column: 1 / 2;
+  grid-row: 1; */
+}

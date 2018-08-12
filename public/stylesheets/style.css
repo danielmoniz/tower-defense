@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -31,9 +35,16 @@ a {
   }
 }
 
-.info-panel {
-  display: inline-block;
+.game-display {
+  display: flex;
+  flex-direction: row;
+}
+
+#info-box {
   width: 200px;
+}
+
+#info-panel {
   height: 300px;
   background-color: #cccccc;
   vertical-align: top;
@@ -49,6 +60,64 @@ a {
 .info-panel-data {
   font: 10pt Arial;
   padding: 5px;
+}
+
+.tower-actions {
+  visibility: hidden;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-gap: 5px 5px;
+  padding: 5px;
+  background-color: black;
+}
+
+.tower-actions.tower-selected {
+  visibility: visible;
+}
+
+.tower-actions .option {
+  width: 100%;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+}
+
+.tower-actions .option img {
+  width: 100%;
+}
+
+.tower-actions .option.sell {
+  grid-column: 2 / 3;
+  grid-row: 3;
+}
+
+.tower-actions .option .value {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  border: 1px solid black;
+}
+
+.tower-actions .option .description {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  bottom: 0;
+  z-index: 5;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin: auto;
+}
+
+.tower-actions .upgrade .value {
+  background-color: red;
+  color: white;
+}
+
+.tower-actions .sell .value {
+  background-color: lightgreen;
+  color: black;
 }
 
 .disabled {

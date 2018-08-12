@@ -33,11 +33,46 @@
       </div>
       <button id="new-game" type="button" name="new-game-button">New Game</button>
 
-      <div class="gameDisplay">
-        <div id="display-box" style="display: inline-block;"></div><!--
-     --><div id="info-panel" class="info-panel">
-          <div id="info-panel-name" class="info-panel-header"></div>
-          <div id="info-panel-data" class="info-panel-data"></div>
+      <div class="game-display">
+        <div id="display-box"></div>
+        <div id="info-box">
+          <div id="info-panel" class="info-panel">
+            <div id="info-panel-name" class="info-panel-header"></div>
+            <div id="info-panel-data" class="info-panel-data"></div>
+          </div>
+
+          <div id="tower-actions" class="tower-actions">
+            <div class="option upgrade" data-upgrade="generic">
+              <span class="upgrade-cost value"></span>
+              <img src="/images/upgrade01.png" alt="">
+              <span class="description">Generic (test)</span>
+            </div>
+            <div class="option upgrade" data-upgrade="PlasmaBattery">
+              <span class="upgrade-cost value"></span>
+              <img src="/images/upgrade02.png" alt="">
+              <span class="description"></span>
+            </div>
+            <div class="option upgrade" data-upgrade="damage">
+              <span class="upgrade-cost value"></span>
+              <img src="/images/damage.png" alt="">
+              <span class="description"></span>
+            </div>
+            <div class="option upgrade" data-upgrade="accuracy">
+              <span class="upgrade-cost value"></span>
+              <img class="option accuracy" src="/images/accuracy.png" alt="">
+              <span class="description"></span>
+            </div>
+            <div class="option upgrade" data-upgrade="rotation-speed">
+              <span class="upgrade-cost value"></span>
+              <img class="option rotation_speed" src="/images/rotation_speed.png" alt="">
+              <span class="description"></span>
+            </div>
+            <div class="option sell" data-upgrade="sell">
+              <span class="profit value"></span>
+              <img src="/images/sell.png" alt="">
+              <span class="description"></span>
+            </div>
+          </div>
         </div>
       </div>
 

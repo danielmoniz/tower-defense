@@ -34,8 +34,8 @@ export default class PlasmaBattery extends Tower {
       radius: 100,
     }
 
-    this.width = GRID_SIZE * 4
-    this.height = GRID_SIZE * 4
+    this.width = GRID_SIZE * 3
+    this.height = GRID_SIZE * 3
   }
 
   @action attack() {

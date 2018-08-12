@@ -10,6 +10,7 @@ import Cannon from '../units/Cannon'
 import Flamethrower from '../units/Flamethrower'
 import MachineGun from '../units/MachineGun'
 import PlasmaBattery from '../units/PlasmaBattery'
+import SniperTower from '../units/SniperTower'
 import Enemy from '../units/Enemy'
 
 import Pathing from '../map/Pathing'
@@ -47,7 +48,7 @@ export default class Game {
     this.emitter = emitter
 
 
-    this.TOWER_TYPES = { Cannon, Flamethrower, MachineGun, PlasmaBattery }
+    this.TOWER_TYPES = { Cannon, Flamethrower, MachineGun, PlasmaBattery, SniperTower }
 
     this.enemies = new UnitManager()
     this.towers = new UnitManager()
@@ -232,12 +233,16 @@ export default class Game {
     if (!this.canAfford(tower)) {
       return false
     }
-    this.credits.current -= tower.purchaseCost
+    this.spend(tower.purchaseCost)
     return true
   }
 
   @action profit(amount) {
     this.credits.current += amount
+  }
+
+  @action spend(amount) {
+    this.credits.current -= amount
   }
 
   placeTower(tower) {
@@ -276,6 +281,12 @@ export default class Game {
     return tower
   }
 
+  @action sellSelectedTower() {
+    const entity = this.selectedEntity;
+    if (entity.type !== 'Tower' || !entity.placed) { return }
+    this.sellTower(entity)
+  }
+
   @action sellTower(tower) {
     this.profit(tower.getSellValue())
     this.pathHelper.removeTowerObstacle(tower.getTopLeft(), tower.width, tower.height)
@@ -308,6 +319,52 @@ export default class Game {
     this.enemies.clear()
     this.waveTimer = null
     this.inProgress = false
+  }
+
+  upgradeSelectedTower(upgradeType) {
+    if (!(this.selectedEntity && this.selectedEntity.type === 'Tower')) {
+      console.log('Not a tower!');
+      return
+    }
+    console.log('Upgrading selected tower!');
+    const tower = this.selectedEntity
+    this.upgradeTower(tower, upgradeType)
+    return tower
+  }
+
+  upgradeTower(tower, upgradeType) {
+    const cost = tower.getUpgradeCost(upgradeType)
+    if (cost === undefined || cost > this.credits.current) { return }
+    const upgradeInfo = tower.getUpgradeInfo(upgradeType)
+    if (upgradeInfo.type === 'towerToTower') {
+      return this.changeTower(tower, upgradeInfo)
+    }
+    this.spend(cost)
+    tower.upgrade(upgradeType)
+    return tower
+  }
+
+  /*
+   * Changes a tower from one type to another given info about upgrading.
+   * The new tower must be the same size as the old tower.
+   */
+  changeTower(tower, upgradeInfo) {
+    const TowerType = this.TOWER_TYPES[upgradeInfo.newTowerType]
+    const newTower = new TowerType(this)
+
+    // This is for pathing/placement reasons. A larger tower might not be valid.
+    if (newTower.width !== tower.width || newTower.height !== tower.height) {
+      return false
+    }
+
+    newTower.copyUpgradeStats(tower)
+
+    tower.destroy()
+    // update pathing - allows for new tower placement
+    this.pathHelper.removeTowerObstacle(tower.getTopLeft(), tower.width, tower.height)
+    this.addTower(newTower)
+    this.spend(upgradeInfo.cost)
+    return newTower
   }
 
   getEnemyGoal(enemy) {
@@ -379,6 +436,16 @@ export default class Game {
       return
     }
     this.sellTower(tower)
+    return true
+  }
+
+  @action receiveUpgradeTower(towerId, upgradeType) {
+    const tower = this.towers.byId[towerId]
+    if (!tower) {
+      console.log("No tower with id", towerId);
+      return
+    }
+    this.upgradeTower(tower, upgradeType)
     return true
   }
 
