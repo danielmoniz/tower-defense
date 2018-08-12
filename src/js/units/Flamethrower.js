@@ -13,19 +13,21 @@ export default class Flamethrower extends Tower {
 
     this.name = 'Flamethrower'
 
-    this.attackPower = {
-      base: 1,
-      current: 1,
-      burning: {
-        base: 1,
-        current: 1,
-      }
+    this.baseAttackPower = 1
+    this.ammo = {
+      type: 'fire',
+      damage: this.baseAttackPower,
     }
+
     this.range = {
       base: 200,
       current: 200,
     }
 
+    this.burningDamage = {
+      base: 1,
+      current: 1,
+    }
     this.burningLength = {
       base: 0,
       current: 0,
@@ -36,7 +38,6 @@ export default class Flamethrower extends Tower {
     this.reloadTime = 2000
     this.killProfitMultiplier = 0.8
     this.purchaseCost = 30
-    this.ammoType = 'fire'
 
     this.coneWidth = 20 // degrees
 
@@ -54,7 +55,7 @@ export default class Flamethrower extends Tower {
       this.damageEnemy(enemy)
       enemy.ignite(this,
         this.killProfitMultiplier,
-        this.attackPower.burning.current,
+        this.burningDamage.current,
         this.burningLength.current,
       )
     })
@@ -79,6 +80,11 @@ export default class Flamethrower extends Tower {
       }
     })
     return enemies
+  }
+
+  updateStats() {
+    super.updateStats()
+    this.burningDamage.current = this.burningDamage.base * this.getStatMultiplier()
   }
 
 }

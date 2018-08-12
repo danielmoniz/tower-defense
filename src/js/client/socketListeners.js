@@ -51,6 +51,11 @@ function setUpListeners(game, emitter) {
     game.receiveUpgradeTower(towerId, upgradeType)
   })
 
+  socket.on('set tower target', (towerId, targetId) => {
+    console.log('setting tower with ID:', towerId, 'to target ID:', targetId);
+    game.setTowerTargetFromData(towerId, targetId)
+  })
+
   socket.on('update all', (data, time) => {
     game.updateAll(data, time)
   })
@@ -62,8 +67,8 @@ function setUpListeners(game, emitter) {
     console.log('Joined existing game');
   })
 
-  socket.on('spawn wave', (newEnemies) => {
-    game.acceptSpawnedWave(newEnemies)
+  socket.on('spawn wave', (newEnemies, roundAttributes) => {
+    game.acceptSpawnedWave(newEnemies, roundAttributes)
   })
 
   socket.on('send terrain', (terrainData) => {

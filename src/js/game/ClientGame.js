@@ -131,6 +131,39 @@ class ClientGame extends Game {
     this.selectedEntity = entity
   }
 
+  /*
+   * Set the currently selected tower to have a new target.
+   */
+  setSelectedTowerTarget(target) {
+    const tower = this.selectedEntity
+    if (!target || !tower || tower.type !== 'Tower') { return }
+    this.sendSetTowerTarget(tower, target)
+  }
+
+  /*
+   * Simply set the tower target. Inherit & override to send data to server.
+   */
+  sendSetTowerTarget(tower, target) {
+    console.log('In sendSetTowerTarget');
+    this.setTowerTarget(tower, target)
+  }
+
+  /*
+   * Given a tower and a target object, sets the tower to have that target.
+   * If a target is not passed, the tower tries to use data about its current
+   * target to set the target (for multiplayer syncing).
+   * If the tower also has no target, it attempts to select one.
+   */
+  setTowerTarget(tower, target) {
+    if (target !== undefined) {
+      return super.setTowerTarget(tower, target)
+    }
+    if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
+      return tower.setTarget(this.enemies.byId[tower.target.id])
+    }
+    tower.selectTarget()
+  }
+
   @action updateAll(data, serverTime) {
     console.log('Updating all');
 
@@ -245,14 +278,6 @@ class ClientGame extends Game {
       unit.setBurningCooldown(data.burningInfo.cooldown.cooldownLength)
     }
     unit.burningInfo.cooldown.setTicksPassed(data.burningInfo.cooldown.ticksPassed)
-  }
-
-  setTowerTarget(tower) {
-    if (tower.target && tower.target.id && this.enemies.byId[tower.target.id]) {
-      tower.setTarget(this.enemies.byId[tower.target.id])
-    } else {
-      tower.selectTarget()
-    }
   }
 
   removeTowers(towersData, serverTime) {

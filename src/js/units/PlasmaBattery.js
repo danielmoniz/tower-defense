@@ -12,10 +12,6 @@ export default class PlasmaBattery extends Tower {
 
     this.name = 'PlasmaBattery'
 
-    this.attackPower = {
-      base: 5,
-      current: 5,
-    }
     this.range = {
       base: 300,
       current: 300,
@@ -25,28 +21,30 @@ export default class PlasmaBattery extends Tower {
     this.reloadTime = 5000
     this.killProfitMultiplier = 1
     this.purchaseCost = 50
-    this.ammoType = 'shell'
+    this.baseAttackPower = 40
+    this.ammo = {
+      type: 'shell',
+      damage: this.baseAttackPower,
+      armourPiercing: true,
+    }
 
-    this.explosionRadius = 100 // pixels
+    this.explosion = {
+      type: 'explosion',
+      damage: this.baseAttackPower,
+      radius: 100,
+    }
 
     this.width = GRID_SIZE * 3
     this.height = GRID_SIZE * 3
   }
 
   @action attack() {
-    // @TODO
-     // Separate direct hit damage from explosion damage.
-     // That is, the target should receive both, and all other enemies within
-     // the explosion radius are hit only with the explosion.
-
-
-    // super.attack()
     this.selectTarget()
     if (!this.target) { return }
     this.isFiring = true
 
     // damage enemies around target within this.explosionRadius
-    const enemiesInExplosionData = this.findEnemiesInRadius(this.explosionRadius, this.target)
+    const enemiesInExplosionData = this.findEnemiesInRadius(this.explosion.radius, this.target)
     enemiesInExplosionData.forEach((enemyData) => {
       // target hit directly; others hit by 'explosion'
       if (enemyData.enemy === this.target) {
@@ -78,11 +76,11 @@ export default class PlasmaBattery extends Tower {
   @action damageEnemyWithExplosion(enemy, distance) {
     var targetValue = enemy.killValue
     const damage = this.calculateExplosionDamage(
-      this.attackPower.current,
+      this.explosion.damage,
       distance,
-      this.explosionRadius,
+      this.explosion.radius,
     )
-    const killedUnit = enemy.takeDamage(damage, 'explosion')
+    const killedUnit = enemy.receiveAttack(this.explosion, damage)
     if (!killedUnit) { return }
 
     this.killEnemy(targetValue)

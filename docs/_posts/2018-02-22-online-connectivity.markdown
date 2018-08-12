@@ -6,7 +6,7 @@ categories: td technology
 ---
 
 
-In order to create an online multiplayer game, you need communication between the client and the server. This naturally has to be asynchronous; we can't afford to have page loads happening in the middle of a game! These leads to only two real options: [Ajax][ajax-mdn] and [WebSockets][websockets-wikipedia].
+In order to create an online multiplayer game, you need communication between the clients (ie. the players' computers) and the server. This naturally has to be asynchronous; we can't afford to have page loads happening in the middle of a game! These leads to only two real options: [Ajax][ajax-mdn] and [WebSockets][websockets-wikipedia].
 
 ### Ajax
 
@@ -28,7 +28,7 @@ Okay, so no Ajax requests.
 
 ### WebSockets
 
-WebSockets are persistent connections made between clients and servers. This uses precious resources on the server, but it allows for two-way communication. That is, servers can push to clients and, conversely, clients to servers.
+WebSockets are persistent connections made between clients and servers. Although holding such connections is more demanding on the server than simply listening for requests (versus regular HTTP, used by Ajax), it allows for two-way communication. That is, servers can push to clients and, conversely, clients to servers. Ajax, in comparison, uses regular [HTTP][http], and so the communication is always from client to server.
 
 Using our previous example, if a player places a tower, the browser can send that information to the server. Nothing new yet. But the server can process that information and immediately notify all other players! Their respective browsers then process the information of the newly placed tower and place it in their game views.
 
@@ -114,13 +114,13 @@ Fuels democracy
 
 ---
 
-#### Updated tech stack:
+#### Tech stack:
 
 * Front-end
   * HTML/CSS
-  * JavaScript with MobX and Socket.IO
-* **Back-end**
-  * **JavaScript with Express.js**
+  * JavaScript with MobX **and Socket.IO**
+* Back-end
+  * JavaScript with Express.js
 
 
 
@@ -136,5 +136,6 @@ Fuels democracy
 [socket-io]: https://socket.io/
 [socket-io-tutorial]: https://socket.io/get-started/chat/
 [why-not-socket-io]: https://codeburst.io/why-you-don-t-need-socket-io-6848f1c871cd
+[http]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol
 
 [server-side-choices]: /tower-defense/td/technology/2018/01/26/server-side-language.html

@@ -22,7 +22,11 @@ class ServerGame extends Game {
 
   spawnWave() {
     const newEnemies = super.spawnWave()
-    this.emitter.spawnWave(this.serverInfo.gameNumber, newEnemies)
+    this.emitter.spawnWave(
+      this.serverInfo.gameNumber,
+      newEnemies,
+      this.wave.currentAttributes,
+    )
     return newEnemies
   }
 

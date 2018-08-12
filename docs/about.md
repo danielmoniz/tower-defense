@@ -4,15 +4,23 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+The goal of this blog is to charter the process of building an online Tower Defense game in JavaScript. I would normally seek to use an existing framework, but this time I set about building my own. For science.
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+The framework uses a library called [MobX][mobx-github] at its core. It's a wonderful thing and I'm a big proponent of it. If you want to get started with MobX, try this [short introduction][mobx-get-started].
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+My name is Daniel Moniz. I like gaming (board or video), coding, dancing, painting, teaching, and quite a bit more. I teach Web Development at [Bitmaker][bitmaker] in Toronto. My current go-to video game is [Rocket League][rocket-league].
+
+If you want to know more about me, you'll probably have to ask.
+
+### Interact
+
+* daniel dot moniz [at] gmail dot com
+* [Most popular video (700k+ views)](https://www.youtube.com/watch?v=ohr6O78jGzs)
 
 
-[jekyll-organization]: https://github.com/jekyll
+
+
+[mobx-github]: https://github.com/mobxjs/mobx
+[mobx-get-started]: https://mobx.js.org/getting-started.html
+[bitmaker]: https://bitmaker.co/
+[rocket-league]: https://www.rocketleague.com/

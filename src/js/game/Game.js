@@ -37,6 +37,8 @@ export default class Game {
     speedMultiplier: 1,
   }
 
+  firstSpawnDelay = 3000
+
   height = 700
   width = 700
 
@@ -72,7 +74,7 @@ export default class Game {
     this.inProgress = true
     this.reset()
     this.play()
-    this.wave.initializeWaveTimer(GAME_REFRESH_RATE)
+    this.wave.initializeWaveTimer(GAME_REFRESH_RATE, this.firstSpawnDelay)
   }
 
   @action reset() {
@@ -207,9 +209,19 @@ export default class Game {
   }
 
   placeEnemy(enemy, enemiesInWave, numEnemy) {
+
     const entrance = this.getEntranceZone()
-    const enemyDistance = Math.floor(entrance.height / enemiesInWave)
-    enemy.jumpTo(entrance.x + entrance.width, entrance.y + numEnemy * enemyDistance)
+    const heightCut = 4 * GRID_SIZE
+    const actualEntranceHeight = entrance.height - heightCut
+    // push down units depending on quantity of enemies
+    const yBumper = actualEntranceHeight / (1 + enemiesInWave) + (heightCut / 2)
+
+    const xPosition = entrance.x + entrance.width
+    const enemySpacing = actualEntranceHeight / enemiesInWave
+
+    const yPosition = entrance.y + numEnemy * enemySpacing + yBumper - (enemy.height / 2)
+
+    enemy.jumpTo(xPosition, yPosition)
   }
 
   canAfford(unit) {
@@ -278,6 +290,26 @@ export default class Game {
     this.profit(tower.getSellValue())
     this.pathHelper.removeTowerObstacle(tower.getTopLeft(), tower.width, tower.height)
     tower.destroy()
+  }
+
+  /*
+   * Given data about a tower and a target, finds those objects and sets
+   * the tower to have that target. Useful for server syncing.
+   */
+  setTowerTargetFromData(towerId, targetId) {
+    const tower = this.towers.byId[towerId]
+    const target = this.enemies.byId[targetId]
+    return this.setTowerTarget(tower, target)
+  }
+
+  /*
+   * Given a tower and a target object, sets the tower to have that target.
+   * Fails if either are not provided.
+   */
+  setTowerTarget(tower, target) {
+    if (!tower || !target) { return }
+    tower.setTarget(target)
+    return true
   }
 
   endGame() {

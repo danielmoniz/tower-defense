@@ -54,6 +54,14 @@ class ClientMultiGame extends ClientGame {
     this.emitter.upgradeTower(tower, upgradeType)
   }
 
+  /*
+   * Trigger the setting of a tower's target. Emit the event to the server.
+   */
+  sendSetTowerTarget(tower, target) {
+    super.sendSetTowerTarget(tower, target)
+    this.emitter.setTowerTarget(tower, target)
+  }
+
   newGame() {
     this.emitter.addNewGame()
   }
@@ -66,9 +74,10 @@ class ClientMultiGame extends ClientGame {
     this.wave.updateWaveTimer()
   }
 
-  acceptSpawnedWave(newEnemies) {
+  acceptSpawnedWave(newEnemies, roundAttributes) {
     this.wave.nextWave()
     this.updateEnemies(newEnemies)
+    this.wave.setRoundAttributes(roundAttributes)
   }
 
   setTerrain(terrainData) {

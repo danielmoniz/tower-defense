@@ -15,8 +15,8 @@ class GameEmitter {
     socket.emit('poll for game number')
   }
 
-  spawnWave(gameNumber, newEnemies) {
-    this.io.to(gameNumber).emit('spawn wave', newEnemies)
+  spawnWave(gameNumber, newEnemies, roundAttributes) {
+    this.io.to(gameNumber).emit('spawn wave', newEnemies, roundAttributes)
   }
 
   sendTerrain(gameNumber, terrainData) {

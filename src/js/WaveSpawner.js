@@ -1,5 +1,6 @@
 
-import { observable, action } from 'mobx'
+import { observable, action, computed } from 'mobx'
+import { GAME_REFRESH_RATE } from './appConstants'
 
 import Cooldown from './Cooldown'
 
@@ -9,19 +10,49 @@ import Cooldown from './Cooldown'
 class WaveSpawner {
   @observable number = 0
   @observable timeBetweenWaves = 20000
+  @observable currentAttributes = []
+  @observable cooldown = null
 
   constructor() {
-    this.cooldown = null
+    this.bossSpawnOnWave = 5
+    this.updateFrequency = undefined // will be set/overridden later
+  }
+
+  @computed get timeUntilNextWave() {
+    if (this.cooldown) {
+      return Math.floor((this.cooldown.ticksUntilReady() - 1) * this.updateFrequency / 1000) + 1
+    }
+    return null
   }
 
   /*
    * Initializes the cooldown for waves.
    */
-  initializeWaveTimer(updateFrequency) {
+  @action initializeWaveTimer(updateFrequency, firstSpawnDelay) {
+    this.updateFrequency = updateFrequency
     if (!this.cooldown) {
-      console.log('Waves beginning!');
-      this.cooldown = Cooldown.createTimeBased(this.timeBetweenWaves, updateFrequency)
+      const callback = action(() => {
+        console.log('Waves beginning!');
+        this.cooldown = Cooldown.createTimeBased(this.timeBetweenWaves, updateFrequency)
+      })
+      const options = {
+        autoActivate: true,
+        delayActivation: true,
+        callback,
+      }
+
+      console.log('Setting up initial wave delay...');
+      this.cooldown = Cooldown.createTimeBased(
+        firstSpawnDelay,
+        updateFrequency,
+        options,
+      )
+
     }
+  }
+
+  @computed get round() {
+    return Math.ceil(this.number / this.bossSpawnOnWave)
   }
 
   /*
@@ -30,6 +61,13 @@ class WaveSpawner {
   @action reset() {
     this.number = 0
     delete this.cooldown
+  }
+
+  /*
+   * Given a new set of attributes, set them.
+   */
+  @action setRoundAttributes(newAttributes) {
+    this.currentAttributes = newAttributes
   }
 
   /*
@@ -49,7 +87,7 @@ class WaveSpawner {
   /*
    * Tells the wave cooldown to tick (bringing it closer to the next wave).
    */
-  updateWaveTimer() {
+  @action updateWaveTimer() {
     if (!this.cooldown) { return }
     this.cooldown.tick()
   }

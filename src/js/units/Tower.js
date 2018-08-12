@@ -11,18 +11,18 @@ export default class Tower extends Unit {
   @observable placed = false // towers generally start unplaced and become placed
 
   // @NOTE All of the below must be overwritten on every Tower!
-  @observable name
-  @observable type
-  @observable attackPower
+  @observable baseAttackPower
   @observable firingTime
-  @observable range // pixels
+  @observable range = {}
   @observable purchaseCost
   @observable killProfitMultiplier // certain towers can gain extra credits when killing units
   @observable clipSize
   @observable reloadTime
 
   @observable isFiring = false
-  @observable ammoType = 'bullet'
+  @observable ammo = {
+    type: 'bullet',
+  }
 
   // tower performance data
   @observable kills = 0
@@ -130,7 +130,7 @@ export default class Tower extends Unit {
 
   @action damageEnemy(enemy) {
     var targetValue = enemy.killValue
-    const killedUnit = enemy.takeDamage(this.attackPower.current, this.ammoType)
+    const killedUnit = enemy.receiveAttack(this.ammo)
     if (!killedUnit) { return enemy }
 
     this.killEnemy(targetValue)
@@ -209,8 +209,12 @@ export default class Tower extends Unit {
   }
 
   @action updateStats() {
-    this.attackPower.current = this.attackPower.base * Math.pow(1.05, this.level - 1)
-    this.range.current = this.range.base * Math.pow(1.01, this.level - 1)
+    this.ammo.damage = this.baseAttackPower * this.getStatMultiplier()
+    this.range.current = this.range.base * this.getStatMultiplier(1.01)
+  }
+
+  getStatMultiplier(factor = 1.05) {
+    return Math.pow(1.05, this.level - 1)
   }
 
   targetIsValid() {

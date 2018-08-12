@@ -16,7 +16,7 @@ describe('WaveSpawnerLocal.js', function() {
     })
 
     it('should return a collection of at least one enemy each wave', () => {
-      this.waveSpawner.setRoundAttributes()
+      this.waveSpawner.nextRound()
       for (let i = 1; i < this.waveSpawner.bossSpawnOnWave * 3; i++) {
         const enemyData = this.waveSpawner.generateEnemies(i)
         expect(enemyData.length).toBeGreaterThanOrEqual(1)
@@ -24,7 +24,7 @@ describe('WaveSpawnerLocal.js', function() {
     })
 
     it('should return a boss on a boss wave', () => {
-      this.waveSpawner.setRoundAttributes()
+      this.waveSpawner.nextRound()
       const enemyData = this.waveSpawner.generateEnemies(this.waveSpawner.bossSpawnOnWave)
       expect(enemyData.length).toBe(1)
       expect(enemyData[0].attributes.length).toBe(this.waveSpawner.numBossAttributes)

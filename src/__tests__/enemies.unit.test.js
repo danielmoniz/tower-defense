@@ -1,7 +1,7 @@
 
 import * as Enemies from 'units/Enemies'
 
-const validEnemyType = 'Invader'
+const validEnemyType = 'Scout'
 const validEnemySubtype = 'normal'
 
 describe('enemies.js', function() {
