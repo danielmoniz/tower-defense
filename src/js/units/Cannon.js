@@ -25,12 +25,22 @@ export default class Cannon extends Tower {
     this.clipSize = 1
     this.reloadTime = 1000
     this.killProfitMultiplier = 1
+
+    // DPS: 11
+    // DPS/cost: 0.44
+
     this.upgrades['PlasmaBattery'] = {
-      cost: 5,
+      cost: 25,
       type: 'towerToTower',
       newTowerType: 'PlasmaBattery',
       // @TODO This information is display related and should probably be elsewhere.
       description: 'Plas. Battery',
+    }
+    this.upgrades['SniperTower'] = {
+      cost: 75,
+      type: 'towerToTower',
+      newTowerType: 'SniperTower',
+      description: 'Sniper Tower',
     }
 
     this.width = GRID_SIZE * 3
