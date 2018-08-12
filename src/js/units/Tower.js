@@ -245,6 +245,10 @@ export default class Tower extends Unit {
     return target.getDistanceToPoint(this.getCentre())
   }
 
+  getDamage() {
+    return this.ammo && this.ammo.damage;
+  }
+
   getSellValue() {
     return Math.floor(this.purchaseCost / 2)
   }
