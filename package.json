@@ -64,6 +64,7 @@
     "lodash.assign": "^4.2.0",
     "mobx": "^3.3.1",
     "morgan": "~1.9.0",
+    "npm": "^6.1.0",
     "pixi-layers": "^0.1.4",
     "pixi-particles": "^3.0.0",
     "pixi.js": "^4.6.2",

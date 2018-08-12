@@ -7,19 +7,28 @@ a {
   color: #00B7FF;
 }
 
-.remainingCredits {
-  display: inline-block;
-  width: 120px;
+.gameState {
+  display: flex;
+  justify-content: flex-start;
 }
 
-.remainingLives {
-  display: inline-block;
-  width: 120px;
+.gameState div {
+  margin-right: 30px;
 }
 
-.currentWave {
-  display: inline-block;
-  width: 120px;
+.gameState .round-attributes .attributes {
+  font-weight: bold;
+  padding: 4px;
+}
+
+.gameState .round-attributes .attributes.updated {
+  animation: Highlight 1s linear;
+}
+
+@keyframes Highlight {
+  50% {
+    background-color: deepskyblue;
+  }
 }
 
 .info-panel {

@@ -2,107 +2,58 @@
 import { observable, computed, action, autorun } from 'mobx'
 
 import { GAME_REFRESH_RATE } from '../appConstants'
-import getAltId from '../utility/altId'
 import Cooldown from '../Cooldown'
+import Entity from './Entity'
 
-class Unit {
-  // defaults (observables)
-  @observable x = 0
-  @observable y = 0
-  @observable id
+class Unit extends Entity {
   @observable name
   @observable type
-  @observable display = true
-  @observable disabled = false // setting to true disables and greys the unit
-  @observable removeMe = false // setting to true allows for units to be removed from the game
-  @observable maxHitPoints = 50
+
+  @observable maxHitPoints
   @observable currentHitPoints
-  @observable selected = false
+  @observable maxArmour
+  @observable currentArmour
   @observable burning = false
   @observable burningInfo = {
     killProfitMultiplier: 1,
     dps: 0,
   }
   @observable hitBy = null
+  @observable maxShields = 0
+  @observable currentShields = 0
+
+  damageFactor = {
+    hp: {
+      basic: 1,
+    },
+    armour: {
+      basic: 0.5,
+      fire: 0.05,
+      burning: 0.05,
+      armourPiercing: 0.33,
+    },
+    shields: {
+      basic: 0.5,
+      laser: 2,
+      fire: 0.2,
+      burning: 0,
+    },
+    armourRatio: {
+      piercing: 0.33,
+    }
+  }
 
   constructor(game, options) {
+    super(game)
     options = options || {}
-    this.id = getAltId()
-    this.createdAt = Date.now()
     this.type = 'Unit' // should be overwritten
 
-    // add a reference to game which avoids circular referencing
-    Object.defineProperty(this, 'game', { value: game, writable: true})
-
-    // set defaults
-    this.width = undefined // must override
-    this.height = undefined // must override
-    this.name = undefined // must override
-    this.currentHitPoints = this.maxHitPoints
-
-
-    // override defaults
+    // override defaults // @TODO Remove this if not being used
     for (let key in options) {
       if (options.hasOwnProperty(key)) {
         this[key] = options[key]
       }
     }
-  }
-
-  @computed get xFloor() {
-    return Math.floor(this.x)
-  }
-
-  @computed get yFloor() {
-    return Math.floor(this.y)
-  }
-
-  /*
-   * Used for setting any key/value pair on the object.
-   * Good for building a mid-game active unit from scratch.
-   */
-  @action setAttr(key, value) {
-    this[key] = value
-  }
-
-  @action destroy() {
-    this.remove()
-  }
-
-  @action hide() {
-    this.display = false
-  }
-
-  @action show() {
-    this.display = true
-  }
-
-  @action disable() {
-    this.disabled = true
-  }
-
-  @action enable() {
-    this.disabled = false
-  }
-
-  @action remove() {
-    this.removeMe = true
-  }
-
-  @action select() {
-    this.selected = true
-  }
-
-  @action deselect() {
-    this.selected = false
-  }
-
-  /*
-   * Jumps/teleports a unit to the given position.
-   */
-  @action jumpTo(newX, newY) {
-    this.x = newX
-    this.y = newY
   }
 
   // handle any actions that are global to all unit types
@@ -112,30 +63,134 @@ class Unit {
   }
 
   /*
-   * Makes the unit take damage.
+   * Makes the unit to receive an attack (delivered by ammo).
+   * Can optionally specific damage. Will override ammo attack power.
    * Returns true if the unit is killed.
    */
-  @action takeDamage(amount, type) {
+  @action receiveAttack(ammo, damage) {
     if (this.currentHitPoints <= 0) {
       return
     }
-    this.takeHit(type)
-    this.currentHitPoints = Math.max(this.currentHitPoints - amount, 0)
-    if (this.currentHitPoints <= 0) {
-      if (type === 'burning') { // handle profit in case of passive damage
-        const attacker = this.burningInfo.attacker
-        if (attacker) {
-          // @TODO This hardcodes attackers being towers. Ideally this is more generic.
-          const tower = this.game.towers.byId[attacker]
-          tower.killEnemy(this.killValue)
-        } else {
-          // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold. So else never fires!
-          const multiplier = this.burningInfo.killProfitMultiplier
-          this.game.profit(this.killValue.credits * multiplier)
-        }
+
+    if (damage === undefined) {
+      if (ammo.damage === undefined) {
+        throw 'Must pass damage in ammo object or separately.'
       }
-      this.kill()
-      return true
+      damage = ammo.damage
+    }
+
+    this.takeHit(ammo.type)
+    return this.takeDamage(damage, ammo.type, ammo.armourPiercing)
+  }
+
+  /*
+   * Forces the unit to take damage. Will divide it between armour and HP.
+   * Returns true if the unit is killed.
+   */
+  @action takeDamage(damage, type, armourPiercing) {
+    const undealtShieldDamage = this.damageShields(damage, type)
+    if (this.hasShields()) { return } // shields are not gone!
+    const armourDamageRatio = this.getArmourDamageRatio(armourPiercing)
+    const armourDamageAllocation = undealtShieldDamage * armourDamageRatio
+    let undealtArmourDamage = this.damageArmour(armourDamageAllocation, type)
+    return this.damageHP(undealtShieldDamage - armourDamageAllocation + undealtArmourDamage, type)
+  }
+
+  /*
+   * Damages the HP specifically. Will also handle its death if needed.
+   * Returns true if the unit is killed.
+   */
+  @action damageHP(damage, type) {
+    // @TODO Should eventually deal more or less damage depending on type
+    this.currentHitPoints = Math.max(this.currentHitPoints - damage, 0)
+    return this.handleDeath(type)
+  }
+
+  /*
+   * Damages the armour specifically.
+   * If the armour is used up, the excess damage is returned to be later
+   * applied to HP.
+   */
+  @action damageArmour(damage, type) {
+    return this.damageAttribute('currentArmour', damage, type, 'armour')
+  }
+
+  /*
+   * Damages the unit's shields. The excess damage is returned to be applied
+   * to the next layer of the unit.
+   */
+  @action damageShields(damage, type) {
+    return this.damageAttribute('currentShields', damage, type, 'shields')
+  }
+
+  /*
+   * Damages a dynamic attribute of the unit.
+   * Returns the base undealt damage (before bonuses/penalties).
+   */
+  damageAttribute(attrName, damage, type, damageFactorName) {
+    const damageFactor = this.getDamageFactor(damageFactorName, type)
+    if (damageFactor === 0) { return damage }
+
+    const baseDamageNeeded = this[attrName] / parseFloat(damageFactor)
+    const damageDealt = Math.min(damage * damageFactor, this[attrName])
+    this[attrName] -= damageDealt
+    return Math.max(damage - baseDamageNeeded, 0)
+  }
+
+  // @TODO Add method to DRY up damageArmour() and damageShields()
+
+  /*
+   * Return the damage factor for the given unit layer (eg. shields/armour/hp)
+   * and the given damage type.
+   * If none is found, returned the basic stat for the unit layer.
+   */
+  getDamageFactor(unitLayer, type) {
+    let damageFactor = this.damageFactor[unitLayer][type]
+    if (damageFactor === undefined) {
+      damageFactor = this.damageFactor[unitLayer].basic
+    }
+    return damageFactor
+  }
+
+  /*
+   * Returns the ratio at which the armour will soak damage.
+   */
+  getArmourDamageRatio(armourPiercing) {
+    let armourRatio = parseFloat(this.currentArmour) / this.maxArmour
+    if (armourPiercing) {
+      armourRatio *= this.damageFactor.armourRatio.piercing // ensure less damage goes to armour
+    }
+    return armourRatio
+  }
+
+  /*
+   * Kills a unit if need be. Returns true if it did.
+   */
+  handleDeath(damageType) {
+    if (this.currentHitPoints > 0) { return }
+    this.handlePassiveKillReward(damageType)
+    this.kill()
+    return true
+  }
+
+  /*
+   * Provides kill rewards for when the unit is killed by passive effects
+   * such as fire (in contrast to being hit with ammo).
+   */
+  handlePassiveKillReward(damageType) {
+    // @TODO Ideally this checks whether the damage is 'passive', not just burning
+    if (damageType === 'burning') { // handle profit in case of passive damage
+      // @TODO @NOTE burningInfo.attacker is never cleaned up if tower is sold.
+      const attacker = this.burningInfo.attacker
+      // @TODO This hardcodes attackers being towers. Ideally this is more generic.
+      const tower = this.game.towers.byId[attacker]
+
+      if (!attacker || !tower) {
+        const multiplier = this.burningInfo.killProfitMultiplier
+        return this.game.profit(this.killValue.credits * multiplier)
+      }
+
+      return tower.killEnemy(this.killValue)
     }
   }
 
@@ -176,6 +231,7 @@ class Unit {
   }
 
   @action ignite(attacker, killProfitMultiplier, dps, time) {
+    if (this.hasShields()) { return }
     this.setBurningCooldown(time)
 
     this.burning = true
@@ -218,18 +274,8 @@ class Unit {
     return this.currentHitPoints > 0 && !this.completed && !this.removeMe
   }
 
-  getAngleToPoint(x, y) {
-    return Math.atan2(y - this.y, x - this.x)
-  }
-
-  getCentre() {
-    return { x: this.x + this.width / 2, y: this.y + this.height / 2}
-  }
-
-  getDistanceToPoint(point) {
-    const xDistance = Math.abs(this.getCentre().x - point.x) - (this.width / 2)
-    const yDistance = Math.abs(this.getCentre().y - point.y) - (this.height / 2)
-    return Math.sqrt(Math.pow(xDistance, 2) + Math.pow(yDistance, 2))
+  hasShields() {
+    return this.currentShields > 0
   }
 
 }

@@ -1,7 +1,9 @@
 
+import { observable, action } from 'mobx'
+
 class Cooldown {
 
-  ticksPassed = 0
+  @observable ticksPassed = 0
   totalTicks = 0
   numActivations = 0
 
@@ -92,8 +94,12 @@ class Cooldown {
   /*
    * Set ticksPassed to a new value (required for game updates/corrections).
    */
-  setTicksPassed(newTicksPassed) {
+  @action setTicksPassed(newTicksPassed) {
     this.ticksPassed = newTicksPassed
+  }
+
+  ticksUntilReady() {
+    return Math.max(0, this.cooldownLength - this.ticksPassed)
   }
 }
 

@@ -12,10 +12,12 @@ export default class Cannon extends Tower {
 
     this.name = 'Cannon'
 
-    this.attackPower = {
-      base: 11,
-      current: 11,
+    this.baseAttackPower = 11
+    this.ammo = {
+      type: 'laser',
+      damage: this.baseAttackPower,
     }
+
     this.range = {
       base: 300,
       current: 300,

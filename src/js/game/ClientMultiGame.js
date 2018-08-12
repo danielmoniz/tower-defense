@@ -69,9 +69,10 @@ class ClientMultiGame extends ClientGame {
     this.wave.updateWaveTimer()
   }
 
-  acceptSpawnedWave(newEnemies) {
+  acceptSpawnedWave(newEnemies, roundAttributes) {
     this.wave.nextWave()
     this.updateEnemies(newEnemies)
+    this.wave.setRoundAttributes(roundAttributes)
   }
 
   setTerrain(terrainData) {
